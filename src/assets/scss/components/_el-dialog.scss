@@ -1,0 +1,23 @@
+.app-modal__content{
+  font-size: 13.23px;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0 !important;
+  h2{
+    font-family: Montserrat,sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 30px;
+
+    text-align: center;
+
+    color: #333333;
+  }
+  > div > img{
+    width: 60px;
+  }
+  .content:first-child{
+    margin: 10px 0 10px 0;
+  }
+}

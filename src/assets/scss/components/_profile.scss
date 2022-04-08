@@ -1,0 +1,153 @@
+.step {
+  &__container {
+    max-width: 426px;
+    margin-right: 41px;
+    @media(max-width: 768px) {
+      display: none;
+    }
+  }
+
+  //&_view {
+  //  margin-top: 36px;
+  //}
+
+  &-back {
+    display: flex;
+    align-items: center;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13.23px;
+    text-decoration-line: underline;
+    color: #0F75BD;
+    margin: 0 22px 0 0;
+  }
+
+  &_wrapper {
+    display: flex;
+
+    img {
+      margin: 15px 0;
+    }
+  }
+
+  &_circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    color: #B0CEEC;
+    border: 2px solid #B0CEEC;
+
+    &-active {
+      background: #B0CEEC;
+      color: white;
+    }
+  }
+
+  &_description {
+    font-size: 13.23px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    height: 40px;
+    margin: 0 0 0 11px;
+    color: #B0CEEC;
+  }
+}
+
+
+.profile {
+  &_form_wrapper {
+    max-width: 420px;
+    width: 100%;
+
+    &-lk {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      @media(max-width: 700px) {
+        //padding: 0 25px;
+        //box-sizing: border-box;
+      }
+    }
+  }
+
+  &_form_container {
+    display: flex;
+    justify-content: center;
+    //padding: 0 100px;
+    //max-width: 1241px;
+    margin: 0 auto;
+    @media(max-width: 768px) {
+      justify-content: center;
+    }
+    @media(max-width: 526px) {
+      padding: 0;
+    }
+
+    .btn_container {
+      margin-top: 21px;
+      justify-content: flex-end;
+      .my-btn{
+        max-width: 228px;
+      }
+    }
+  }
+}
+
+
+a {
+  &:visited {
+    color: inherit;
+  }
+}
+
+.subtitle {
+  max-width: 1241px;
+  margin: 0 auto 50px auto;
+  text-align: left;
+}
+
+.btn_container {
+  width: 100%;
+  max-width: 740px;
+  display: flex;
+  justify-content: flex-end;
+  //.my-btn:first-child {
+  //  margin-right: 49px;
+  //}
+  @media(max-width: 700px) {
+    justify-content: center;
+  }
+  @media(max-width: 382px) {
+    .my-btn {
+      font-size: 13.23px !important;
+      &:first-child {
+        margin-right: 0 !important;
+      }
+    }
+  }
+}
+
+.field_max-length {
+  position: absolute;
+  right: 27px;
+  top: calc(100% - 30px);
+  font-style: normal;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 25px;
+  text-align: justify;
+  color: #5F9DD8;
+
+  &-lk {
+    right: 35px;
+  }
+}

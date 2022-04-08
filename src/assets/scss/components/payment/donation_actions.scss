@@ -1,0 +1,83 @@
+.donation {
+  &-info__container {
+    display: flex;
+    justify-content: space-between;
+    max-width: 817px;
+
+    h2 {
+      max-width: 160px;
+      text-align: left;
+      margin-top: 0;
+    }
+  }
+
+  &-actions__container, &-types__container {
+    display: flex;
+    width: 100%;
+  }
+
+  &-actions__container {
+    flex-direction: column;
+    max-width: 575px;
+  }
+
+  &-sum {
+    &__container {
+      display: flex;
+      margin-top: 19px;
+      justify-content: space-between;
+
+      .my-btn {
+        margin-right: 16px;
+        width: 129px;
+      }
+
+      .my-input {
+        width: 140px !important;
+
+        &::v-deep .el-input__inner {
+          &::placeholder {
+            color: #0F75BD !important;
+            top: 7px !important;
+          }
+        }
+      }
+    }
+
+    &__description {
+      text-align: left;
+      width: 528px;
+    }
+  }
+
+  &-sum__container {
+  }
+}
+
+.my-input {
+  &::v-deep .el-input__inner {
+    margin-top: 0 !important;
+  }
+}
+
+
+.my-btn {
+  margin: 0 !important;
+  font-weight: 600;
+
+  &:hover {
+    color: #fff !important;
+  }
+}
+
+.el-form-item {
+  width: 100%;
+  max-width: 344px;
+  margin: 0;
+
+  .my-input {
+    &::v-deep .el-input__inner {
+      max-width: 344px !important;
+    }
+  }
+}

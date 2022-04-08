@@ -1,0 +1,14 @@
+.not-found {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color: #f4f6f8;
+  height: auto;
+  flex: 1;
+  > span {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+  }
+}

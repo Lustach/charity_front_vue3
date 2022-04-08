@@ -1,0 +1,305 @@
+.input-search {
+  position: relative;
+  max-width: 560px;
+  height: 60px;
+  border-radius: 30px;
+  background-color: #FFFFFF;
+  z-index: 99;
+
+  @media screen and (max-width: 600px) {
+    width: 100%;
+    height: 40px;
+  }
+
+  &.iphone {
+    input {
+      height: 30px!important;
+      line-height: 37px!important;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-wrap: wrap;
+    height: 240px;
+
+    &--icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 60px;
+      width: 67px;
+      z-index: 999;
+
+      @media screen and (max-width: 600px) {
+        height: 40px;
+        width: 50px;
+
+        > img {
+          width: 25px;
+        }
+      }
+    }
+
+    &--input {
+      width: calc(100% - 120px);
+      z-index: 999;
+      height: 60px;
+      overflow: hidden;
+
+      @media screen and (max-width: 660px) {
+        height: 60px;
+        width: calc(100% - 80px);
+      }
+
+      > input {
+        width: 100%;
+        height: -webkit-calc(100% - 2px);
+        height: -moz-calc(100% - 2px);
+        height: calc(100% - 2px);
+        border: none;
+        background: #FFFFFF;
+        border-radius: 30px;
+        font-family: Montserrat, sans-serif;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 16px;
+        text-overflow: ellipsis;
+        color: #5F9DD8;
+
+        @media screen and (max-width: 660px) {
+          height: 37px;
+        }
+
+        &::-webkit-input-placeholder {
+          font-family: Montserrat, sans-serif;
+          font-style: normal;
+          font-weight: normal;
+          font-size: 16px;
+          color: #5F9DD8;
+
+          @media screen and (max-width: 600px) {
+            font-size: 14px;
+          }
+          @media screen and (max-width: 480px) {
+            font-size: 12px;
+          }
+          @media screen and (max-width: 420px) {
+            font-size: 11px;
+          }
+          @media screen and (max-width: 400px) {
+            font-size: 10px;
+          }
+          @media screen and (max-width: 375px) {
+            font-size: 9px;
+          }
+          @media screen and (max-width: 340px) {
+            font-size: 8px;
+          }
+
+        }
+        &::-moz-placeholder          {
+          font-family: Montserrat, sans-serif;
+          font-style: normal;
+          font-weight: normal;
+          font-size: 16px;
+          color: #5F9DD8;
+
+          @media screen and (max-width: 600px) {
+            font-size: 14px;
+          }
+          @media screen and (max-width: 480px) {
+            font-size: 12px;
+          }
+          @media screen and (max-width: 420px) {
+            font-size: 11px;
+          }
+          @media screen and (max-width: 400px) {
+            font-size: 10px;
+          }
+          @media screen and (max-width: 375px) {
+            font-size: 9px;
+          }
+          @media screen and (max-width: 340px) {
+            font-size: 8px;
+          }
+
+        }
+        &:-moz-placeholder           {
+          font-family: Montserrat, sans-serif;
+          font-style: normal;
+          font-weight: normal;
+          font-size: 16px;
+          color: #5F9DD8;
+
+          @media screen and (max-width: 600px) {
+            font-size: 14px;
+          }
+          @media screen and (max-width: 480px) {
+            font-size: 12px;
+          }
+          @media screen and (max-width: 420px) {
+            font-size: 11px;
+          }
+          @media screen and (max-width: 400px) {
+            font-size: 10px;
+          }
+          @media screen and (max-width: 375px) {
+            font-size: 9px;
+          }
+          @media screen and (max-width: 340px) {
+            font-size: 8px;
+          }
+
+        }
+        &:-ms-input-placeholder      {
+          font-family: Montserrat, sans-serif;
+          font-style: normal;
+          font-weight: normal;
+          font-size: 16px;
+          color: #5F9DD8;
+
+          @media screen and (max-width: 600px) {
+            font-size: 14px;
+          }
+          @media screen and (max-width: 480px) {
+            font-size: 12px;
+          }
+          @media screen and (max-width: 420px) {
+            font-size: 11px;
+          }
+          @media screen and (max-width: 400px) {
+            font-size: 10px;
+          }
+          @media screen and (max-width: 375px) {
+            font-size: 9px;
+          }
+          @media screen and (max-width: 340px) {
+            font-size: 8px;
+          }
+        }
+      }
+    }
+
+    &--close {
+      display: flex;
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      top: 17px;
+      right: 18px;
+      color: #5F9DD8;
+      font-size: 26px;
+      cursor: pointer;
+
+      @include breakpoint(max-width 600px) {
+        top: 8px;
+        right: 3px;
+      }
+    }
+  }
+
+  .search-result {
+    position: absolute;
+    height: 60px;
+    background-color: #FFFFFF;
+    border-radius: 30px;
+    width: 100%;
+    overflow: hidden;
+    transition: 0.3s;
+    border: 1px solid #f6f6f6;
+
+    @media screen and (max-width: 600px) {
+      height: 40px;
+      border-radius: 20px;
+    }
+
+    &__content {
+      min-height: fit-content;
+      margin-top: 60px;
+      transition: 0.3s;
+      overflow-y: scroll;
+      height: 180px;
+      z-index: 999;
+
+      @media screen and (max-width: 600px) {
+        margin-top: 50px;
+        height: 190px;
+      }
+
+      &--not-found {
+        display: flex;
+        width: 100%;
+        padding: 10px 0;
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+        color: #666666;
+      }
+
+      &--item {
+        text-align: left;
+        padding-left: 70px;
+
+        @media screen and (max-width: 600px) {
+          padding-left: 51px;
+        }
+
+        > span {
+          text-align: left;
+
+          font-family: Montserrat, sans-serif;
+          font-style: normal;
+          font-weight: normal;
+          font-size: 16px;
+          line-height: 35px;
+
+
+          color: #5F9DD8;
+
+          @media screen and (max-width: 600px) {
+            font-size: 12px;
+          }
+          @media screen and (max-width: 420px) {
+            font-size: 10px;
+            line-height: 26px;
+          }
+
+        }
+
+        &:hover {
+          background-color: #f2f7fd;
+          cursor: pointer;
+        }
+
+      }
+
+    }
+
+    &__to {
+      display: block;
+      position: relative;
+      float: left;
+      width: 100%;
+      height: 35px;
+    }
+
+    &__scroll {
+      display: block;
+      position: relative;
+      float: left;
+      width: 100%;
+      font-size: 16px;
+      font-weight: 600;
+      color: #5F9DD8;
+      padding: 10px 0;
+      cursor: pointer;
+      transition: 0.3s;
+
+      &:hover {
+        color: #5F9DD8;
+        background-color: #f2f7fd;
+      }
+    }
+  }
+}

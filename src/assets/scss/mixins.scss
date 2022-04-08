@@ -1,0 +1,21 @@
+//@import '~@/assets/scss/style.scss';
+@mixin customElDialog($width,$height) {
+  .el-dialog {
+    width: $width !important;
+    height: $height !important;
+    word-break: break-word !important;
+
+    &__body {
+      height: 100%;
+      max-height: 777px;
+      box-sizing: border-box;
+      word-break: break-word;
+    }
+
+    //if($isShowHeader) {
+    //  &__header {
+    //    display: none;
+    //  }
+    //}
+  }
+}

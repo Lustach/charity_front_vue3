@@ -1,0 +1,436 @@
+.my-input {
+  input, textarea {
+    font-family: Montserrat, sans-serif;
+    max-width: 328px;
+    width: 100%;
+    height: 38px;
+    background: #FFFFFF;
+    border: 2px solid #B0CEEC;
+    box-sizing: border-box;
+    border-radius: 35px;
+    padding-left: 18px;
+    font-size: 13.23px;
+    margin-top: 4px;
+    //&:hover{
+    //  border-color: #96cbe9 !important;
+    //}
+    &::placeholder {
+      font-style: normal;
+      font-weight: 600;
+      font-size: 13.23px;
+      width: 230px;
+      height: 70px;
+      color: #B0CEEC;
+      position: absolute;
+      top: 10px;
+      left: 18px;
+    }
+  }
+  textarea{
+    border-radius: 10px;
+  }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0 !important;
+  }
+
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+
+  &_profile {
+    &_wrapper {
+      display: flex;
+    }
+
+    input, textarea {
+      max-width: 100%;
+      //max-width: 731px;
+      resize: none;
+    }
+
+    textarea {
+      &::-webkit-scrollbar {
+        width: 5px;
+      }
+
+      &::-webkit-scrollbar-track {
+        border-radius: 5px;
+        margin-top: 25px !important;
+        margin-bottom: 25px !important;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        scroll-padding: 10px;
+        background-clip: padding-box;
+        border-radius: 5px;
+        background-color: #0F75BD;
+      }
+    }
+  }
+  &-bank__card{
+    width: 100%;
+    max-width: 344px;
+    & input{
+      border-radius: 10px;
+      width: 100%;
+      max-width: 344px;
+    }
+  }
+}
+
+.textarea {
+  &-short {
+    textarea {
+      min-height: 55px !important;
+      max-height: 55px !important;
+    }
+  }
+
+  &-full {
+    textarea {
+      min-height: 220px !important;
+      max-height: 220px !important;
+    }
+  }
+}
+
+.my-code-input {
+  width: fit-content !important;
+  margin: 0 21.5px;
+
+  input {
+    width: 101px !important;
+    height: 96px !important;
+    background: #FFFFFF !important;
+    border: 2px solid #B0CEEC !important;
+    box-sizing: border-box !important;
+    border-radius: 10px !important;
+    font-size: 13.23px;
+    text-align: center;
+  }
+}
+
+.el-form {
+  max-width: 890px;
+  margin: 0 auto;
+
+  &-lk {
+    max-width: 100%;
+    width: 100%;
+    @media(max-width: 700px) {
+      .question_mark-lk {
+        top: -24px !important;
+      }
+      > div {
+        width: 100%;
+      }
+      max-width: 738px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      &_field_container {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+      }
+    }
+  }
+}
+
+.el-form-item {
+  //max-width: 731px !important;
+  &:not(.checkbox-group__container) {
+    max-width: 328px;
+    margin: 0 auto;
+  }
+
+  &:not(.is-error) {
+    margin-bottom: 6px !important;
+  }
+
+  margin-bottom: 0 !important;
+
+  &__error {
+    position: relative !important;
+    margin-top: 4px;
+    margin-bottom: 2px;
+    padding-top: 0 !important;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13.23px !important;
+    color: #F56E6E !important;
+    text-align: left !important;
+  }
+
+  &__content {
+    text-align: left;
+    line-height: 1em !important;
+
+    label {
+      font-size: 13.23px;
+      margin-bottom: 4px;
+      text-align: center;
+      color: #0F75BD;
+      font-weight: 600;
+    }
+  }
+}
+
+.my-btn {
+  max-width: 328px;
+  width: 100%;
+  height: 38px;
+  background: #0F75BD !important;
+  border: 2px solid #0F75BD !important;
+  box-sizing: border-box !important;
+  border-radius: 35px !important;
+  font-family: Montserrat, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13.23px !important;
+  text-align: center;
+  padding: 0 !important;
+
+  &:focus {
+    box-shadow: 1px 1px 10px 3px rgba(64, 158, 255, .5);
+  }
+
+  color: #F1F5F7;
+
+  &_modal {
+    margin: -30px auto 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &:hover:not(:disabled) {
+    background: #188add !important;
+    border-color: #188add !important;
+  }
+
+  &:active:not(:disabled) {
+    background: #03558a !important;
+    border: #03558a !important;
+  }
+
+  &-disabled {
+    background: #B0CEEC !important;
+    border: 2px solid #B0CEEC !important;
+  }
+  &-outline{
+    background-color: white !important;
+    color: #0F75BD !important;
+    border: 2px solid #B0CEEC !important;
+  }
+}
+
+.my-checkbox {
+  text-align: initial;
+  display: flex !important;
+  align-items: center !important;
+
+  &:first-child {
+    margin-bottom: 12px;
+  }
+
+  .el-checkbox {
+    &__label {
+      font-family: Montserrat, sans-serif;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 13.23px;
+      color: #333333;
+      margin-left: 12px;
+      padding: 0;
+      white-space: break-spaces;
+      text-align: left;
+      //@media(max-width: 340px){
+      //  text-align: center;
+      //}
+    }
+
+    &__input:not(:not(.is-checked)) {
+      .el-checkbox__inner {
+        &:after {
+          border: none !important;
+          box-sizing: content-box;
+          height: 30px;
+          left: 3px;
+          top: 4px;
+          zoom: .73;
+          width: 30px;
+          transition: transform .15s ease-in .05s;
+          transform: rotate(0) scaleY(1);
+          background-image: url('~@/assets/images/icons/form/checkbox-image.svg');
+          background-repeat: no-repeat;
+          background-position: 50% 50%;
+        }
+      }
+    }
+
+    &__inner {
+      width: 30px !important;
+      height: 30px !important;
+      background: #FFFFFF !important;
+      border: 2px solid #B0CEEC !important;
+      box-sizing: border-box !important;
+      border-radius: 8.44px !important;
+    }
+  }
+}
+
+.is-focus {
+  .el-checkbox__inner {
+    box-shadow: 1px 1px 10px 1px rgba(64, 158, 255, .5);
+  }
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+  width: 100%;
+}
+
+.form {
+  &_profile {
+    &-category {
+      position: relative;
+
+      .line {
+        max-width: 727px;
+        width: 100%;
+        margin-top: 18px;
+      }
+
+      h2 {
+        position: relative;
+        margin: 12px 0 20px 0 !important;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 13.23px;
+        color: #5F9DD8;
+        text-align: left;
+        width: fit-content;
+
+        .question_mark {
+          top: 0px;
+          position: absolute;
+          right: -20px;
+          width: 16px;
+          height: 16px;
+          z-index: 1;
+        }
+      }
+    }
+  }
+
+  &-group {
+    &_label {
+      width: 100%;
+      text-align: left !important;
+      max-width: 528px;
+      font-size: 13.23px;
+      //text-align: center;
+      color: #0F75BD;
+      font-weight: 600;
+    }
+
+    &_profile {
+      max-width: 731px !important;
+
+      &-lk {
+        max-width: 100% !important;
+
+        .el-form-item__content {
+          //display: flex;
+        }
+      }
+
+      .question_mark {
+        top: 0px;
+        position: absolute;
+        right: -9px;
+        width: 16px;
+        height: 16px;
+        z-index: 1;
+        &-lk {
+          top: -12px;
+          right: -13px;
+        }
+      }
+    }
+
+    &_flex-container {
+      display: flex;
+      justify-content: space-between;
+
+      .form-group {
+        margin: 0;
+        max-width: 206px !important;
+        width: 100%;
+        @media(max-width: 400px) {
+          //max-width: 320px !important;
+          max-width: 48% !important;
+        }
+      }
+    }
+  }
+
+  &_container {
+    font-family: Montserrat, sans-serif;
+    margin: 100px auto 100px auto;
+    //zoom: .78;
+    @media(max-width: 700px) {
+      //padding: 0 25px;
+      padding: 0 25px;
+      box-sizing: border-box;
+    }
+    @media (max-width: 550px) {
+      margin: 50px auto;
+    }
+  }
+
+  &_title {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    text-align: center;
+    color: #333333;
+    margin: 0 0 10px 0;
+  }
+
+  &_subtitle {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13.23px;
+    text-align: center;
+    color: #333333;
+    margin: 0 auto 16px auto;
+    max-width: 626px;
+    a {
+      text-decoration: underline !important;
+    }
+  }
+}
+
+.tooltip {
+  position: fixed;
+  padding: 7px 14px;
+  width: 216px;
+  background: #FFFFFF;
+  border: 2px solid #B0CEEC;
+  box-sizing: border-box;
+  border-radius: 10px;
+  font-style: normal;
+  font-weight: normal;
+  font-family: Montserrat, sans-serif;
+  font-size: 13.23px;
+  text-align: justify;
+  color: #5F9DD8;
+  z-index: 1000 !important;
+}

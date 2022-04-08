@@ -1,0 +1,50 @@
+.el-upload {
+  width: 100% !important;
+
+  &-list {
+    //display: none !important;
+  }
+
+  &-dragger {
+    width: 100% !important;
+    background: #FFFFFF !important;
+    border: 2px solid #B0CEEC !important;
+    box-sizing: border-box !important;
+    border-radius: 10px !important;
+    height: 140px !important;
+  }
+
+  &__tip {
+    color: #B0CEEC !important;
+    margin-top: 0 !important;
+  }
+
+  &__text {
+    height: 100%;
+    min-height: 76px;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+
+    * {
+      font-family: Montserrat, sans-serif;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 13.23px !important;
+      text-align: center;
+    }
+
+    &-action {
+      color: #0F75BD;
+
+      em {
+        color: #0F75BD !important;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.is-dragover {
+  border-color: #1f7ebf !important;
+}
