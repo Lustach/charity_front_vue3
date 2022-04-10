@@ -3,87 +3,80 @@
     <div class="container">
       <div class="header__wrapper">
         <router-link class="link" to="/">
-          <img src="@/assets/images/logo-iphone.png" alt v-if="$store.state.isIphone" />
-          <img src="@/assets/images/logo.svg" alt v-else />
+          <!-- <img src="@/assets/icons/logo-iphone.png" alt="" v-if="$store.state.isIphone"> -->
+          <img src="@/assets/icons/logo.svg" alt="" />
         </router-link>
         <div class="header__menu" cy="header__menu">
-          <template
-            v-if="$route.name !== 'FillProfile' && $route.name !== 'ReviewProfile'"
+          <!-- <template v-if="$route.name!=='FillProfile' && $route.name!=='ReviewProfile'"> -->
+          <!-- <template v-if="loggedIn && getFillAllStepsFromStorage"> -->
+          <router-link
+            style="display: flex; position: relative"
+            v-for="(e, key) in links"
+            :key="key"
+            :to="e.to"
+            :disabled="e.disabled"
+            :event="e.disabled ? '' : 'click'"
           >
-            <!--          <router-link to="/not-found">-->
-            <!--            <button class="header__menu&#45;&#45;item">Фондам</button>-->
-            <!--          </router-link>-->
-            <template v-if="loggedIn && getFillAllStepsFromStorage">
-              <router-link
-                style="display: flex; position: relative"
-                v-for="(e, key) in links"
-                :key="key"
-                :to="e.to"
-                :disabled="e.disabled"
-                :event="e.disabled ? '' : 'click'"
-              >
-                <button
-                  class="header__menu--item"
-                  :class="{
-                    'header__menu--item-disabled': e.disabled,
-                    'header__menu--item-active': !e.disabled,
-                  }"
-                  :cy="
-                    e.disabled
-                      ? 'header__menu--item-disabled'
-                      : 'header__menu--item-active'
-                  "
+            <button
+              :cy="{
+                'header__menu--item-disabled': e.disabled,
+                'header__menu--item-active': !e.disabled,
+              }"
+              class="header__menu--item"
+              :class="{
+                'header__menu--item-disabled': e.disabled,
+                'header__menu--item-active': !e.disabled,
+              }"
+            >
+              {{ e.title }}
+            </button>
+          </router-link>
+          <el-dropdown trigger="click">
+            <span class="el-dropdown-link">
+              <img
+                cy="menu"
+                src="@/assets/images/icons/lk-person.jpg"
+                style="zoom: 0.7; cursor: pointer"
+                alt=""
+              />
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <div
+                  v-for="(e, key) in iconLinks"
+                  :key="key"
+                  class="dropdown-item_wrapper"
+                  @click="logout(e)"
                 >
-                  {{ e.title }}
-                </button>
-              </router-link>
-              <el-dropdown trigger="click">
-                <span class="el-dropdown-link">
-                  <img
-                    cy="menu"
-                    src="@/assets/images/icons/lk-person.jpg"
-                    style="zoom: 0.7; cursor: pointer"
-                    alt
-                  />
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <div
-                    v-for="(e, key) in iconLinks"
-                    :key="key"
-                    class="dropdown-item_wrapper"
-                    @click="logout(e)"
-                  >
-                    <el-dropdown-item>
-                      <router-link style="display: flex; position: relative" :to="e.to">
-                        <button class="header__menu--item" v-if="!e.icon">
-                          {{ e.title }}
-                        </button>
-                        <button
-                          class="header__menu--item header__menu--item_dropdown"
-                          cy="logout"
-                          v-else
-                          @click="$emit('exit')"
-                        >
-                          <img src="@/assets/images/icons/exit.svg" alt />
-                          {{ e.title }}
-                        </button>
-                      </router-link>
-                    </el-dropdown-item>
-                    <div
-                      class="dropdown-item_bar"
-                      v-if="key < iconLinks.length - 1"
-                    ></div>
-                  </div>
-                </el-dropdown-menu>
-              </el-dropdown>
+                  <el-dropdown-item>
+                    <router-link style="display: flex; position: relative" :to="e.to">
+                      <button class="header__menu--item" v-if="!e.icon">
+                        {{ e.title }}
+                      </button>
+                      <button
+                        class="header__menu--item header__menu--item_dropdown"
+                        cy="logout"
+                        v-else
+                        @click="$emit('exit')"
+                      >
+                        <img src="@/assets/images/icons/exit.svg" alt="" />
+                        {{ e.title }}
+                      </button>
+                    </router-link>
+                  </el-dropdown-item>
+                  <div class="dropdown-item_bar" v-if="key < iconLinks.length - 1"></div>
+                </div>
+              </el-dropdown-menu>
             </template>
-            <router-link to="/registration" v-else style="display: flex">
+          </el-dropdown>
+          <!-- </template> -->
+          <!-- <router-link to="/registration" v-else style="display: flex;">
               <button class="header__menu--item">Кабинет НКО</button>
-            </router-link>
-          </template>
-          <template v-else>
+            </router-link> -->
+          <!-- </template> -->
+          <!-- <template v-else>
             <button class="header__menu--item" @click="$emit('exit')">Выйти</button>
-          </template>
+          </template> -->
         </div>
       </div>
     </div>
@@ -91,15 +84,15 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
-import { Dropdown, DropdownItem, DropdownMenu } from "element-ui";
+// import {mapActions, mapGetters} from 'vuex';
+import { ElDropdown, ElDropdownItem, ElDropdownMenu } from "element-plus";
 
 export default {
   name: "app-header",
   components: {
-    "el-dropdown": Dropdown,
-    "el-dropdown-item": DropdownItem,
-    "el-dropdown-menu": DropdownMenu,
+    "el-dropdown": ElDropdown,
+    "el-dropdown-item": ElDropdownItem,
+    "el-dropdown-menu": ElDropdownMenu,
   },
   mounted() {},
   data: () => ({
@@ -159,13 +152,14 @@ export default {
     ],
   }),
   methods: {
-    ...mapActions(["logoutUser"]),
+    // ...mapActions(['logoutUser',]),
     logout(e) {
-      if (e.icon === "exit") this.logoutUser();
+      // if (e.icon === 'exit')
+      // this.logoutUser();
     },
   },
   computed: {
-    ...mapGetters(["loggedIn", "getFillAllStepsFromStorage"]),
+    // ...mapGetters(['loggedIn', 'getFillAllStepsFromStorage',]),
   },
 };
 </script>
@@ -184,7 +178,7 @@ export default {
   padding: 26px 0;
   transform: scale(0.75);
 
-  &::v-deep {
+  &:v-deep {
     button,
     li {
       margin: 0;
@@ -240,6 +234,5 @@ export default {
     left: 0;
     bottom: 6px;
   }
-  //border-bottom: 1px solid #0F75BD;
 }
 </style>

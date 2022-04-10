@@ -1,119 +1,87 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "@/components/HelloWorld.vue";
+import AppHeader from "@/components/app/AppHeader.vue";
+import AppFooter from "@/components/app/AppFooter.vue";
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <AppHeader />
+  <a
+    v-if="
+      $route.path !== '/' &&
+      $route.path !== '/fill_profile' &&
+      $route.path !== '/review_profile' &&
+      $route.path !== '/reject_profile'
+    "
+    @click="$router.go(-1)"
+    class="go-back"
+    ><img src="@/../images/icons/double-arrow.svg" alt="" /> Назад</a
+  >
+  <RouterView class="view" />
+  <AppFooter />
 </template>
 
-<style>
+<style lang="scss">
 @import "@/assets/base.css";
+@import "@/assets/scss/style.scss";
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.view {
+  height: auto;
+  flex: 1;
+  width: 100%;
+  @media (max-width: 1024px) {
+    padding: 0 2vw;
+  }
+}
 
+* {
+  font-family: Montserrat, sans-serif;
+  font-style: normal;
   font-weight: normal;
 }
 
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+html,
+body {
+  height: 100%;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-}
+.go-back {
+  position: fixed;
+  z-index: 1000;
+  left: 50px;
+  top: 76px;
+  color: #0f75bd;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+  img {
+    margin-right: 9px;
+  }
+
+  @media screen and (max-width: 850px) {
+    display: none;
   }
 }
 
-nav {
-  width: 100%;
-  font-size: 12px;
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
-
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
+  color: #2c3e50;
+  margin: 0;
+  overflow-x: initial;
+  @media (max-width: 850px) and(max-height: 480px) and(orientation: landscape) {
+    zoom: 0.8;
   }
 }
 </style>

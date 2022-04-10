@@ -1,4 +1,4 @@
-# charity_front_vue3
+# money-expense-app
 
 This template should help get you started developing with Vue 3 in Vite.
 
