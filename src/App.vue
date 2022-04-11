@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
-import AppHeader from "@/components/app/AppHeader.vue";
+import AppHeader from "@/components/app/header/AppHeader.vue";
 import AppFooter from "@/components/app/AppFooter.vue";
+
 </script>
 
 <template>
@@ -29,6 +30,7 @@ import AppFooter from "@/components/app/AppFooter.vue";
   height: auto;
   flex: 1;
   width: 100%;
+  margin-top: 69px;
   @media (max-width: 1024px) {
     padding: 0 2vw;
   }
@@ -38,6 +40,8 @@ import AppFooter from "@/components/app/AppFooter.vue";
   font-family: Montserrat, sans-serif;
   font-style: normal;
   font-weight: normal;
+  font-size: $vblg-subtitle2;
+  color: var(--clr-black);
 }
 
 html,
@@ -77,7 +81,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
   margin: 0;
   overflow-x: initial;
   @media (max-width: 850px) and(max-height: 480px) and(orientation: landscape) {

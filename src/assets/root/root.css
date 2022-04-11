@@ -1,12 +1,12 @@
 :root {
     /* colors */
+    /*  */
     --clr-dark: 230 35% 7%;
     --clr-light: 231 77% 90%;
     --clr-white: 0 0% 100%;
 
     --clr-primary: linear-gradient(180deg, #4960F9 0%, #1937FE 100%);
-
-
+    
     /* font-sizes */
     --fs-900: clamp(5rem, 8vw + 1rem, 9.375rem);
     --fs-800: 3.5rem;

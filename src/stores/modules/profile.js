@@ -1,0 +1,106 @@
+import { defineStore } from 'pinia'
+
+export const useProfileStore = defineStore('profile', {
+    // arrow function recommended for full type inference
+    state: () => {
+        return {
+            fund: null,
+            bankDetails: null,
+            stepFromStorage: null,
+            bankDetailsIdFromStorage: null,
+            fundIdFromStorage: null,
+            mailingAddressIdFromStorage: null,
+            actualAddressIdFromStorage: null,
+            legalAddressIdFromStorage: null,
+            fillAllStepsFromStorage: null, // '0' || '1'
+            logoIdFromStorage: null,
+            isLogo: null, // true || false
+            loading: false, // для роутера
+            bids: {
+                bankdetailsbid: null,
+                actualaddressbid: null,
+                mailingaddressbid: null,
+                legaladdressbid: null,
+            },
+        }
+    },
+    actions: {
+        updateMediaFile(state, payload) {
+            state.fund.media_files.splice(state.fund.media_files.findIndex(e => e.is_logo), 1, payload);
+        },
+        deleteMediaFiles(state, payload) {
+            state.fund.media_files.splice(state.fund.media_files.findIndex(e => e.id === payload), 1);
+        },
+        setFundMediaFiles(state, payload) {
+            state.fund.media_files.push(payload);
+        },
+        //actions 
+        async getBids() {
+            const result = await this.$API.user.getUserProfileById(this.state.user.profileId);
+            this.commit('setStateVar', { varName: 'bids', value: result.bids, });
+            return result;
+        },
+        async initDataFromLocalStorage() {
+            if (this.getters.loggedIn) {
+                localStorage.setItem('isEmailActivation', '1');
+                try {
+                    //todo
+                    const result = await this.$API.user.meUser();
+                    // context.commit('setUserData', {
+                    //     userId: result.id,
+                    //     email: result.email,
+                    //     profileId: result.profile,
+                    //     is2faEnabled: result.is_active_2fa,
+                    //     code2Fa: result.code_2fa,
+                    // });
+                } catch (e) {
+                    console.error(e);
+                }
+                if (this.state.user.profileId) {
+                    if (!this.fundIdFromStorage) {
+                        const result = await this.dispatch('getBids');
+                        // const result = await this.$API.user.getUserProfileById(this.state.user.profileId)
+                        this.fundIdFromStorage = result.fund;
+                        // this.commit('setStateVar',{varName: 'bids',value: result.bids})
+                    }
+                    // todo при нажатии на кнопкИ сохранить или прочее (редактирование текущего фонда) - сделать обновление данных в сторе, а не запросом
+                    // if(!this.fund) {
+                    this.fund = await this.$API.fill_profile.getFund((this.fundIdFromStorage).toString());
+                    // }
+                    if (this.fund.bank_details) {
+                        this.bankDetails = await this.$API.fill_profile.getBankDetails(this.fund.bank_details);
+                        this.bankDetailsIdFromStorage = this.fund.bank_details;
+                        this.mailingAddressIdFromStorage = this.bankDetails.mailing_address;
+                        this.actualAddressIdFromStorage = this.bankDetails.actual_address;
+                        this.legalAddressIdFromStorage = this.bankDetails.legal_address;
+                    }
+                    if (this.fund.nko_director_name) {
+                        this.fillAllStepsFromStorage = 1;
+                    }
+                    for (let key of this.fund.media_files) {
+                        // key.is_logo ? this.isLogo = true : false
+                        if (key.is_logo) {
+                            this.isLogo = true;
+                            return;
+                        }
+                    }
+                }
+            }
+            this.loading = true;
+        },
+    },
+    getters: {
+        getStepFromStorage: (state) => state.stepFromStorage,
+        getBankDetailsIdFromStorage: (state) => state.bankDetailsIdFromStorage,
+        getFundIdFromStorage: (state) => state.fundIdFromStorage,
+        getMailingAddressIdFromStorage: (state) => state.mailingAddressIdFromStorage,
+        getActualAddressIdFromStorage: (state) => state.actualAddressIdFromStorage,
+        getLegalAddressIdFromStorage: (state) => state.legalAddressIdFromStorage,
+        getFillAllStepsFromStorage: (state) => state.fillAllStepsFromStorage,
+        getIsLogo: (state) => state.isLogo,
+        getFund: (state) => state.fund,
+        getBankDetails: (state) => state.bankDetails,
+        getLogoIdFromStorage: (state) => state.logoIdFromStorage,
+        getBids: (state) => state.bids,
+    }
+})
