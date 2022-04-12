@@ -2,24 +2,25 @@
 import { RouterLink, RouterView } from "vue-router";
 import AppHeader from "@/components/app/header/AppHeader.vue";
 import AppFooter from "@/components/app/AppFooter.vue";
-
 </script>
 
 <template>
-  <AppHeader />
-  <a
-    v-if="
-      $route.path !== '/' &&
-      $route.path !== '/fill_profile' &&
-      $route.path !== '/review_profile' &&
-      $route.path !== '/reject_profile'
-    "
-    @click="$router.go(-1)"
-    class="go-back"
-    ><img src="@/../images/icons/double-arrow.svg" alt="" /> Назад</a
-  >
-  <RouterView class="view" />
-  <AppFooter />
+  <main>
+    <AppHeader />
+    <a
+      v-if="
+        $route.path !== '/' &&
+        $route.path !== '/fill_profile' &&
+        $route.path !== '/review_profile' &&
+        $route.path !== '/reject_profile'
+      "
+      @click="$router.go(-1)"
+      class="go-back"
+      ><img src="@/../images/icons/double-arrow.svg" alt="" /> Назад</a
+    >
+    <RouterView class="view" />
+    <AppFooter />
+  </main>
 </template>
 
 <style lang="scss">
@@ -53,6 +54,9 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
+  @media (max-width: 850px) and(max-height: 480px) and(orientation: landscape) {
+    zoom: 0.8;
+  }
 }
 
 .go-back {
@@ -76,15 +80,12 @@ body {
   }
 }
 
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  margin: 0;
-  overflow-x: initial;
-  @media (max-width: 850px) and(max-height: 480px) and(orientation: landscape) {
-    zoom: 0.8;
-  }
+main {
+  position: relative;
+  padding-top: 69px;
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  min-height: calc(100vh - 4px);
 }
 </style>

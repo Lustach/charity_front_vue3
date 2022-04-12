@@ -3,7 +3,7 @@ import { createPinia } from 'pinia'
 
 import Api from '@/plugins/axios.js';
 
-import App from './App.vue'
+import App from '@/components/app/App.vue'
 import router from './router/router.js'
 
 import PrimeVue from 'primevue/config';

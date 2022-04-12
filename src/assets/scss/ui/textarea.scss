@@ -1,0 +1,35 @@
+@import "text-field";
+.vblg-textarea {
+    &__container {
+        @extend .text-field__container;
+    }
+    @extend .text-field;
+    border-radius: 10px;
+    max-width: 100%;
+    resize: none;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+        border-radius: 5px;
+        margin-top: 25px !important;
+        margin-bottom: 25px !important;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        scroll-padding: 10px;
+        background-clip: padding-box;
+        border-radius: 5px;
+        background-color: #0f75bd;
+    }
+
+    &-short {
+        min-height: 55px !important;
+        max-height: 55px !important;
+    }
+    &-full {
+        min-height: 220px !important;
+        max-height: 220px !important;
+    }
+}

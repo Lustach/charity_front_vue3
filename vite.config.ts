@@ -3,11 +3,13 @@ import { fileURLToPath, URL } from 'url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import VueTypeImports from 'vite-plugin-vue-type-imports'
+
 import ElementPlus from 'unplugin-element-plus/vite'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue(), vueJsx(),
-  ElementPlus()
+    ElementPlus(), VueTypeImports(),
   ],
   resolve: {
     alias: {
@@ -17,7 +19,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: '@import "@/assets/scss/fonts/_fonts.scss";',
+        additionalData: '@import "@/assets/scss/fonts/_fonts.scss";@import "@/assets/scss/mixins.scss";',
       },
     },
   },
