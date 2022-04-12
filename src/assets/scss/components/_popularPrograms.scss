@@ -12,31 +12,31 @@
     position: relative;
     float: left;
     width: 100%;
-    
+
     &.bg:after {
       display: block;
       position: absolute;
-      content: '';
+      content: "";
       width: 100%;
       height: calc(100% - (40px + 62px));
       top: calc(40px + 60px);
       left: 0;
-      background-color: #DFEBF7;
+      background-color: #dfebf7;
       z-index: -1;
 
-      @include breakpoint(max-width 1000px) {
+      @media screen and(max-width:1000px) {
         top: calc(40px + 57px);
       }
 
-      @include breakpoint(max-width 768px) {
+      @media screen and(max-width:768px) {
         top: calc(40px + 49px);
       }
 
-      @include breakpoint(max-width 700px) {
+      @media screen and(max-width:700px) {
         top: 86px;
       }
 
-      @include breakpoint(max-width 600px) {
+      @media screen and(max-width:600px) {
         top: 79px;
       }
     }
@@ -53,7 +53,6 @@
       color: #333333;
       margin-top: 0;
       margin-bottom: 32px;
-
 
       @media screen and (max-width: 980px) {
         margin-bottom: 20px;
@@ -113,12 +112,12 @@
       &:after {
         display: block;
         position: absolute;
-        content: '';
+        content: "";
         width: 100%;
         top: 79px;
         left: 0;
         height: calc(100% - 79px);
-        background-color: #DFEBF7;
+        background-color: #dfebf7;
         z-index: -1;
 
         @media screen and (min-width: 700px) {
@@ -160,7 +159,7 @@
       align-items: baseline;
       box-sizing: border-box;
 
-      @include breakpoint(max-width 1000px) {
+      @media screen and(max-width:1000px) {
         padding-top: 16px;
       }
 
@@ -179,16 +178,16 @@
         font-weight: 600;
         font-size: 16px;
         text-decoration: none;
-        color: #5F9DD8;
+        color: #5f9dd8;
 
         &:after {
           display: block;
           position: absolute;
-          content: '';
+          content: "";
           width: 100%;
           height: 1px;
           left: 0;
-          background-color: #5F9DD8;
+          background-color: #5f9dd8;
         }
 
         @media screen and (max-width: 768px) {
@@ -246,18 +245,18 @@
           margin-left: 40px !important;
         }
 
-        @include breakpoint(max-width 1200px) {
+        @media screen and(max-width:1200px) {
           margin-top: 30px;
           width: 100%;
         }
 
         @media screen and (max-width: 700px) {
-          margin-left: 0!important;
+          margin-left: 0 !important;
           width: 100%;
           margin-right: 0;
         }
 
-        @media screen and (max-width: 500px){
+        @media screen and (max-width: 500px) {
           max-width: 90%;
         }
 
@@ -297,7 +296,7 @@
           font-size: 16px;
           line-height: 25px;
           height: 60px;
-          background: #FFFFFF;
+          background: #ffffff;
           border-radius: 30px;
           border: none;
 
@@ -318,7 +317,7 @@
             font-weight: normal;
             font-size: 16px;
             line-height: 25px;
-            color: #5F9DD8;
+            color: #5f9dd8;
           }
 
           &::-moz-placeholder {
@@ -327,7 +326,7 @@
             font-weight: normal;
             font-size: 16px;
             line-height: 25px;
-            color: #5F9DD8;
+            color: #5f9dd8;
           }
 
           &:-moz-placeholder {
@@ -336,7 +335,7 @@
             font-weight: normal;
             font-size: 16px;
             line-height: 25px;
-            color: #5F9DD8;
+            color: #5f9dd8;
           }
 
           &:-ms-input-placeholder {
@@ -345,7 +344,7 @@
             font-weight: normal;
             font-size: 16px;
             line-height: 25px;
-            color: #5F9DD8;
+            color: #5f9dd8;
           }
         }
       }
@@ -369,7 +368,7 @@
         max-width: 240px;
         width: 100%;
         height: 45px;
-        background: #FFFFFF;
+        background: #ffffff;
         border-radius: 30px;
         font-family: Montserrat, sans-serif;
         font-style: normal;
@@ -398,8 +397,8 @@
 
         &:hover {
           cursor: pointer;
-          background-color: #5F9DD8;
-          color: #FFFFFF;
+          background-color: #5f9dd8;
+          color: #ffffff;
         }
       }
     }
@@ -465,11 +464,11 @@
   font-size: 18px;
   line-height: 58px;
   text-align: center;
-  color: #5F9DD8;
+  color: #5f9dd8;
   width: 250px;
   height: 62px;
-  background: #FFFFFF;
-  border: 2px solid #DFEBF7 !important;
+  background: #ffffff;
+  border: 2px solid #dfebf7 !important;
   box-sizing: border-box;
   border-radius: 20px 20px 0 0;
 
@@ -499,7 +498,7 @@
   }
 
   &.is-active {
-    background: #DFEBF7;
+    background: #dfebf7;
     color: #333333;
   }
 }
@@ -509,7 +508,7 @@
 }
 
 .popular-programs .el-tabs__content {
-  background-color: #DFEBF7;
+  background-color: #dfebf7;
 
   @media screen and (min-width: 1440px) {
     border-radius: 0 10px 10px 10px;

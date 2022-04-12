@@ -3,7 +3,7 @@
   max-width: 560px;
   height: 60px;
   border-radius: 30px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   z-index: 99;
 
   @media screen and (max-width: 600px) {
@@ -13,8 +13,8 @@
 
   &.iphone {
     input {
-      height: 30px!important;
-      line-height: 37px!important;
+      height: 30px !important;
+      line-height: 37px !important;
     }
   }
 
@@ -58,14 +58,14 @@
         height: -moz-calc(100% - 2px);
         height: calc(100% - 2px);
         border: none;
-        background: #FFFFFF;
+        background: #ffffff;
         border-radius: 30px;
         font-family: Montserrat, sans-serif;
         font-style: normal;
         font-weight: normal;
         font-size: 16px;
         text-overflow: ellipsis;
-        color: #5F9DD8;
+        color: #5f9dd8;
 
         @media screen and (max-width: 660px) {
           height: 37px;
@@ -76,7 +76,7 @@
           font-style: normal;
           font-weight: normal;
           font-size: 16px;
-          color: #5F9DD8;
+          color: #5f9dd8;
 
           @media screen and (max-width: 600px) {
             font-size: 14px;
@@ -96,14 +96,13 @@
           @media screen and (max-width: 340px) {
             font-size: 8px;
           }
-
         }
-        &::-moz-placeholder          {
+        &::-moz-placeholder {
           font-family: Montserrat, sans-serif;
           font-style: normal;
           font-weight: normal;
           font-size: 16px;
-          color: #5F9DD8;
+          color: #5f9dd8;
 
           @media screen and (max-width: 600px) {
             font-size: 14px;
@@ -123,14 +122,13 @@
           @media screen and (max-width: 340px) {
             font-size: 8px;
           }
-
         }
-        &:-moz-placeholder           {
+        &:-moz-placeholder {
           font-family: Montserrat, sans-serif;
           font-style: normal;
           font-weight: normal;
           font-size: 16px;
-          color: #5F9DD8;
+          color: #5f9dd8;
 
           @media screen and (max-width: 600px) {
             font-size: 14px;
@@ -150,14 +148,13 @@
           @media screen and (max-width: 340px) {
             font-size: 8px;
           }
-
         }
-        &:-ms-input-placeholder      {
+        &:-ms-input-placeholder {
           font-family: Montserrat, sans-serif;
           font-style: normal;
           font-weight: normal;
           font-size: 16px;
-          color: #5F9DD8;
+          color: #5f9dd8;
 
           @media screen and (max-width: 600px) {
             font-size: 14px;
@@ -188,11 +185,11 @@
       height: 26px;
       top: 17px;
       right: 18px;
-      color: #5F9DD8;
+      color: #5f9dd8;
       font-size: 26px;
       cursor: pointer;
 
-      @include breakpoint(max-width 600px) {
+      @media screen and(max-width: 600px) {
         top: 8px;
         right: 3px;
       }
@@ -202,7 +199,7 @@
   .search-result {
     position: absolute;
     height: 60px;
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     border-radius: 30px;
     width: 100%;
     overflow: hidden;
@@ -254,8 +251,7 @@
           font-size: 16px;
           line-height: 35px;
 
-
-          color: #5F9DD8;
+          color: #5f9dd8;
 
           @media screen and (max-width: 600px) {
             font-size: 12px;
@@ -264,16 +260,13 @@
             font-size: 10px;
             line-height: 26px;
           }
-
         }
 
         &:hover {
           background-color: #f2f7fd;
           cursor: pointer;
         }
-
       }
-
     }
 
     &__to {
@@ -291,13 +284,13 @@
       width: 100%;
       font-size: 16px;
       font-weight: 600;
-      color: #5F9DD8;
+      color: #5f9dd8;
       padding: 10px 0;
       cursor: pointer;
       transition: 0.3s;
 
       &:hover {
-        color: #5F9DD8;
+        color: #5f9dd8;
         background-color: #f2f7fd;
       }
     }

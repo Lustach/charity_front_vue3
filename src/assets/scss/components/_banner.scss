@@ -14,7 +14,7 @@
   &.banner__empty {
     height: calc(72vh + 60px);
 
-    @include breakpoint(max-width 1100px) {
+    @media screen and (max-width: 1100px) {
       height: 600px;
     }
 
@@ -38,7 +38,7 @@
     }
   }
 
-  @include breakpoint(max-width 700px) {
+  @media screen and (max-width: 700px) {
     height: 600px;
   }
 
