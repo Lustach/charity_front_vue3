@@ -4,16 +4,16 @@
     max-width: 328px;
     width: 100%;
     height: 38px;
-    background: #0f75bd !important;
-    border: 2px solid #0f75bd !important;
-    box-sizing: border-box !important;
-    border-radius: 35px !important;
+    background: #0f75bd;
+    border: 2px solid #0f75bd;
+    box-sizing: border-box;
+    border-radius: 35px;
     font-family: Montserrat, sans-serif;
     font-style: normal;
     font-weight: 600;
-    font-size: 13.23px !important;
+    font-size: 13.23px;
     text-align: center;
-    padding: 0 !important;
+    padding: 0;
 
     &:focus {
         box-shadow: 1px 1px 10px 3px rgba(64, 158, 255, 0.5);
@@ -29,22 +29,22 @@
     }
 
     &:hover:not(:disabled) {
-        background: #188add !important;
-        border-color: #188add !important;
+        background: #188add;
+        border-color: #188add;
     }
 
     &:active:not(:disabled) {
-        background: #03558a !important;
-        border: #03558a !important;
+        background: #03558a;
+        border: #03558a;
     }
 
-    &-disabled {
-        background: #b0ceec !important;
-        border: 2px solid #b0ceec !important;
+    &-disabled, &:disabled {
+        background-color: #b0ceec;
+        border: 2px solid #b0ceec;
     }
     &-outline {
-        background-color: white !important;
-        color: #0f75bd !important;
-        border: 2px solid #b0ceec !important;
+        background-color: white;
+        color: #0f75bd;
+        border: 2px solid #b0ceec;
     }
 }

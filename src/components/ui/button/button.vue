@@ -3,7 +3,7 @@ import { ElButton } from "element-plus";
 </script>
 <template>
   <el-button type="primary" class="vblg-btn">
-  <!-- <slot name=""></slot> -->
+    <slot ></slot>
   </el-button>
 </template>
 <style lang="scss" scoped>

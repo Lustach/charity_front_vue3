@@ -40,7 +40,7 @@ const { value: modelValue, errorMessage, handleBlur, handleChange, meta } = useF
       :name="id"
       autocomplete="off"
       class="vblg-input"
-      :class="{ ' is-error': errorMessage }"
+      :class="{ 'is-error': errorMessage }"
     />
     <span class="error-message" v-if="errorMessage">{{ errorMessage }}</span>
   </div>

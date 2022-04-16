@@ -28,6 +28,11 @@ const router = createRouter({
       path: '/registration',
       name: 'registration',
       component: () => import('@/views/RegistrationView.vue')
+    },
+    {
+      path: '/multi_step-form',
+      name: 'multi_step-form',
+      component: () => import('@/views/MultiStepForm.vue')
     }
   ],
   scrollBehavior(to, from, savedPosition) {
