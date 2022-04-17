@@ -33,16 +33,19 @@ export default {
       type: Array,
       required: true,
     },
-    showPrevStep:{
+    showPrevStep: {
       default: false,
     },
-    prevStepText:{
-      default: 'Назад'
+    showNextStep: {
+      type: Boolean,
     },
-    submitText:{
-      default: 'Сабмит'
+    prevStepText: {
+      default: "Назад",
     },
-    nextStepText:{}
+    submitText: {
+      default: "Сабмит",
+    },
+    nextStepText: {},
   },
   setup(props, { emit }) {
     const formData = ref({});
@@ -92,7 +95,8 @@ export default {
         },
       });
 
-      if (!isLastStep.value) {
+      console.log(props.showNextStep);
+      if (!isLastStep.value && props.showNextStep) {
         currentStepIdx.value++;
         emit("next", formData.value);
 

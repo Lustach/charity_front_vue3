@@ -1,7 +1,8 @@
+import API from '@/plugins/axios.js';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
-import { defineStore } from 'pinia'
-
+import { defineStore } from 'pinia';
+// pinia.use(() => ({ API }));
 export const useAuthStore = defineStore('auth', {
     // arrow function recommended for full type inference
     state: () => {
@@ -15,6 +16,9 @@ export const useAuthStore = defineStore('auth', {
         }
     },
     actions: {
+        test() {
+            console.log(API, 'this')
+        },
         destroyToken() {
             this.accessToken = null;
             this.refreshToken = null;
@@ -34,16 +38,16 @@ export const useAuthStore = defineStore('auth', {
             };
             this.accessToken = null
             console.log(payload)
-            this.$API.user.refreshJWT(payload)
+            API.user.refreshJWT(payload)
                 .then((response) => {
-                    this.commit('updateToken', response);
+                    this.updateToken(response)
                 })
                 .catch((error) => {
                     console.error(error);
                 });
         },
         async signUp(data) {
-            const result = await this.$API.user.signUp(data);
+            const result = await API.user.signUp(data);
             this.userId = result.id;
             this.email = result.email;
             this.profileId = result.profile;
@@ -67,7 +71,7 @@ export const useAuthStore = defineStore('auth', {
         },
         loginUser(payload) {
             return new Promise((resolve, reject) => {
-                this.$API.user.obtainJWT(payload)
+                API.user.obtainJWT(payload)
                     .then(response => {
                         localStorage.setItem('access_token', response.access);
                         localStorage.setItem('refresh_token', response.refresh);

@@ -1,23 +1,27 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, reactive, markRaw } from "vue";
-import useObject from "@/components/compositions/utils/useObject";
 import {
-  useForm,
-  useValidateForm,
-  useResetForm,
-  Field,
-  ErrorMessage,
-} from "vee-validate";
+  computed,
+  ref,
+  onMounted,
+  reactive,
+  markRaw,
+  nextTick,
+  getCurrentInstance,
+  inject,
+} from "vue";
+import useObject from "@/components/compositions/utils/useObject";
 import * as yup from "yup";
 import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
-// import myButton from "@/ui/button.vue";
 import { Props as FormField } from "@/components/ui/input/interface";
-
 import { setLocale } from "yup";
-
 import FormWizard from "@/components/ui/form/FormWizard.vue";
 import FormStep from "@/components/ui/form/FormStep.vue";
+
+import { useAuthStore } from "@/stores/modules/auth.ts";
+import { useProfileStore } from "@/stores/modules/profile.js";
+const authStore = useAuthStore();
+// const profileStore = useProfileStore();
 // TODO: вообще лучше не использовать генераторы форм по типу yup или zod, так как в случае необходимости гибких настроек, можно потратить
 // очень много времени не получив результата (use <Field></Field> <Form></Form> and options API)
 setLocale({
@@ -27,11 +31,11 @@ setLocale({
   string: {
     email: "Невалидный e-mail",
     min: "Минимальная длина ${min} символов",
-    max: "Максимальная длина ${max} символов"
+    max: "Максимальная длина ${max} символов",
   },
 });
 //  TODO: для полной красоты нужно прописать matches для всех, так как i18 yup не работает ?
-const schema = [
+const schema = ref([
   yup.object({
     emailOrPhone: yup
       .string()
@@ -56,7 +60,9 @@ const schema = [
   yup.object({
     code_2fa: yup.string().min(6).max(6).required(),
   }),
-];
+]);
+
+const API = inject("API");
 
 interface Form {
   emailOrPhone: FormField;
@@ -92,9 +98,54 @@ const form = ref<Form>({
     error: null,
   },
 });
-
-const { meta } = useForm({
-  validationSchema: schema,
+let showNextStep = ref(false);
+async function test(values) {
+  console.log(values, "test");
+  // await nextTick();
+  try {
+    await authStore.loginUser({
+      password: values.password,
+      [values.emailOrPhone.indexOf("@") !== -1
+        ? "email"
+        : "phone_number"]: values.emailOrPhone,
+    });
+    const result = await API.user.meUser();
+    authStore.$patch({
+      userId: result.id,
+      email: result.email,
+      profileId: result.profile,
+    });
+    // await profileStore.initDataFromLocalStorage();
+    // if (this.fillAllStepsFromStorage) {
+    //   if (this.fund.status !== "APPROVED") {
+    //     await this.$router.push("/review_profile");
+    //   } else {
+    //     await this.$router.push("/lk/nko_info");
+    //   }
+    // } else {
+    //   await this.$router.push("/fill_profile");
+    // }
+  } catch (e) {
+    // if (e?.response?.status === 401) {
+    //   if (e?.response?.data?.detail === "Неверный пароль") {
+    //     // isPasswordError = true;
+    //   } else {
+    //     // isErrorRequest = true;
+    //   }
+    // }
+    // if (e?.response?.status === 400) {
+    //   if (e?.response?.data?.otp[0] === "Invalid otp") {
+    //     // isFormValid = false;
+    //     // showCodeField = true;
+    //   }
+    // }
+    console.error(e);
+  }
+  // showNextStep.value = true;
+}
+onMounted(() => {
+  authStore.test();
+  // console.log(JSON.parse(JSON.stringify(authStore)));
 });
 </script>
 
@@ -104,13 +155,15 @@ const { meta } = useForm({
       <h1 class="form_title">Авторизация в личном кабинете НКО</h1>
       <p class="form_subtitle">
         Введите вашу почту или телефон, указанные при регистрации, и пароль. Или пройдите
-        <router-link to="/registration" style="color: #0f75bd">регистрацию </router-link>.
+        <router-link to="/registration" style="color: #0f75bd">регистрацию</router-link>.
       </p>
+      {{ showNextStep.value }}
       <FormWizard
         :validation-schema="schema"
-        @submit="onSubmit"
+        @submit="test"
         class="form__container"
         :showPrevStep="false"
+        :showNextStep="showNextStep.value"
         prevStepText="Назад"
         nextStepText="Продолжить"
         submitText="Войти"

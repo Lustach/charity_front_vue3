@@ -9,7 +9,7 @@ import ChButton from "@/components/ui/button/button.vue";
 import ChCheckbox from "@/components/ui/checkbox/checkbox.vue";
 // import myButton from "@/ui/button.vue";
 import { Props as FormField } from "@/components/ui/input/interface";
-import {Props as FormCheckbox} from "@/components/ui/checkbox/interface"
+import { Props as FormCheckbox } from "@/components/ui/checkbox/interface";
 import { setLocale } from "yup";
 // TODO: вообще лучше не использовать генераторы форм по типу yup или zod, так как в случае необходимости гибких настроек, можно потратить
 // очень много времени не получив результата (use <Field></Field> <Form></Form> and options API)
@@ -97,7 +97,7 @@ const schema = yup.object({
 const { meta } = useForm({
   validationSchema: schema,
 });
-
+let modelValue = ref(true);
 let isErrorRequest = false,
   isPhoneErrorRequest = false,
   validServiceRules = false,
@@ -140,19 +140,17 @@ let serviceRules: Array<string> = ref([]);
           v-model="e.modelValue"
           :error="e.error"
         />
-
-        <!-- <ChCheckbox>
-          <template #text>
-            Соглашаюсь с
-            <a
-              style="text-decoration: underline; color: initial"
-              href="http://localhost:8000/static/documents/Оферта_для_публичного_сбора_пожертвований.pdf"
-              target="_blank"
-              >офертой</a
-            >
-          </template>
+        <!-- 
+        <ChCheckbox label='label' name='name' :modelValue="modelValue" v-model="modelValue">
+          Соглашаюсь с
+          <a
+            style="text-decoration: underline; color: initial"
+            href="http://localhost:8000/static/documents/Оферта_для_публичного_сбора_пожертвований.pdf"
+            target="_blank"
+            >офертой</a
+          >
         </ChCheckbox> -->
-        <!-- <el-checkbox
+        <el-checkbox
           cy="registrationOffer"
           class="vblg-checkbox"
           name="serviceRules"
@@ -179,7 +177,7 @@ let serviceRules: Array<string> = ref([]);
             target="_blank"
             >персональных данных</a
           >
-        </el-checkbox> -->
+        </el-checkbox>
         <div
           class="el-form-item__error"
           style="margin-top: 10px; margin-bottom: 15px; text-align: left !important"
@@ -197,6 +195,7 @@ let serviceRules: Array<string> = ref([]);
 </template>
 
 <style scoped lang="scss">
+@import "@/assets/scss/ui/checkbox.scss";
 .form_container {
   max-width: 536px;
   margin: 0 auto;

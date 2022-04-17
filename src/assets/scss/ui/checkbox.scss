@@ -1,4 +1,4 @@
-.my-checkbox {
+.vblg-checkbox {
     text-align: initial;
     display: flex !important;
     align-items: center !important;
@@ -7,51 +7,58 @@
         margin-bottom: 12px;
     }
 
-    .el-checkbox {
-        &__label {
-            font-family: Montserrat, sans-serif;
-            font-style: normal;
-            font-weight: 600;
-            font-size: 13.23px;
-            color: #333333;
-            margin-left: 12px;
-            padding: 0;
-            white-space: break-spaces;
-            text-align: left;
-        }
+    // &:v-deep {
+    // }
 
-        &__input:not(:not(.is-checked)) {
-            // .el-checkbox__inner {
-            //   &:after {
-            //     border: none !important;
-            //     box-sizing: content-box;
-            //     height: 30px;
-            //     left: 3px;
-            //     top: 4px;
-            //     zoom: .73;
-            //     width: 30px;
-            //     transition: transform .15s ease-in .05s;
-            //     transform: rotate(0) scaleY(1);
-            //     background-image: url('~@/assets/images/icons/form/checkbox-image.svg');
-            //     background-repeat: no-repeat;
-            //     background-position: 50% 50%;
-            //   }
-            // }
-        }
+    // .el-checkbox {
+    //     &__label {
+    //         font-family: Montserrat, sans-serif;
+    //         font-style: normal;
+    //         font-weight: 600;
+    //         font-size: 13.23px;
+    //         color: #333333;
+    //         margin-left: 12px;
+    //         padding: 0;
+    //         white-space: break-spaces;
+    //         text-align: left;
+    //     }
 
-        &__inner {
-            width: 30px !important;
-            height: 30px !important;
-            // background: #FFFFFF !important;
-            // border: 2px solid #B0CEEC !important;
-            box-sizing: border-box !important;
-            border-radius: 8.44px !important;
-        }
-    }
+    //     &__input:not(:not(.is-checked)) {
+    //         .el-checkbox__inner {
+    //             &:after {
+    //                 border: none !important;
+    //                 box-sizing: content-box;
+    //                 height: 30px;
+    //                 left: 3px;
+    //                 top: 4px;
+    //                 zoom: .73;
+    //                 width: 30px;
+    //                 transition: transform .15s ease-in .05s;
+    //                 transform: rotate(0) scaleY(1);
+    //                 background-image: url('~@/assets/images/icons/form/checkbox-image.svg');
+    //                 background-repeat: no-repeat;
+    //                 background-position: 50% 50%;
+    //             }
+    //         }
+    //     }
+
+    //     &__inner {
+    //         width: 30px !important;
+    //         height: 30px !important;
+    //         // background: #FFFFFF !important;
+    //         // border: 2px solid #B0CEEC !important;
+    //         box-sizing: border-box !important;
+    //         border-radius: 8.44px !important;
+    //     }
+    // }
 }
 
 .is-focus {
     .el-checkbox__inner {
         box-shadow: 1px 1px 10px 1px rgba(64, 158, 255, .5);
     }
+}
+
+.el-checkbox__input {
+    background-color: red !important;
 }

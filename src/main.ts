@@ -17,7 +17,8 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 
 const app = createApp(App)
-app.config.globalProperties.$API = Api
+app.provide('API', Api)
+// app.config.globalProperties.$API = Api
 
 
 app.use(PrimeVue, { ripple: true });

@@ -91,7 +91,7 @@
 <script>
 import { mapActions, mapGetters } from "pinia";
 import { ElDropdown, ElDropdownItem, ElDropdownMenu } from "element-plus";
-import { useAuthStore } from "@/stores/modules/auth.js";
+import { useAuthStore } from "@/stores/modules/auth.ts";
 export default {
   name: "app-header",
   components: {

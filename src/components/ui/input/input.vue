@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<Props>(), {
   placeholder: "Placeholder",
 });
 
-const { value: modelValue, errorMessage, handleBlur, handleChange, meta } = useField(
+let { value: modelValue, errorMessage, handleBlur, handleChange, meta } = useField(
   props.id,
   undefined,
   {
@@ -29,6 +29,7 @@ const { value: modelValue, errorMessage, handleBlur, handleChange, meta } = useF
     :class="{ 'has-error': !!errorMessage, success: meta.valid && meta.dirty }"
   >
     <label :for="id">{{ label }}</label>
+    {{modelValue}}
     <!-- (e: any)=>$emit('update:modelValue', e.target.value) -->
     <input
       :type="type"
