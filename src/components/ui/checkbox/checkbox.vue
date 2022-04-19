@@ -1,29 +1,55 @@
-<script setup lang="ts">
-import { ref, toRef } from "vue";
-import { useField } from "vee-validate";
-import { Props } from "@/components/ui/checkbox/interface.ts";
-
-const props = withDefaults(defineProps<Props>(), {
-  label: "label",
-});
-const { checked, handleChange } = useField(props.name, props.rules, {
-  // 👇 These are important
-  type: "checkbox",
-  checkedValue: props.modelValue,
-});
-handleChange(props.value);
-</script>
 <template>
-  <el-checkbox
-    class="vblg-checkbox"
-    :name="props.name"
-    :label="props.name"
-    @click="handleChange(props.modelValue)"
-    v-model:modelValue="modelValue"
-  >
-    <slot></slot>
-  </el-checkbox>
+  <div class="vblg-checkbox__container">
+    <input
+      class="vblg-checkbox"
+      type="checkbox"
+      :name="name"
+      :value="value"
+      @change="handleChange(value)"
+    />
+    <slot class="vblg-checkbox-text" name="text"></slot>
+    <span class="error-message" v-if="errorMessage">{{ errorMessage }}</span>
+    <slot name="my-error-message"></slot>
+  </div>
 </template>
-<style scoped lang="scss">
-@import "@/assets/scss/ui/checkbox.scss";
+
+<script>
+import { toRefs } from "vue";
+import { useField } from "vee-validate";
+
+export default {
+  props: {
+    modelValue: {
+      type: null,
+    },
+    name: String,
+    value: {
+      type: Boolean,
+    },
+  },
+  setup(props) {
+    // we are using toRefs to create reactive references to `name` and `value` props
+    // this is important because vee-validte needs to know if any of these props change
+    // https://vee-validate.logaretm.com/v4/guide/composition-api/caveats
+    let { name, value } = toRefs(props);
+    let { meta, checked, handleChange, errorMessage } = useField(name, undefined, {
+      type: "checkbox",
+      checkedValue: value,
+    });
+
+    return {
+      checked,
+      handleChange,
+      errorMessage,
+    };
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+button {
+  background: none;
+  border: none;
+  font-size: 22px;
+}
 </style>

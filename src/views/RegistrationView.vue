@@ -22,59 +22,6 @@ setLocale({
     min: "Минимальная длина ${min} символов",
   },
 });
-
-interface Form {
-  email: FormField;
-  phone: FormField;
-  password: FormField;
-  passwordConfirm: FormField;
-  // offerRules: FormCheckbox;
-  // [index: string]: FormField; // предусматривает возможность добавления любого ключа типа стринг, что может вызвать неожиданное поведение
-}
-
-const form = ref<Form>({
-  email: {
-    modelValue: "",
-    id: "email",
-    label: "Еmail",
-    placeholder: "Введите ваш email",
-    type: "email",
-    error: null,
-  },
-  phone: {
-    modelValue: "",
-    id: "phone",
-    label: "Номер телефона",
-    placeholder: "Введите номер телефона",
-    type: "phone",
-    error: null,
-  },
-  password: {
-    modelValue: "",
-    id: "password",
-    label: "Пароль",
-    placeholder: "Введите пароль",
-    type: "password",
-    error: null,
-  },
-  passwordConfirm: {
-    modelValue: "",
-    id: "password_confirm",
-    label: "Подтверждение пароля",
-    placeholder: "Подтвердите пароль",
-    type: "password",
-    error: null,
-  },
-  // offerRules: {
-  //   modelValue:  null,
-  //   // Field's own value
-  //   value: null,
-  //   name: 'offer',
-  //   rules: undefined,
-  //   error: null,
-  // },
-});
-
 //  TODO: для полной красоты нужно прописать matches для всех, так как i18 yup не работает ?
 const schema = yup.object({
   email: yup
@@ -90,8 +37,8 @@ const schema = yup.object({
     .string()
     .required()
     .oneOf([yup.ref("password")], "Повторите пароль"),
-  // offerRules: yup.string().required(), // вот это должно быть array ?
-  // privacyRules: yup.string().required(),
+  offerRules: yup.bool().required(), // вот это должно быть array ?
+  privacyRules: yup.bool().required(),
 });
 
 const { meta } = useForm({
@@ -120,54 +67,53 @@ let serviceRules: Array<string> = ref([]);
       <!-- {{ meta }} -->
       <form class="form__container">
         <!-- <template v-if="!showCodeField"> -->
+        <ChInput type="email" placeholder="E-mail" label="Введите ваш email" id="email" />
         <ChInput
-          v-for="e in form"
-          :key="e.id"
-          :type="e.type"
-          :placeholder="e.placeholder"
-          :label="e.label"
-          :id="e.id"
-          v-model="e.modelValue"
-          :error="e.error"
+          type=""
+          placeholder="Введите номер телефона"
+          label="Номер телефона"
+          id="phone"
         />
-        <!-- 
-        <ChCheckbox label='label' name='name' :modelValue="modelValue" v-model="modelValue">
-          Соглашаюсь с
-          <a
-            style="text-decoration: underline; color: initial"
-            href="http://localhost:8000/static/documents/Оферта_для_публичного_сбора_пожертвований.pdf"
-            target="_blank"
-            >офертой</a
-          >
-        </ChCheckbox> -->
-        <el-checkbox
-          cy="registrationOffer"
-          class="vblg-checkbox"
-          name="serviceRules"
-          label="offer"
-          v-model="serviceRules"
-          >Соглашаюсь с
-          <a
-            style="text-decoration: underline; color: initial"
-            href="http://localhost:8000/static/documents/Оферта_для_публичного_сбора_пожертвований.pdf"
-            target="_blank"
-            >офертой</a
-          >
-        </el-checkbox>
-        <el-checkbox
-          cy="registrationPrivacy"
-          class="vblg-checkbox"
-          name="serviceRules"
-          label="privacy"
-          v-model="serviceRules"
-          >Соглашаюсь на обработку
-          <a
-            style="text-decoration: underline; color: initial"
-            href="http://localhost:8000/static/documents/Политика_в_отношении_обработки_ПД.pdf"
-            target="_blank"
-            >персональных данных</a
-          >
-        </el-checkbox>
+        <ChInput
+          type="password"
+          placeholder="Введите пароль"
+          label="Пароль"
+          id="password"
+        />
+        <ChInput
+          type="password"
+          placeholder="Подтвердите пароль"
+          label="Подтверждение пароля"
+          id="password_confirm"
+        />
+        <ChCheckbox name="offerRules" :value="false">
+          <template #text>
+            <p>
+              Соглашаюсь с
+              <a
+                style="text-decoration: underline; color: initial"
+                href="http://localhost:8000/static/documents/Оферта_для_публичного_сбора_пожертвований.pdf"
+                target="_blank"
+              >
+                офертой
+              </a>
+            </p>
+          </template>
+        </ChCheckbox>
+        <ChCheckbox name="privacyRules" :value="false">
+          <template #text>
+            <p>
+              Соглашаюсь на обработку
+              <a
+                style="text-decoration: underline; color: initial"
+                href="http://localhost:8000/static/documents/Политика_в_отношении_обработки_ПД.pdf"
+                target="_blank"
+              >
+                персональных данных
+              </a>
+            </p>
+          </template>
+        </ChCheckbox>
         <div
           class="el-form-item__error"
           style="margin-top: 10px; margin-bottom: 15px; text-align: left !important"
@@ -177,7 +123,7 @@ let serviceRules: Array<string> = ref([]);
         </div>
         <!-- </template> -->
         <ChButton :disabled="!meta.valid">
-          <template #text>Зарегистрироваться</template>
+          Зарегистрироваться
         </ChButton>
       </form>
     </div>
@@ -185,9 +131,11 @@ let serviceRules: Array<string> = ref([]);
 </template>
 
 <style scoped lang="scss">
-@import "@/assets/scss/ui/checkbox.scss";
 .form_container {
   max-width: 536px;
   margin: 0 auto;
 }
+</style>
+<style lang="scss">
+@import "@/assets/scss/ui/checkbox.scss";
 </style>

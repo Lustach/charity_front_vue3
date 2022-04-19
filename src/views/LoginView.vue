@@ -67,6 +67,7 @@ const schema = ref([
 const API = inject("API");
 const router = useRouter();
 const route = useRoute();
+
 let showNextStep = ref(false);
 let emailOrPhoneErrorType = ref("");
 let isEmailError = ref(false);
