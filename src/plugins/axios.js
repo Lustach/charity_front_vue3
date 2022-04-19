@@ -163,42 +163,42 @@ const API = {
 
 // Vue.use({
 //     install(Vue) {
-        // axios.defaults.baseURL = process.env.VUE_APP_BACKEND_HOST;
-        // const token = localStorage.getItem('access_token');
-        // if (token) {
-        //     axios.defaults.headers.common.Authorization = 'JWT ' + token;
-        // }
-        // axios.defaults.headers.common['Content-Type'] = 'application/json';
-        // axios.interceptors.request.use(async (request) => {
-        //     if (store.getters.loggedIn) {
-        //         try {
-        //             await store.dispatch('inspectToken');
-        //         } catch (e) {
-        //             console.error(e);
-        //             await store.dispatch('logoutUser');
-        //             await router.push({ name: 'Login', });
-        //             return;
-        //         }
-        //     }
-        //     return request;
-        // });
+axios.defaults.baseURL = 'http://localhost:8000';
+// const token = localStorage.getItem('access_token');
+// if (token) {
+//     axios.defaults.headers.common.Authorization = 'JWT ' + token;
+// }
+// axios.defaults.headers.common['Content-Type'] = 'application/json';
+// axios.interceptors.request.use(async (request) => {
+//     if (store.getters.loggedIn) {
+//         try {
+//             await store.dispatch('inspectToken');
+//         } catch (e) {
+//             console.error(e);
+//             await store.dispatch('logoutUser');
+//             await router.push({ name: 'Login', });
+//             return;
+//         }
+//     }
+//     return request;
+// });
 
-        // axios.interceptors.response.use(function (response) {
-        //     console.log('Interceptor Response')
-        //     return response.data;
-        // }, function (error) {
-        //     console.log('Interceptor Response error')
-        //     if (error.response?.status === 401) {
-        //         localStorage.removeItem('access_token');
-        //         axios.defaults.headers.common.Authorization = '';
-        //         if (router.currentRoute.name !== 'Login')
-        //             router.push({ name: 'Login', });
-        //     }
+// axios.interceptors.response.use(function (response) {
+//     console.log('Interceptor Response')
+//     return response.data;
+// }, function (error) {
+//     console.log('Interceptor Response error')
+//     if (error.response?.status === 401) {
+//         localStorage.removeItem('access_token');
+//         axios.defaults.headers.common.Authorization = '';
+//         if (router.currentRoute.name !== 'Login')
+//             router.push({ name: 'Login', });
+//     }
 
-        //     return Promise.reject(error);
-        // });
-        // Vue.prototype.$http = axios;
-        // Object.defineProperty(Vue.prototype, '$API', { value: API, });
-    // },
+//     return Promise.reject(error);
+// });
+// Vue.prototype.$http = axios;
+// Object.defineProperty(Vue.prototype, '$API', { value: API, });
+// },
 // });
 export default API;

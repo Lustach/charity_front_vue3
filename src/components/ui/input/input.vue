@@ -29,7 +29,6 @@ let { value: modelValue, errorMessage, handleBlur, handleChange, meta } = useFie
     :class="{ 'has-error': !!errorMessage, success: meta.valid && meta.dirty }"
   >
     <label :for="id">{{ label }}</label>
-    {{modelValue}}
     <!-- (e: any)=>$emit('update:modelValue', e.target.value) -->
     <input
       :type="type"
@@ -44,6 +43,7 @@ let { value: modelValue, errorMessage, handleBlur, handleChange, meta } = useFie
       :class="{ 'is-error': errorMessage }"
     />
     <span class="error-message" v-if="errorMessage">{{ errorMessage }}</span>
+    <slot name="my-error-message"></slot>
   </div>
 </template>
 

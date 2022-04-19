@@ -2,13 +2,15 @@ import API from '@/plugins/axios.js';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
 import { defineStore } from 'pinia';
+import { useProfileStore } from "@/stores/modules/profile.ts";
+
 // pinia.use(() => ({ API }));
 export const useAuthStore = defineStore('auth', {
     // arrow function recommended for full type inference
     state: () => {
         return {
-            accessToken: '' || null,
-            refreshToken: '' || null,
+            accessToken: null,
+            refreshToken: null,
             is2faEnabled: 0,
             userId: '' || null,
             email: '',
@@ -16,20 +18,17 @@ export const useAuthStore = defineStore('auth', {
         }
     },
     actions: {
-        test() {
-            console.log(API, 'this')
-        },
         destroyToken() {
             this.accessToken = null;
             this.refreshToken = null;
             // axios.defaults.headers.common.Authorization = null
         },
-        updateToken(payload) {
+        updateToken(payload: { access_token: string, refresh_token: string }) {
             this.accessToken = payload;
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
-            localStorage.setItem('access_token', payload);
-            localStorage.setItem('refresh_token', payload);
+            localStorage.setItem('access_token', payload.access_token);
+            localStorage.setItem('refresh_token', payload.refresh_token);
         },
         //actions
         refreshToken() {
@@ -37,12 +36,11 @@ export const useAuthStore = defineStore('auth', {
                 refresh: this.refreshToken,
             };
             this.accessToken = null
-            console.log(payload)
             API.user.refreshJWT(payload)
                 .then((response) => {
                     this.updateToken(response)
                 })
-                .catch((error) => {
+                .catch((error: Error) => {
                     console.error(error);
                 });
         },
@@ -52,14 +50,10 @@ export const useAuthStore = defineStore('auth', {
             this.email = result.email;
             this.profileId = result.profile;
         },
-        registerUser(data) {
+        registerUser(data: { name: string, email: string, username: string, password: string, confirm: string }) {
             return new Promise((resolve, reject) => {
                 axios.post('/register', {
-                    name: data.name,
-                    email: data.email,
-                    username: data.username,
-                    password: data.password,
-                    confirm: data.confirm,
+                    ...data
                 })
                     .then(response => {
                         resolve(response);
@@ -69,25 +63,23 @@ export const useAuthStore = defineStore('auth', {
                     });
             });
         },
-        loginUser(payload) {
-            return new Promise((resolve, reject) => {
-                API.user.obtainJWT(payload)
-                    .then(response => {
-                        localStorage.setItem('access_token', response.access);
-                        localStorage.setItem('refresh_token', response.refresh);
-                        this.accessToken = localStorage.getItem('access_token');
-                        this.refreshToken = localStorage.getItem('refresh_token');
-                        if (this.accessToken) {
-                            axios.defaults.headers.common.Authorization = 'JWT ' + this.accessToken;
-                            // this.dispatch('initDataFromLocalStorage')
-                        }
-                        resolve(response);
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        reject(error);
-                    });
-            });
+        async loginUser(payload: { email?: string, phone_number?: string, otp?: string, password: string }) {
+            // return new Promise((resolve, reject) => {
+            try {
+                const response = (await API.user.obtainJWT(payload)).data
+                localStorage.setItem('access_token', response.access);
+                localStorage.setItem('refresh_token', response.refresh);
+                this.accessToken = localStorage.getItem('access_token');
+                this.refreshToken = localStorage.getItem('refresh_token');
+                if (this.accessToken) {
+                    const profileStore = useProfileStore();
+                    axios.defaults.headers.common.Authorization = 'JWT ' + this.accessToken;
+                    await profileStore.initDataFromLocalStorage()
+                }
+            } catch (e) {
+                console.error(e);
+            }
+            // });
         },
         logoutUser() {
             if (this.loggedIn) {
@@ -99,10 +91,9 @@ export const useAuthStore = defineStore('auth', {
         inspectToken() {
             const token = this.accessToken;
             if (token) {
-                const decoded = jwt_decode(token);
+                const decoded: { exp: number | string } = jwt_decode(token);
                 const exp = decoded.exp;
-                if (Date.now() >= exp * 1000) {
-                    console.log(exp)
+                if (Date.now() >= +exp * 1000) {
                     this.refreshToken()
                 }
             }

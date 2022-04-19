@@ -24,14 +24,16 @@ app.provide('API', Api)
 app.use(PrimeVue, { ripple: true });
 app.component('Button', Button)
 
-// axios
-// import axios from 'axios'
-// import VueAxios from 'vue-axios'
-
+app.directive('click-outside', {
+    mounted(el, binding) {        
+        el.addEventListener('click', e => e.stopPropagation());
+        document.body.addEventListener('click', binding.value);
+    },
+    unmounted(el, binding) {
+        document.body.removeEventListener('click', binding.value);
+    },
+});
 app.use(createPinia())
-// app.use(VueAxios, Api)
-
-// app.use(VueAxios, axios)
 app.use(router)
 app.use(ElementPlus)
 app.mount('#app')

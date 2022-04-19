@@ -95,7 +95,6 @@ export default {
         },
       });
 
-      console.log(props.showNextStep);
       if (!isLastStep.value && props.showNextStep) {
         currentStepIdx.value++;
         emit("next", formData.value);

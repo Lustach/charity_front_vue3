@@ -3,6 +3,6 @@ export interface Props {
     label: string;
     placeholder: string;
     id: string;
-    modelValue: string;
+    modelValue?: string;
     error: any;
 }

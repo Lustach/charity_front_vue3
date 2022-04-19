@@ -8,20 +8,23 @@ import {
   nextTick,
   getCurrentInstance,
   inject,
+  watch,
 } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import useObject from "@/components/compositions/utils/useObject";
 import * as yup from "yup";
 import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
-import { Props as FormField } from "@/components/ui/input/interface";
 import { setLocale } from "yup";
 import FormWizard from "@/components/ui/form/FormWizard.vue";
 import FormStep from "@/components/ui/form/FormStep.vue";
-
 import { useAuthStore } from "@/stores/modules/auth.ts";
-import { useProfileStore } from "@/stores/modules/profile.js";
+import { useProfileStore } from "@/stores/modules/profile.ts";
 const authStore = useAuthStore();
-// const profileStore = useProfileStore();
+const profileStore = useProfileStore();
+
+import useTimeOut from "@/components/compositions/utils/watchers";
+const { timeOut } = useTimeOut;
 // TODO: вообще лучше не использовать генераторы форм по типу yup или zod, так как в случае необходимости гибких настроек, можно потратить
 // очень много времени не получив результата (use <Field></Field> <Form></Form> and options API)
 setLocale({
@@ -61,47 +64,21 @@ const schema = ref([
     code_2fa: yup.string().min(6).max(6).required(),
   }),
 ]);
-
 const API = inject("API");
-
-interface Form {
-  emailOrPhone: FormField;
-  password: FormField;
-  code_2fa: FormField;
-  // [index: string]: FormField; // предусматривает возможность добавления любого ключа типа стринг, что может вызвать неожиданное поведение
-}
-type FormKeys = keyof Form;
-
-const form = ref<Form>({
-  emailOrPhone: {
-    modelValue: "",
-    id: "emailOrPhone",
-    label: "E-mail или телефон",
-    placeholder: "E-mail или телефон",
-    type: "email",
-    error: null,
-  },
-  password: {
-    modelValue: "",
-    id: "password",
-    label: "Пароль",
-    placeholder: "Введите пароль",
-    type: "password",
-    error: null,
-  },
-  code_2fa: {
-    modelValue: "",
-    id: "code_2fa",
-    label: "Код",
-    placeholder: "Код",
-    type: "text",
-    error: null,
-  },
-});
+const router = useRouter();
+const route = useRoute();
 let showNextStep = ref(false);
-async function test(values) {
-  console.log(values, "test");
-  // await nextTick();
+let emailOrPhoneErrorType = ref("");
+let isEmailError = ref(false);
+let isPasswordError = ref(false);
+let isCodeError = ref(false);
+let showCodeField = ref(false);
+
+timeOut(isEmailError, 3500);
+timeOut(isPasswordError, 3500);
+timeOut(isCodeError, 3500);
+
+async function login(values) {
   try {
     await authStore.loginUser({
       password: values.password,
@@ -109,44 +86,34 @@ async function test(values) {
         ? "email"
         : "phone_number"]: values.emailOrPhone,
     });
-    const result = await API.user.meUser();
-    authStore.$patch({
-      userId: result.id,
-      email: result.email,
-      profileId: result.profile,
-    });
-    // await profileStore.initDataFromLocalStorage();
-    // if (this.fillAllStepsFromStorage) {
-    //   if (this.fund.status !== "APPROVED") {
-    //     await this.$router.push("/review_profile");
-    //   } else {
-    //     await this.$router.push("/lk/nko_info");
-    //   }
-    // } else {
-    //   await this.$router.push("/fill_profile");
-    // }
+    if (profileStore.fillAllStepsFromStorage) {
+      if (profileStore.fund.status !== "APPROVED") {
+        router.push("/review_profile");
+      } else {
+        router.push("/lk/nko_info");
+      }
+    } else {
+      router.push("/fill_profile");
+    }
   } catch (e) {
-    // if (e?.response?.status === 401) {
-    //   if (e?.response?.data?.detail === "Неверный пароль") {
-    //     // isPasswordError = true;
-    //   } else {
-    //     // isErrorRequest = true;
-    //   }
-    // }
-    // if (e?.response?.status === 400) {
-    //   if (e?.response?.data?.otp[0] === "Invalid otp") {
-    //     // isFormValid = false;
-    //     // showCodeField = true;
-    //   }
-    // }
+    if (e.response.status === 401) {
+      if (e.response.data.detail === "Неверный пароль") {
+        isPasswordError.value = true;
+      } else if (e.response.data.detail === "Неверный e-mail или телефон") {
+        isEmailError.value = true;
+        values.emailOrPhone.indexOf("@") !== -1
+          ? (emailOrPhoneErrorType.value = "e-mail")
+          : (emailOrPhoneErrorType.value = "телефон");
+      }
+    }
+    if (e.response.status === 400) {
+      if (e.response.data.otp[0] === "Invalid otp") {
+        showNextStep.value = true;
+      }
+    }
     console.error(e);
   }
-  // showNextStep.value = true;
 }
-onMounted(() => {
-  authStore.test();
-  // console.log(JSON.parse(JSON.stringify(authStore)));
-});
 </script>
 
 <template>
@@ -157,10 +124,9 @@ onMounted(() => {
         Введите вашу почту или телефон, указанные при регистрации, и пароль. Или пройдите
         <router-link to="/registration" style="color: #0f75bd">регистрацию</router-link>.
       </p>
-      {{ showNextStep.value }}
       <FormWizard
         :validation-schema="schema"
-        @submit="test"
+        @submit="login"
         class="form__container"
         :showPrevStep="false"
         :showNextStep="showNextStep.value"
@@ -169,32 +135,36 @@ onMounted(() => {
         submitText="Войти"
       >
         <FormStep>
-          <div v-for="e in form">
-            <ChInput
-              v-if="e.id !== 'code_2fa'"
-              :key="e.id"
-              :type="e.type"
-              :placeholder="e.placeholder"
-              :label="e.label"
-              :id="e.id"
-              v-model="e.modelValue"
-              :error="e.error"
-            />
-          </div>
+          <ChInput
+            type="email"
+            placeholder="E-mail или телефон"
+            label="E-mail или телефон"
+            id="emailOrPhone"
+          >
+            <template v-if="isEmailError" #my-error-message>
+              <span class="error-message">
+                Данный {{ emailOrPhoneErrorType }} не зарегистрирован
+              </span>
+            </template>
+          </ChInput>
+          <ChInput
+            type="password"
+            placeholder="Введите пароль"
+            label="Пароль"
+            id="password"
+          >
+            <template v-if="isPasswordError" #my-error-message>
+              <span class="error-message"> Неверный пароль </span>
+            </template>
+          </ChInput>
         </FormStep>
         <FormStep>
-          <div v-for="e in form">
-            <ChInput
-              v-if="e.id === 'code_2fa'"
-              :key="e.id"
-              :type="e.type"
-              :placeholder="e.placeholder"
-              :label="e.label"
-              :id="e.id"
-              v-model="e.modelValue"
-              :error="e.error"
-            /></div
-        ></FormStep>
+          <ChInput type="text" placeholder="Код" label="Код" id="code_2fa">
+            <template v-if="isCodeError" #my-error-message>
+              <span class="error-message"> Неверный код </span>
+            </template>
+          </ChInput>
+        </FormStep>
         <div class="form__link">
           <router-link to="/password?action=restore"> Забыли пароль? </router-link>
         </div>
@@ -205,7 +175,6 @@ onMounted(() => {
 
 <style scoped lang="scss">
 @import "@/assets/scss/ui/input.scss";
-
 .form {
   &_container {
     max-width: 536px;

@@ -1,9 +1,12 @@
 @import "text-field";
+
 .vblg-input {
-    &__container{
+    &__container {
         @extend .text-field__container;
     }
+
     @extend .text-field;
+
     -webkit-outer-spin-button,
     -webkit-inner-spin-button {
         -webkit-appearance: none;
@@ -13,4 +16,9 @@
     &[type="number"] {
         -moz-appearance: textfield;
     }
+}
+
+.vblg-error {
+    max-width: 328px;
+    margin: 0 auto;
 }

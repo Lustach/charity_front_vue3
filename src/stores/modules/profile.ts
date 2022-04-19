@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-
+import { useAuthStore } from "@/stores/modules/auth.ts";
+import API from '@/plugins/axios.js';
 export const useProfileStore = defineStore('profile', {
     // arrow function recommended for full type inference
     state: () => {
@@ -16,6 +17,7 @@ export const useProfileStore = defineStore('profile', {
             logoIdFromStorage: null,
             isLogo: null, // true || false
             loading: false, // для роутера
+            authStore: useAuthStore(),
             bids: {
                 bankdetailsbid: null,
                 actualaddressbid: null,
@@ -25,50 +27,50 @@ export const useProfileStore = defineStore('profile', {
         }
     },
     actions: {
-        updateMediaFile(state, payload) {
-            state.fund.media_files.splice(state.fund.media_files.findIndex(e => e.is_logo), 1, payload);
+        updateMediaFile(payload) {
+            this.fund.media_files.splice(this.fund.media_files.findIndex(e => e.is_logo), 1, payload);
         },
-        deleteMediaFiles(state, payload) {
-            state.fund.media_files.splice(state.fund.media_files.findIndex(e => e.id === payload), 1);
+        deleteMediaFiles(payload) {
+            this.fund.media_files.splice(this.fund.media_files.findIndex(e => e.id === payload), 1);
         },
-        setFundMediaFiles(state, payload) {
-            state.fund.media_files.push(payload);
+        setFundMediaFiles(payload) {
+            this.fund.media_files.push(payload);
         },
         //actions 
         async getBids() {
-            const result = await this.$API.user.getUserProfileById(this.state.user.profileId);
-            this.commit('setStateVar', { varName: 'bids', value: result.bids, });
+            const result = await API.user.getUserProfileById(this.authStore.profileId);
+            this.bids = result.bids
             return result;
         },
         async initDataFromLocalStorage() {
-            if (this.getters.loggedIn) {
+            // const this.authStore = useAuthStore();
+            if (this.authStore.loggedIn) {
                 localStorage.setItem('isEmailActivation', '1');
                 try {
-                    //todo
-                    const result = await this.$API.user.meUser();
-                    // context.commit('setUserData', {
-                    //     userId: result.id,
-                    //     email: result.email,
-                    //     profileId: result.profile,
-                    //     is2faEnabled: result.is_active_2fa,
-                    //     code2Fa: result.code_2fa,
-                    // });
+                    const result = (await API.user.meUser()).data;
+                    this.authStore.$patch({
+                        userId: result.id,
+                        email: result.email,
+                        profileId: result.profile,
+                        is2faEnabled: result.is_active_2fa,
+                        code2Fa: result.code_2fa,
+                    })
                 } catch (e) {
                     console.error(e);
                 }
-                if (this.state.user.profileId) {
+                if (this.authStore.profileId) {
                     if (!this.fundIdFromStorage) {
-                        const result = await this.dispatch('getBids');
-                        // const result = await this.$API.user.getUserProfileById(this.state.user.profileId)
+                        const result = (await this.getBids()).data
+                        // const result = await API.user.getUserProfileById(this.state.user.profileId)
                         this.fundIdFromStorage = result.fund;
                         // this.commit('setStateVar',{varName: 'bids',value: result.bids})
                     }
                     // todo при нажатии на кнопкИ сохранить или прочее (редактирование текущего фонда) - сделать обновление данных в сторе, а не запросом
                     // if(!this.fund) {
-                    this.fund = await this.$API.fill_profile.getFund((this.fundIdFromStorage).toString());
+                    this.fund = (await API.fill_profile.getFund((this.fundIdFromStorage))).data;
                     // }
                     if (this.fund.bank_details) {
-                        this.bankDetails = await this.$API.fill_profile.getBankDetails(this.fund.bank_details);
+                        this.bankDetails = (await API.fill_profile.getBankDetails(this.fund.bank_details)).data;
                         this.bankDetailsIdFromStorage = this.fund.bank_details;
                         this.mailingAddressIdFromStorage = this.bankDetails.mailing_address;
                         this.actualAddressIdFromStorage = this.bankDetails.actual_address;
@@ -101,6 +103,6 @@ export const useProfileStore = defineStore('profile', {
         getFund: (state) => state.fund,
         getBankDetails: (state) => state.bankDetails,
         getLogoIdFromStorage: (state) => state.logoIdFromStorage,
-        getBids: (state) => state.bids,
+        // getBids: (state) => state.bids,
     }
 })

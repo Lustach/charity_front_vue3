@@ -99,9 +99,6 @@ export default {
     "el-dropdown-item": ElDropdownItem,
     "el-dropdown-menu": ElDropdownMenu,
   },
-  mounted() {
-    console.log(this.$API);
-  },
   data: () => ({
     links: [
       {

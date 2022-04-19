@@ -105,16 +105,6 @@ let isErrorRequest = false,
   btnLoading = false;
 
 let serviceRules: Array<string> = ref([]);
-// watch(serviceRules, (o, n) => {
-//   console.log(o, n);
-
-//   if (n.length === 2 && !validServiceRules) {
-//     validServiceRules = true;
-//     touchServiceRules = true;
-//   } else if (validServiceRules) {
-//     validServiceRules = false;
-//   }
-// });
 </script>
 
 <template>
