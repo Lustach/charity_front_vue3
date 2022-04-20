@@ -133,13 +133,16 @@ const routes = [
         {
             path: '/activate/*',
             component: ActivationSpacer,
-        }, {
+        },
+        {
             path: '/reset_password/*',
             component: ResetPasswordSpacer,
-        }, {
+        },
+        {
             path: '/confirmation_enable_2fa/*',
             component: t2FaEnableActivationSpacer,
-        }, {
+        },
+        {
             path: '/confirmation_delete_2fa/*',
             component: t2FaDisableActivationSpacer,
         },

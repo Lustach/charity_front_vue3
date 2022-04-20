@@ -1,13 +1,16 @@
 <template>
-  <div class="vblg-checkbox__container">
-    <input
-      class="vblg-checkbox"
-      type="checkbox"
-      :name="name"
-      :value="value"
-      @change="handleChange(value)"
-    />
-    <slot class="vblg-checkbox-text" name="text"></slot>
+  <div class="checkbox coloured">
+    <label>
+      <input
+        class="vblg-checkbox"
+        type="checkbox"
+        :name="name"
+        :value="value"
+        @change="handleChange(value)"
+      />
+      <span class="checkbox-material"><span class="check"></span></span>
+      <slot class="vblg-checkbox-text" name="text"></slot>
+    </label>
     <span class="error-message" v-if="errorMessage">{{ errorMessage }}</span>
     <slot name="my-error-message"></slot>
   </div>

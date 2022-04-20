@@ -86,6 +86,14 @@ let serviceRules: Array<string> = ref([]);
           label="Подтверждение пароля"
           id="password_confirm"
         />
+        <!-- <div class="checkbox coloured">
+          <label>
+            <input type="checkbox" /><span class="checkbox-material"
+              ><span class="check"></span
+            ></span>
+            Experiences
+          </label>
+        </div> -->
         <ChCheckbox name="offerRules" :value="false">
           <template #text>
             <p>
@@ -94,9 +102,8 @@ let serviceRules: Array<string> = ref([]);
                 style="text-decoration: underline; color: initial"
                 href="http://localhost:8000/static/documents/Оферта_для_публичного_сбора_пожертвований.pdf"
                 target="_blank"
+                >офертой</a
               >
-                офертой
-              </a>
             </p>
           </template>
         </ChCheckbox>
@@ -108,9 +115,8 @@ let serviceRules: Array<string> = ref([]);
                 style="text-decoration: underline; color: initial"
                 href="http://localhost:8000/static/documents/Политика_в_отношении_обработки_ПД.pdf"
                 target="_blank"
+                >персональных данных</a
               >
-                персональных данных
-              </a>
             </p>
           </template>
         </ChCheckbox>
@@ -122,9 +128,7 @@ let serviceRules: Array<string> = ref([]);
           Заполните все поля
         </div>
         <!-- </template> -->
-        <ChButton :disabled="!meta.valid">
-          Зарегистрироваться
-        </ChButton>
+        <ChButton :disabled="!meta.valid"> Зарегистрироваться </ChButton>
       </form>
     </div>
   </section>

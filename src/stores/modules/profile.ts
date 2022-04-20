@@ -38,7 +38,9 @@ export const useProfileStore = defineStore('profile', {
         },
         //actions 
         async getBids() {
-            const result = await API.user.getUserProfileById(this.authStore.profileId);
+            const result = (await API.user.getUserProfileById(this.authStore.profileId)).data;
+            console.log(result.bids.fundbid === null);
+
             this.bids = result.bids
             return result;
         },
@@ -60,7 +62,7 @@ export const useProfileStore = defineStore('profile', {
                 }
                 if (this.authStore.profileId) {
                     if (!this.fundIdFromStorage) {
-                        const result = (await this.getBids()).data
+                        const result = (await this.getBids())
                         // const result = await API.user.getUserProfileById(this.state.user.profileId)
                         this.fundIdFromStorage = result.fund;
                         // this.commit('setStateVar',{varName: 'bids',value: result.bids})

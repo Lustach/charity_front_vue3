@@ -167,7 +167,7 @@ async function login(values) {
           </ChInput>
         </FormStep>
         <div class="form__link">
-          <router-link to="/password?action=restore"> Забыли пароль? </router-link>
+          <router-link class="vblg-link" to="/password?action=restore"> Забыли пароль? </router-link>
         </div>
       </FormWizard>
     </div>
@@ -191,11 +191,6 @@ async function login(values) {
       font-size: 14px;
       text-align: center;
       color: #0f75bd;
-
-      &:hover {
-        cursor: pointer;
-        border-bottom: 1px solid #0f75bd;
-      }
     }
   }
 }

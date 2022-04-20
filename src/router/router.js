@@ -1,15 +1,26 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 // import routes from '@/router/routes.js';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   // routes,
   routes: [
+    // {
+    //   path: '/activate/*',
+    //   component: () => import('@/views/Email/ActivationSpace.vue'),
+    // },
+    // {
+    //   path: '/reset_password/*',
+    //   component: () => import('@/views/Email/ResetPasswordSpacer.vue'),
+    // },
+    // {
+    //   path: '/confirmation_enable_2fa/*',
+    //   component: () => import('@/views/Email/2FaEnableActivationSpacer.vue'),
+    // },
     {
-      path: '/',
-      name: 'home',
-      component: HomeView
+      path: '/confirmation_delete_2fa/*',
+      name: 'test',
+      component: () => import('@/views/Email/2FaDisableActivationSpacer.vue'),
     },
     {
       path: '/about',
@@ -33,7 +44,21 @@ const router = createRouter({
       path: '/multi_step-form',
       name: 'multi_step-form',
       component: () => import('@/views/MultiStepForm.vue')
-    }
+    },
+    {
+      path: '/fill_profile',
+      name: 'fill_profile',
+      component: () => import('@/views/FillProfile.vue')
+    },
+    {
+      path: '/lk/nko_info',
+      name: 'nko_info',
+      component: () => import('@/views/NkoInfo.vue')
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      component: () => import('@/views/NotFound.vue'),
+    },
   ],
   scrollBehavior(to, from, savedPosition) {
     return { top: 0 }

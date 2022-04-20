@@ -12,7 +12,13 @@
           >
             <template v-if="loggedIn && getFillAllStepsFromStorage">
               <router-link
-                style="display: flex; position: relative"
+                :class="{ 'vblg-link': e.to !== $route.fullPath && !e.disabled }"
+                style="
+                  display: flex;
+                  position: relative;
+                  margin: 0 auto;
+                  height: fit-content;
+                "
                 v-for="(e, key) in links"
                 :key="key"
                 :to="e.to"
@@ -44,39 +50,39 @@
                 </span>
                 <template #dropdown>
                   <el-dropdown-menu>
-                    <div
+                    <router-link
                       v-for="(e, key) in iconLinks"
                       :key="key"
                       class="dropdown-item_wrapper"
+                      style="display: flex; position: relative; margin: 0 auto"
+                      :to="e.to"
                       @click="logout(e)"
                     >
                       <el-dropdown-item>
-                        <router-link style="display: flex; position: relative" :to="e.to">
-                          <button class="header__menu--item" v-if="!e.icon">
-                            {{ e.title }}
-                          </button>
-                          <button
-                            class="header__menu--item header__menu--item_dropdown"
-                            cy="logout"
-                            v-else
-                            @click="$emit('exit')"
-                          >
-                            <img src="@/assets/images/icons/exit.svg" alt="" />
-                            {{ e.title }}
-                          </button>
-                        </router-link>
+                        <button class="header__menu--item" v-if="!e.icon">
+                          {{ e.title }}
+                        </button>
+                        <button
+                          class="header__menu--item header__menu--item_dropdown"
+                          cy="logout"
+                          v-else
+                          @click="$emit('exit')"
+                        >
+                          <img src="@/assets/images/icons/exit.svg" alt="" />
+                          {{ e.title }}
+                        </button>
                       </el-dropdown-item>
                       <div
                         class="dropdown-item_bar"
                         v-if="key < iconLinks.length - 1"
                       ></div>
-                    </div>
+                    </router-link>
                   </el-dropdown-menu>
                 </template>
               </el-dropdown>
             </template>
             <router-link to="/registration" v-else style="display: flex">
-              <button class="header__menu--item">Кабинет НКО</button>
+              <button class="header__menu--item vblg-link">Кабинет НКО</button>
             </router-link>
           </template>
           <template v-else>
@@ -92,6 +98,7 @@
 import { mapActions, mapGetters } from "pinia";
 import { ElDropdown, ElDropdownItem, ElDropdownMenu } from "element-plus";
 import { useAuthStore } from "@/stores/modules/auth.ts";
+import { useProfileStore } from "@/stores/modules/profile.ts";
 export default {
   name: "app-header",
   components: {
@@ -162,55 +169,37 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(useAuthStore, ["loggedIn", "getFillAllStepsFromStorage"]),
+    ...mapGetters(useAuthStore, ["loggedIn"]),
+    ...mapGetters(useProfileStore, ["getFillAllStepsFromStorage"]),
   },
 };
 </script>
 
-<style lang="scss" scoped>
-.el-dropdown {
-  margin-left: 20px;
-}
+<style lang="scss">
 .el-dropdown-menu {
-  width: 367px;
-  background: #ffffff;
-  border: 2px solid #b0ceec;
-  box-sizing: border-box;
-  border-radius: 10px;
-  top: 50px !important;
-  padding: 26px 0;
-  transform: scale(0.75);
-
-  &:v-deep {
-    button,
-    li {
-      margin: 0;
-      padding: 0;
-    }
-
-    li {
-      a {
-        padding: 0 51px;
+  &__item {
+    &:hover {
+      cursor: pointer;
+      .header__menu--item {
+        color: #62b8ef !important;
       }
     }
-
-    button {
-      font-style: normal;
-      font-weight: normal;
-      font-size: 22px !important;
-      line-height: 30px !important;
-      text-align: center !important;
-      color: #0f75bd !important;
-      margin: 15px 0;
-      width: 100%;
-    }
-
-    .popper__arrow {
-      display: none !important;
+  }
+  &:v-deep {
+    .el-dropdown-menu__item {
+      justify-content: center !important;
     }
   }
 }
 
+.el-dropdown__popper {
+  &:v-deep {
+    .header__menu--item {
+      font-weight: 400 !important;
+    }
+  }
+  // padding: 40px !important;
+}
 .dropdown-item {
   &_wrapper {
     display: flex;
@@ -220,7 +209,7 @@ export default {
   &_bar {
     background: #dfebf7;
     transform: matrix(1, 0, 0, -1, 0, 0);
-    width: 262px;
+    width: 180px;
     height: 3px;
     margin: 0 auto;
   }
@@ -235,7 +224,9 @@ export default {
     height: 1px;
     background-color: #0f75bd;
     left: 0;
-    bottom: 6px;
+    bottom: 0;
   }
 }
 </style>
+
+<style lang="scss" scoped></style>
