@@ -30,31 +30,32 @@ const { uploadFiles } = createUploader("YOUR URL HERE");
 </script>
 <template>
   <div class="profile_form_container">
-    <div class="profile_form_wrapper">form</div>
-    <DropZone class="drop-area" @files-dropped="addFiles" #default="{ dropZoneActive }">
-      <label for="file-input">
-        <span v-if="dropZoneActive">
-          <span>Перетащите или загрузите файлы</span>
-          <span class="smaller">Добавьте</span>
-        </span>
-        <p class="action" v-else>
-          <span>Перетащите </span>
-          <span class="smaller">
-            <strong>или <em>загрузите файлы</em></strong>
+    <div class="profile_form_wrapper">
+      <DropZone class="drop-area" @files-dropped="addFiles" #default="{ dropZoneActive }">
+        <label for="file-input">
+          <span v-if="dropZoneActive">
+            <span>Перетащите или загрузите файлы</span>
+            <span class="smaller">Добавьте</span>
           </span>
-        </p>
-        <input type="file" id="file-input" multiple @change="onInputChange" />
-      </label>
-      <ul class="image-list" v-show="files.length">
-        <FilePreview
-          v-for="file of files"
-          :key="file.id"
-          :file="file"
-          tag="li"
-          @remove="removeFile"
-        />
-      </ul>
-    </DropZone>
+          <p class="action" v-else>
+            <span>Перетащите </span>
+            <span class="smaller">
+              <strong>или <em>загрузите файлы</em></strong>
+            </span>
+          </p>
+          <input type="file" id="file-input" multiple @change="onInputChange" />
+        </label>
+        <ul class="image-list" v-show="files.length">
+          <FilePreview
+            v-for="file of files"
+            :key="file.id"
+            :file="file"
+            tag="li"
+            @remove="removeFile"
+          />
+        </ul>
+      </DropZone>
+    </div>
   </div>
 </template>
 
@@ -62,9 +63,11 @@ const { uploadFiles } = createUploader("YOUR URL HERE");
 .action {
   display: flex;
   white-space: break-spaces;
-  *{font-weight: 600 !important;}
+  * {
+    font-weight: 600 !important;
+  }
   em {
-    border-bottom: 1px solid #0F75BD;
+    border-bottom: 1px solid #0f75bd;
     //   text-decoration: underline;
   }
 }

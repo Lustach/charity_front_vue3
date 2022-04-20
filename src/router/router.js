@@ -35,6 +35,17 @@ const router = createRouter({
       name: 'login',
       component: () => import('@/views/LoginView.vue')
     },
+    // {
+    //   path: '/password',
+    //   name: "password",
+    //   component: () => import('@/views/PasswordView.vue'),
+    // },
+    {
+      path: '/users/:id', //возможны два случая -> восстановление и создание нового пароля create restore
+      name: "password",
+      component: () => import('@/views/PasswordView.vue'),
+
+    },
     {
       path: '/registration',
       name: 'registration',

@@ -73,7 +73,7 @@ let emailOrPhoneErrorType = ref("");
 let isEmailError = ref(false);
 let isPasswordError = ref(false);
 let isCodeError = ref(false);
-let showCodeField = ref(false);
+let isShowCodeField = ref(false);
 
 timeOut(isEmailError, 3500);
 timeOut(isPasswordError, 3500);
