@@ -24,36 +24,54 @@ import AppModal from "@/components/app/AppModal.vue";
 
 const schema = ref([
   yup.object({
-    emailOrPhone: yup
-      .string()
-      .required("Заполните поле")
-      .test("test-name", "Неверный e-mail или телефон", function (value) {
-        if (value === "") {
-          return false;
-        } else {
-          if (
-            value &&
-            (new RegExp(/\S+@\S+\.+(com|ru|org|net|info|io)$/).test(value) ||
-              new RegExp(/^\+7[0-9]{10}$/).test(value))
-          ) {
-            return true;
-          } else {
+    emailOrPhone: yup.string().when("isShowCodeField", {
+      is: true,
+      otherwise: yup
+        .string()
+        .required("Заполните поле")
+        .test("test-name", "Неверный e-mail или телефон", function (value) {
+          if (value === "") {
             return false;
+          } else {
+            if (
+              value &&
+              (new RegExp(/\S+@\S+\.+(com|ru|org|net|info|io)$/).test(value) ||
+                new RegExp(/^\+7[0-9]{10}$/).test(value))
+            ) {
+              return true;
+            } else {
+              return false;
+            }
           }
-        }
-      }),
+        }),
+    }),
   }),
   yup.object({
-    password: yup.string().min(8).required(),
-    password_confirm: yup
-      .string()
-      .required()
-      .oneOf([yup.ref("password")], "Повторите пароль"),
-  }),
+    password: yup.string().when("isShowCodeField", {
+      is: true,
+      otherwise: yup.string().notRequired(),
+      then: yup.string().min(8).required(),
+    }),
+    password_confirm: yup.string().when("isShowCodeField", {
+      is: true,
+      otherwise: yup.string().notRequired(),
+      then: yup
+        .string()
+        .required()
+        .oneOf([yup.ref("password")], "Повторите пароль"),
+    }),
+  }).when,
   yup.object({
     code_2fa: yup.string().min(6).max(6).required(),
   }),
 ]);
+
+function test() {
+  isShowCodeField = true;
+  console.log(isShowCodeField);
+  
+  // return false;
+}
 
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
@@ -62,8 +80,11 @@ const API = inject("API");
 const router = useRouter();
 const route = useRoute();
 
-let showNextStep = ref(false);
+// let showNextStep = ref(false);
 let isShowCodeField = ref(false);
+
+let isPasswordReseted = ref(false);
+let isEmailSended = ref(false);
 </script>
 
 <template>
@@ -73,19 +94,18 @@ let isShowCodeField = ref(false);
       Пожалуйста, укажите email или телефон, который вы использовали для входа на сайт.
     </p>
     <p class="form_subtitle" v-else>Введите новый надежный пароль.</p>
+    {{ isShowCodeField }}
     <FormWizard
       :validation-schema="schema"
-      @submit="login"
+      @submit="test"
       class="form__container"
       :showPrevStep="false"
-      :showNextStep="showNextStep.value"
+      :showNextStep="true"
       nextStepText="Продолжить"
-      submitText="Продолжить"
+      submitText="Продолжить1"
     >
       <FormStep>
-        <!-- $route.query.action === 'restore' -->
         <ChInput
-          v-if="!isShowCodeField"
           type="email"
           placeholder="E-mail или телефон"
           label="E-mail или телефон"
@@ -93,8 +113,7 @@ let isShowCodeField = ref(false);
         >
         </ChInput>
       </FormStep>
-      <!-- $route.query.action === 'create' -->
-      <FormStep v-if="!isShowCodeField">
+      <FormStep v-if="isShowCodeField">
         <ChInput
           type="password"
           placeholder="Введите пароль"
@@ -116,36 +135,36 @@ let isShowCodeField = ref(false);
         </ChInput>
       </FormStep>
     </FormWizard>
-    <AppModal></AppModal>
-    <!-- <p
+    <p
       v-if="$route.query.action === 'restore' && !isShowCodeField"
       class="form_help"
       style="margin-top: 27px"
     >
-      Если вы забыли e-mail или телефон, пожалуйста, обратитеть в нашу тех. поддержку:
-      support@voblago .io
+      Если вы забыли e-mail или телефон, пожалуйста, обратитесь в нашу тех. поддержку:
+      <a class="vblg-link" href="mailto:info@voblago.io">info@voblago.io</a>
     </p>
-    <app-modal
+    <AppModal
+      @close="$router.push('/login')"
+      :modelValue="isPasswordReseted"
       :image="'../images/icons/hand-shake.svg'"
+      :imgSize="60"
       :messages="[
         'Пароль успешно обновлен!',
         'Теперь вы можете войти в свой кабинет по новому паролю.',
       ]"
-      @close="
-        closeModal;
-        $router.push('/login');
-      "
-      v-if="isShowModal"
-    />
-    <app-modal
+    >
+    </AppModal>
+    <AppModal
+      @close="isEmailSended = false"
+      :modelValue="isEmailSended"
       :image="'../images/icons/hand-shake.svg'"
+      :imgSize="60"
       :messages="[
         'Письмо отправлено!',
         'Мы отправили письмо на вашу эл. почту. Пожалуйста, пройдите по ссылке в письме, чтобы подтвердить смену пароля.',
       ]"
-      @close="closeModal(isShowModal2)"
-      v-if="isShowModal2"
-    /> -->
+    >
+    </AppModal>
   </div>
 </template>
 

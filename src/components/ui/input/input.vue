@@ -2,6 +2,8 @@
 import { ref } from "vue";
 import { useField } from "vee-validate";
 import { Props } from "@/components/ui/input/interface.ts";
+
+const emit = defineEmits(["update:modelValue"]);
 //* TODO: imported interfaces are not support official by Evan(nice joke) :) https://github.com/vuejs/vue-next/issues/4294
 /* we need to use plugin https://github.com/wheatjs/vite-plugin-vue-type-imports
  */
@@ -21,6 +23,9 @@ let { value: modelValue, errorMessage, handleBlur, handleChange, meta } = useFie
     validateOnValueUpdate: false,
   }
 );
+function update(value) {
+  emit("update:modelValue", value);
+}
 </script>
 
 <template>
@@ -29,18 +34,16 @@ let { value: modelValue, errorMessage, handleBlur, handleChange, meta } = useFie
     :class="{ 'has-error': !!errorMessage, success: meta.valid && meta.dirty }"
   >
     <label :for="id">{{ label }}</label>
-    <!-- (e: any)=>$emit('update:modelValue', e.target.value) -->
     <input
+      :class="{ 'is-error': errorMessage }"
       :type="type"
-      v-model.lazy="modelValue"
-      @input="handleChange"
-      @blur="handleBlur"
+      :value="modelValue"
+      @input="update($event.target.value)"
       :placeholder="placeholder"
       :id="id"
       :name="id"
       autocomplete="off"
       class="vblg-input"
-      :class="{ 'is-error': errorMessage }"
     />
     <span class="error-message" v-if="errorMessage">{{ errorMessage }}</span>
     <slot name="my-error-message"></slot>

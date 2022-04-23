@@ -9,9 +9,15 @@ import {
   getCurrentInstance,
   inject,
   watch,
+  toRaw,
+  unref,
 } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { useForm } from "vee-validate";
 import useObject from "@/components/compositions/utils/useObject";
+import { SchemaForm, useSchemaForm, SchemaFormFactory } from "formvuelate";
+import LookupPlugin from "@formvuelate/plugin-lookup";
+import VeeValidatePlugin from "@formvuelate/plugin-vee-validate";
 import * as yup from "yup";
 import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
@@ -22,6 +28,18 @@ import { useAuthStore } from "@/stores/modules/auth.ts";
 import { useProfileStore } from "@/stores/modules/profile.ts";
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
+
+markRaw(ChInput);
+
+const SchemaFormWithPlugins = SchemaFormFactory([
+  LookupPlugin({
+    mapComponents: {
+      string: "ChInput",
+      array: "ChInput",
+    },
+  }),
+  VeeValidatePlugin(),
+]);
 
 import useTimeOut from "@/components/compositions/utils/watchers";
 const { timeOut } = useTimeOut;
@@ -38,32 +56,75 @@ setLocale({
   },
 });
 //  TODO: для полной красоты нужно прописать matches для всех, так как i18 yup не работает ?
-const schema = ref([
-  yup.object({
-    emailOrPhone: yup
-      .string()
-      .required("Заполните поле")
-      .test("test-name", "Неверный e-mail или телефон", function (value) {
-        if (value === "") {
-          return false;
-        } else {
-          if (
-            value &&
-            (new RegExp(/\S+@\S+\.+(com|ru|org|net|info|io)$/).test(value) ||
-              new RegExp(/^\+7[0-9]{10}$/).test(value))
-          ) {
-            return true;
-          } else {
+const form = ref({
+  isShowCodeField: false,
+  emailOrPhone: "",
+  password: "",
+  code_2fa: "",
+});
+useSchemaForm(form);
+const schema = ref({
+  emailOrPhone: {
+    component: ChInput,
+    type: "email",
+    placeholder: "E-mail или телефон",
+    label: "E-mail или телефон",
+    id: "emailOrPhone",
+    error: "",
+    condition: (model) => !model.isShowCodeField,
+  },
+  password: {
+    component: ChInput,
+    type: "password",
+    placeholder: "Введите пароль",
+    label: "Пароль",
+    id: "password",
+    error: "",
+    options: [false],
+    // condition: (model) => model.type === "B",
+  },
+  code_2fa: {
+    component: ChInput,
+    type: "text",
+    placeholder: "Код",
+    label: "Код",
+    id: "code_2fa",
+    error: "",
+    condition(model) {
+      return model.isShowCodeField;
+    },
+  },
+});
+const validationSchema = computed(() => {
+  if (form.value.isShowCodeField === false) {
+    return yup.object().shape({
+      emailOrPhone: yup
+        .string()
+        .required("Заполните поле")
+        .test("test-name", "Неверный e-mail или телефон", function (value) {
+          if (value === "") {
             return false;
+          } else {
+            if (
+              value &&
+              (new RegExp(/\S+@\S+\.+(com|ru|org|net|info|io)$/).test(value) ||
+                new RegExp(/^\+7[0-9]{10}$/).test(value))
+            ) {
+              return true;
+            } else {
+              return false;
+            }
           }
-        }
-      }),
-    password: yup.string().min(8).required(),
-  }),
-  yup.object({
-    code_2fa: yup.string().min(6).max(6).required(),
-  }),
-]);
+        }),
+      password: yup.string().min(8).required(),
+    });
+  } else if (form.value.isShowCodeField === true) {
+    return yup.object().shape({
+      code_2fa: yup.string().min(6).max(6).required(),
+    });
+  }
+});
+
 const API = inject("API");
 const router = useRouter();
 const route = useRoute();
@@ -79,13 +140,12 @@ timeOut(isEmailError, 3500);
 timeOut(isPasswordError, 3500);
 timeOut(isCodeError, 3500);
 
-async function login(values) {
+async function login() {
+  let values = unref(form);
   try {
-    await authStore.loginUser({
+    const result = await authStore.loginUser({
       password: values.password,
-      [values.emailOrPhone.indexOf("@") !== -1
-        ? "email"
-        : "phone_number"]: values.emailOrPhone,
+      [values.emailOrPhone.includes("@") ? "email" : "phone_number"]: values.emailOrPhone,
     });
     if (profileStore.fillAllStepsFromStorage) {
       if (profileStore.fund.status !== "APPROVED") {
@@ -102,7 +162,7 @@ async function login(values) {
         isPasswordError.value = true;
       } else if (e.response.data.detail === "Неверный e-mail или телефон") {
         isEmailError.value = true;
-        values.emailOrPhone.indexOf("@") !== -1
+        values.emailOrPhone.includes("@")
           ? (emailOrPhoneErrorType.value = "e-mail")
           : (emailOrPhoneErrorType.value = "телефон");
       }
@@ -125,51 +185,23 @@ async function login(values) {
         Введите вашу почту или телефон, указанные при регистрации, и пароль. Или пройдите
         <router-link to="/registration" style="color: #0f75bd">регистрацию</router-link>.
       </p>
-      <FormWizard
-        :validation-schema="schema"
+      <SchemaFormWithPlugins
+        :schema="schema"
+        :validation-schema="validationSchema"
         @submit="login"
-        class="form__container"
-        :showPrevStep="false"
-        :showNextStep="showNextStep.value"
-        prevStepText="Назад"
-        nextStepText="Продолжить"
-        submitText="Войти"
       >
-        <FormStep>
-          <ChInput
-            type="email"
-            placeholder="E-mail или телефон"
-            label="E-mail или телефон"
-            id="emailOrPhone"
+        <template #afterForm="{ validation }">
+          <ChButton @click="login" :disabled="!validation.meta.valid"
+            >Продолжить</ChButton
           >
-            <template v-if="isEmailError" #my-error-message>
-              <span class="error-message">
-                Данный {{ emailOrPhoneErrorType }} не зарегистрирован
-              </span>
-            </template>
-          </ChInput>
-          <ChInput
-            type="password"
-            placeholder="Введите пароль"
-            label="Пароль"
-            id="password"
-          >
-            <template v-if="isPasswordError" #my-error-message>
-              <span class="error-message"> Неверный пароль </span>
-            </template>
-          </ChInput>
-        </FormStep>
-        <FormStep>
-          <ChInput type="text" placeholder="Код" label="Код" id="code_2fa">
-            <template v-if="isCodeError" #my-error-message>
-              <span class="error-message"> Неверный код </span>
-            </template>
-          </ChInput>
-        </FormStep>
-        <div class="form__link">
-          <router-link class="vblg-link" to="/password?action=restore"> Забыли пароль? </router-link>
-        </div>
-      </FormWizard>
+          <div class="form__link">
+            <router-link class="vblg-link" to="/password?action=restore">
+              Забыли пароль?
+            </router-link>
+          </div>
+        </template>
+      </SchemaFormWithPlugins>
+      {{ form }}
     </div>
   </section>
 </template>

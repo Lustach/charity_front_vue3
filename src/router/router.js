@@ -41,7 +41,7 @@ const router = createRouter({
     //   component: () => import('@/views/PasswordView.vue'),
     // },
     {
-      path: '/users/:id', //возможны два случая -> восстановление и создание нового пароля create restore
+      path: '/password', //возможны два случая -> восстановление и создание нового пароля create restore
       name: "password",
       component: () => import('@/views/PasswordView.vue'),
 
@@ -70,6 +70,10 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       component: () => import('@/views/NotFound.vue'),
     },
+    {
+      path: '/test',
+      component: () => import('@/views/Test.vue')
+    }
   ],
   scrollBehavior(to, from, savedPosition) {
     return { top: 0 }
