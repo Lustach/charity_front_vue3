@@ -33,4 +33,5 @@ console.log(useBids);
       </svg>
     </template>
   </alert>
+  <div class="alert_error" v-if="getBidStatus('fundbid', 'REJECTED')"></div>
 </template>

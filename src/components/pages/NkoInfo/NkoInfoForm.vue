@@ -1,9 +1,23 @@
 <script setup lang="ts">
+//vue
+import { computed, markRaw, ref } from "vue";
+// schema & validation
+import * as yup from "yup";
+import { SchemaForm, useSchemaForm, SchemaFormFactory } from "formvuelate";
+import LookupPlugin from "@formvuelate/plugin-lookup";
+import VeeValidatePlugin from "@formvuelate/plugin-vee-validate";
+import ChFormCategoryTitle from "@/components/pages/NkoInfo/ChFormCategoryTitle.vue";
 // Components
 
 import DropZone from "@/components/ui/file_loader/DropZone.vue";
 import FilePreview from "@/components/ui/file_loader/FilePreview.vue";
+import ChTextArea from "@/components/ui/textarea/textarea.vue";
+import ChInput from "@/components/ui/input/input.vue";
+import ChButton from "@/components/ui/button/button.vue";
 
+markRaw(ChInput);
+markRaw(ChTextArea);
+markRaw(ChButton);
 // File Management
 import useFileList from "@/components/ui/file_loader/compositions/fileList";
 const { files, addFiles, removeFile } = useFileList();
@@ -14,23 +28,162 @@ function onInputChange(e) {
 // Uploader
 import createUploader from "@/components/ui/file_loader/compositions/fileUploader";
 const { uploadFiles } = createUploader("YOUR URL HERE");
-// const schema = yup.object({
-//   shortDescriptionActivity: yup.string().max(150).required(),
-//   fullDescriptionActivity: yup.string().max(2000).required(),
-//   site: yup.string().required(),
-//   phone,
-//   email,
-//   vk,
-//   classmates,
-//   facebook,
-//   insta,
-//   logo,
-//   media,
-// });
+//schema validation
+
+const SchemaFormWithPlugins = SchemaFormFactory([LookupPlugin({}), VeeValidatePlugin()]);
+
+const form = ref({
+  shortDescriptionActivity: "",
+  fullDescriptionActivity: "",
+  site: "",
+  phone: "",
+  email: "",
+  vk: "",
+  classmates: "",
+  facebook: "",
+  insta: "",
+});
+useSchemaForm(form);
+const schema = ref({
+  textDescription: {
+    component: ChFormCategoryTitle,
+    title: "Описание НКО",
+  },
+  shortDescriptionActivity: {
+    component: ChTextArea,
+    label: "Краткое описание деятельности *",
+    placeholder: "",
+    id: "shortDescriptionActivity",
+    error: "",
+    maxLength: 150,
+    fullSize: false,
+  },
+  fullDescriptionActivity: {
+    component: ChTextArea,
+    type: "text",
+    label: "Полное описание деятельности *",
+    placeholder: "",
+    id: "fullDescriptionActivity",
+    error: "",
+    maxLength: 2000,
+    fullSize: true,
+  },
+  textContacts: {
+    component: ChFormCategoryTitle,
+    title: "Контакты НКО",
+  },
+  site: {
+    component: ChInput,
+    type: "url",
+    label: "Сайт",
+    placeholder: "www",
+    id: "site",
+    error: "",
+  },
+  phone: {
+    component: ChInput,
+    type: "phone",
+    label: "Телефон *",
+    placeholder: "+7",
+    id: "phone",
+    error: "",
+  },
+  email: {
+    component: ChInput,
+    type: "email",
+    label: "Эл. почта *",
+    placeholder: "email@email.ru",
+    id: "email",
+    error: "",
+  },
+  textSocialWebs: {
+    component: ChFormCategoryTitle,
+    title: "Социальные сети",
+  },
+  vk: {
+    component: ChInput,
+    type: "url",
+    label: "Вконтакте",
+    placeholder: "www",
+    id: "vk",
+    error: "",
+  },
+  classmates: {
+    component: ChInput,
+    type: "url",
+    label: "Одноклассники",
+    placeholder: "www",
+    id: "classmates",
+    error: "",
+  },
+  facebook: {
+    component: ChInput,
+    type: "url",
+    label: "Фейсбук",
+    placeholder: "www",
+    id: "facebook",
+    error: "",
+  },
+  insta: {
+    component: ChInput,
+    type: "url",
+    label: "Инстаграм",
+    placeholder: "www",
+    id: "insta",
+    error: "",
+  },
+  textMediaFiles: {
+    component: ChFormCategoryTitle,
+    title: "Медиа файлы",
+  },
+});
+
+yup.setLocale({
+  mixed: {
+    required: "Обязательное поле",
+  },
+  string: {
+    email: "Невалидный e-mail",
+    min: "Минимальная длина ${min} символов",
+    max: "Максимальная длина ${max} символов",
+  },
+});
+
+const urlPattern = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w\?[a-zA-Z-_%\/@?]+)*([^\/\w\?[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/;
+const validationSchema = computed(() => {
+  return yup.object().shape({
+    shortDescriptionActivity: yup.string().max(150).required("Заполните поле"),
+    fullDescriptionActivity: yup.string().max(2000).required("Заполните поле"),
+    site: yup.string().matches(
+      // /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+      urlPattern,
+      "Неверный формат сайта"
+    ),
+    email: yup
+      .string()
+      .matches(/\S+@\S+\.+(com|ru|org|net|info|io)$/, "Неверный формат эл. почты")
+      .required(),
+    phone: yup
+      .string()
+      .matches(/^\+7[0-9]{10}$/, "Невалидный номер телефона")
+      .required(),
+    vk: yup.string().matches(urlPattern, "Неверный формат сайта"),
+    classmates: yup.string().matches(urlPattern, "Неверный формат сайта"),
+    facebook: yup.string().matches(urlPattern, "Неверный формат сайта"),
+    insta: yup.string().matches(urlPattern, "Неверный формат сайта"),
+  });
+});
 </script>
 <template>
   <div class="profile_form_container">
     <div class="profile_form_wrapper">
+      <SchemaFormWithPlugins :schema="schema" :validation-schema="validationSchema">
+        <template #afterForm="{ validation }">
+          <ChButton :loading="isLoadingBtn" :disabled="!validation.meta.valid"
+            >Продолжить</ChButton
+          >
+        </template>
+      </SchemaFormWithPlugins>
       <DropZone class="drop-area" @files-dropped="addFiles" #default="{ dropZoneActive }">
         <label for="file-input">
           <span v-if="dropZoneActive">
@@ -60,6 +213,14 @@ const { uploadFiles } = createUploader("YOUR URL HERE");
 </template>
 
 <style lang="scss" scoped>
+.profile_form_wrapper {
+  max-width: 720px;
+  &::v-deep {
+    .schema-col {
+      flex-direction: row !important;
+    }
+  }
+}
 .action {
   display: flex;
   white-space: break-spaces;
@@ -72,6 +233,8 @@ const { uploadFiles } = createUploader("YOUR URL HERE");
   }
 }
 .drop-area {
+  display: flex;
+  flex-direction: column-reverse;
   color: #0f75bd;
   width: 100%;
   //   max-width: 800px;
@@ -108,6 +271,12 @@ label {
     clip: rect(0, 0, 0, 0) !important;
     white-space: nowrap !important;
     border: 0 !important;
+  }
+  input[type="file"] {
+    &::file-selector-button,
+    &::-webkit-file-upload-button {
+      display: none;
+    }
   }
 }
 .image-list {

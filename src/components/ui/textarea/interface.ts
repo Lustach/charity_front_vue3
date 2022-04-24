@@ -5,5 +5,6 @@ export interface Props {
     id: string;
     modelValue?: string;
     error: any;
-    maxWidth: string;
+    maxLength: number | string | null | undefined;
+    fullSize: Boolean,
 }

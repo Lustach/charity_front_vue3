@@ -13,3 +13,11 @@ import NkoInfoForm from "@/components/pages/NkoInfo/NkoInfoForm.vue";
     <NkoInfoForm></NkoInfoForm>
   </div>
 </template>
+<style lang="scss" scoped>
+.form {
+  &_container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+}
+</style>

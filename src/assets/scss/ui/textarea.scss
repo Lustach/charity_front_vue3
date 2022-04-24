@@ -1,12 +1,34 @@
 @import "text-field";
+
 .vblg-textarea {
     &__container {
         @extend .text-field__container;
+
+        .vblg-textarea-count {
+            position: absolute !important;
+            right: 12px !important;
+            top: calc(100% - 37px) !important;
+            font-style: normal !important;
+            font-weight: 600 !important;
+            font-size: 13.23px !important;
+            text-align: justify !important;
+            color: #5F9DD8 !important;
+            height: 0px;
+        }
+
+        &:not(.has-error) {
+            .vblg-textarea-count {
+                top: calc(100% - 21px) !important;
+            }
+        }
     }
+
     @extend .text-field;
+    padding: 10px 0 18px 18px;
     border-radius: 10px;
     max-width: 100%;
     resize: none;
+
     &::-webkit-scrollbar {
         width: 5px;
     }
@@ -28,6 +50,7 @@
         min-height: 55px !important;
         max-height: 55px !important;
     }
+
     &-full {
         min-height: 220px !important;
         max-height: 220px !important;

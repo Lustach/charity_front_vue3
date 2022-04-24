@@ -14,7 +14,6 @@ import {
 } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useForm } from "vee-validate";
-import useObject from "@/components/compositions/utils/useObject";
 import { SchemaForm, useSchemaForm, SchemaFormFactory } from "formvuelate";
 import LookupPlugin from "@formvuelate/plugin-lookup";
 import VeeValidatePlugin from "@formvuelate/plugin-vee-validate";
@@ -33,10 +32,10 @@ markRaw(ChInput);
 
 const SchemaFormWithPlugins = SchemaFormFactory([
   LookupPlugin({
-    mapComponents: {
-      string: "ChInput",
-      array: "ChInput",
-    },
+    // mapComponents: {
+    //   string: "ChInput",
+    //   array: "ChInput",
+    // },
   }),
   VeeValidatePlugin(),
 ]);
@@ -71,6 +70,7 @@ const schema = ref({
     label: "E-mail или телефон",
     id: "emailOrPhone",
     error: "",
+    maxWidth: "328px",
     condition: (model) => !model.isShowCodeField,
   },
   password: {
@@ -79,9 +79,9 @@ const schema = ref({
     placeholder: "Введите пароль",
     label: "Пароль",
     id: "password",
+    maxWidth: "328px",
     error: "",
     options: [false],
-    // condition: (model) => model.type === "B",
   },
   code_2fa: {
     component: ChInput,
@@ -89,6 +89,7 @@ const schema = ref({
     placeholder: "Код",
     label: "Код",
     id: "code_2fa",
+    maxWidth: "328px",
     error: "",
     condition(model) {
       return model.isShowCodeField;
@@ -135,12 +136,14 @@ let isEmailError = ref(false);
 let isPasswordError = ref(false);
 let isCodeError = ref(false);
 let isShowCodeField = ref(false);
+let isLoadingBtn = ref(false);
 
 timeOut(isEmailError, 3500);
 timeOut(isPasswordError, 3500);
 timeOut(isCodeError, 3500);
 
 async function login() {
+  isLoadingBtn.value = true;
   let values = unref(form);
   try {
     const result = await authStore.loginUser({
@@ -173,6 +176,8 @@ async function login() {
       }
     }
     console.error(e);
+  } finally {
+    isLoadingBtn.value = false;
   }
 }
 </script>
@@ -191,7 +196,10 @@ async function login() {
         @submit="login"
       >
         <template #afterForm="{ validation }">
-          <ChButton @click="login" :disabled="!validation.meta.valid"
+          <ChButton
+            @click="login"
+            :loading="isLoadingBtn"
+            :disabled="!validation.meta.valid"
             >Продолжить</ChButton
           >
           <div class="form__link">
