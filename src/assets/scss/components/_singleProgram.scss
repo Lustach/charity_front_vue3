@@ -50,11 +50,11 @@
       font-weight: 600;
       font-size: 22px;
       text-align: center;
-      color: #0f75bd;
+      color: var(--vblg-c-primary);
       text-decoration: underline;
 
       &:hover {
-        color: #0f75bd;
+        color: var(--vblg-c-primary);
         text-decoration: none;
       }
 
@@ -120,7 +120,7 @@
       font-style: normal;
       font-weight: normal;
       font-size: 18px;
-      color: #333333;
+      color: var(--vblg-c-indigo);
 
       @media screen and (max-width: 480px) {
         font-size: 14px;
@@ -183,8 +183,8 @@
       max-width: 240px;
       width: 100%;
       height: 45px;
-      background: #ffffff;
-      border: 2px solid #0f75bd;
+      background: var(--vblg-c-white);
+      border: 2px solid var(--vblg-c-primary);
       box-sizing: border-box;
       border-radius: 25px;
       font-family: Montserrat, sans-serif;
@@ -192,7 +192,7 @@
       font-size: 16px;
       line-height: 25px;
       text-align: center;
-      color: #0f75bd;
+      color: var(--vblg-c-primary);
       transition: 0.3s;
 
       @media screen and (max-width: 600px) {
@@ -203,8 +203,8 @@
 
       &:hover {
         cursor: pointer;
-        background-color: #0f75bd;
-        color: #ffffff;
+        background-color: var(--vblg-c-primary);
+        color: var(--vblg-c-white);
       }
     }
   }
@@ -262,7 +262,7 @@
     font-weight: 600;
     font-size: 22px;
     text-align: right;
-    color: #0f75bd;
+    color: var(--vblg-c-primary);
     text-decoration: none;
 
     @media screen and (max-width: 998px) {
@@ -295,7 +295,7 @@
       font-size: 20px;
       line-height: 30px;
       text-align: center;
-      color: #333333;
+      color: var(--vblg-c-indigo);
 
       @media screen and (max-width: 980px) {
         line-height: 28px;
@@ -316,7 +316,7 @@
         font-size: 18px;
       }
       > span {
-        color: #0f75bd;
+        color: var(--vblg-c-primary);
       }
     }
   }
@@ -343,14 +343,14 @@
       padding-right: 10px;
       min-width: max-content;
       height: 45px;
-      background: #0f75bd;
+      background: var(--vblg-c-primary);
       border-radius: 35px;
       font-family: Montserrat, sans-serif;
       font-style: normal;
       font-weight: 600;
       font-size: 18px;
       line-height: 45px;
-      color: #ffffff;
+      color: var(--vblg-c-white);
 
       @media screen and(max-width:600px) {
         height: 35px;
@@ -398,8 +398,8 @@
     > button {
       width: 240px;
       height: 45px;
-      background: #ffffff;
-      border: 2px solid #0f75bd;
+      background: var(--vblg-c-white);
+      border: 2px solid var(--vblg-c-primary);
       box-sizing: border-box;
       border-radius: 35px;
       font-family: Montserrat, sans-serif;
@@ -408,7 +408,7 @@
       font-size: 16px;
       line-height: 25px;
       text-align: center;
-      color: #0f75bd;
+      color: var(--vblg-c-primary);
       transition: 0.3s;
       overflow: hidden;
 
@@ -430,8 +430,8 @@
 
       &:hover {
         cursor: pointer;
-        background-color: #0f75bd;
-        color: #ffffff;
+        background-color: var(--vblg-c-primary);
+        color: var(--vblg-c-white);
       }
     }
   }
@@ -460,7 +460,7 @@
         font-size: 18px;
         line-height: 24px;
         text-align: left;
-        color: #333333;
+        color: var(--vblg-c-indigo);
 
         @media screen and (max-width: 980px) {
           margin-right: 80px;
@@ -498,7 +498,7 @@
         width: 100%;
         height: auto;
         min-height: 57px;
-        background: #ffffff;
+        background: var(--vblg-c-white);
         border: 2px solid #dfebf7;
         box-sizing: border-box;
         border-radius: 35px;
@@ -509,7 +509,7 @@
         line-height: 57px;
         text-align: left;
         text-decoration: none;
-        color: #0f75bd;
+        color: var(--vblg-c-primary);
 
         @media screen and (max-width: 600px) {
           min-height: 40px;
@@ -617,14 +617,14 @@
       width: 100%;
       height: 45px;
       border: none;
-      background: #ffffff;
+      background: var(--vblg-c-white);
       border-radius: 30px;
       font-family: Montserrat, sans-serif;
       font-style: normal;
       font-weight: 600;
       font-size: 16px;
       line-height: 25px;
-      color: #333333;
+      color: var(--vblg-c-indigo);
       transition: 0.3s;
 
       @media screen and (max-width: 768px) {
@@ -646,7 +646,7 @@
       &:hover {
         cursor: pointer;
         background-color: #5f9dd8;
-        color: #ffffff;
+        color: var(--vblg-c-white);
       }
     }
   }

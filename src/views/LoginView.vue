@@ -188,7 +188,7 @@ async function login() {
       <h1 class="form_title">Авторизация в личном кабинете НКО</h1>
       <p class="form_subtitle">
         Введите вашу почту или телефон, указанные при регистрации, и пароль. Или пройдите
-        <router-link to="/registration" style="color: #0f75bd">регистрацию</router-link>.
+        <router-link to="/registration" style="color: var(--vblg-c-primary)">регистрацию</router-link>.
       </p>
       <SchemaFormWithPlugins
         :schema="schema"
@@ -230,7 +230,7 @@ async function login() {
       font-weight: 600;
       font-size: 14px;
       text-align: center;
-      color: #0f75bd;
+      color: var(--vblg-c-primary);
     }
   }
 }

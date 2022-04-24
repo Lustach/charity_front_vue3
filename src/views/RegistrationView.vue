@@ -61,7 +61,7 @@ let serviceRules: Array<string> = ref([]);
       <p class="form_subtitle">
         Введите телефон или e-mail, чтобы зарегистрироваться, и придумайте надежный
         пароль. Или
-        <router-link to="/login" style="color: #0f75bd">войдите</router-link>
+        <router-link to="/login" style="color: var(--vblg-c-primary)">войдите</router-link>
         в свой профиль .
       </p>
       <!-- {{ meta }} -->

@@ -50,8 +50,6 @@
 .skip-to-content {
     position: absolute;
     z-index: 9999;
-    background: hsl(var(--clr-white));
-    color: hsl(var(--clr-dark));
     padding: .5em 1em;
     margin-inline: auto;
     transform: translateY(-100%);
@@ -64,7 +62,7 @@
 
 /* colors */
 
-.bg-dark {
+/* .bg-dark {
     background-color: hsl(var(--clr-dark));
 }
 
@@ -74,9 +72,9 @@
 
 .bg-white {
     background-color: hsl(var(--clr-white));
-}
+} */
 
-.text-dark {
+/* .text-dark {
     color: hsl(var(--clr-dark));
 }
 
@@ -86,21 +84,10 @@
 
 .text-white {
     color: hsl(var(--clr-white));
-}
+} */
 
 /* typography */
 
-.ff-serif {
-    font-family: var(--ff-serif);
-}
-
-.ff-sans-cond {
-    font-family: var(--ff-sans-cond);
-}
-
-.ff-sans-normal {
-    font-family: var(--ff-sans-normal);
-}
 
 .letter-spacing-1 {
     letter-spacing: 4.75px;

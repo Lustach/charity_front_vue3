@@ -216,13 +216,13 @@ export default {
 }
 
 .router-link-active .header__menu--item-active {
-  color: #0f75bd !important;
+  color: var(--vblg-c-primary) !important;
   &:after {
     content: "";
     position: absolute;
     width: 100%;
     height: 1px;
-    background-color: #0f75bd;
+    background-color: var(--vblg-c-primary);
     left: 0;
     bottom: 0;
   }

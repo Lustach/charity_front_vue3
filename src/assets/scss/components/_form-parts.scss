@@ -292,7 +292,7 @@
     font-weight: 600;
     font-size: 18px;
     text-align: center;
-    color: #333333;
+    color: var(--vblg-c-indigo);
     margin: 0 0 10px 0;
   }
 
@@ -301,7 +301,7 @@
     font-weight: normal;
     font-size: 13.23px;
     text-align: center;
-    color: #333333;
+    color: var(--vblg-c-indigo);
     margin: 0 auto 16px auto;
     max-width: 626px;
     a {

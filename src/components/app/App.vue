@@ -42,7 +42,7 @@ import AppFooter from "@/components/app/AppFooter.vue";
   font-style: normal;
   font-weight: normal;
   font-size: $vblg-subtitle2;
-  color: var(--clr-black);
+  // color: var(--clr-dark);
 }
 
 html,
@@ -64,7 +64,7 @@ body {
   z-index: 1000;
   left: 50px;
   top: 76px;
-  color: #0f75bd;
+  color: var(--vblg-c-primary);
   font-style: normal;
   font-weight: 600;
   font-size: 16px;

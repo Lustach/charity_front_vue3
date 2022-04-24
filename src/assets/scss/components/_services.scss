@@ -74,7 +74,7 @@
       font-weight: 600;
       font-size: 20px;
       text-align: center;
-      color: #333333;
+      color: var(--vblg-c-indigo);
       margin-top: 0;
       margin-bottom: 30px;
       display: block;
@@ -128,7 +128,7 @@
       font-size: 15px;
       line-height: 25px;
       text-align: center;
-      color: #333333;
+      color: var(--vblg-c-indigo);
 
       @media screen and (max-width: 1200px) {
         font-size: 16px;

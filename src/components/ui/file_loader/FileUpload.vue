@@ -32,14 +32,14 @@
     font-weight: 600 !important;
   }
   em {
-    border-bottom: 1px solid #0f75bd;
+    border-bottom: 1px solid var(--vblg-c-primary);
     //   text-decoration: underline;
   }
 }
 .drop-area {
   display: flex;
   flex-direction: column-reverse;
-  color: #0f75bd;
+  color: var(--vblg-c-primary);
   width: 100%;
   //   max-width: 800px;
   margin: 0 auto;

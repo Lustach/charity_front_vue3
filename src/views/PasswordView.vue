@@ -178,7 +178,7 @@ let isEmailSended = ref(false);
     font-weight: 600;
     font-size: 13.23px;
     text-align: center;
-    color: #0f75bd;
+    color: var(--vblg-c-primary);
     max-width: 772px;
     width: 100%;
     margin: 0 auto;

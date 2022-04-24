@@ -3,7 +3,7 @@
   max-width: 560px;
   height: 60px;
   border-radius: 30px;
-  background-color: #ffffff;
+  background-color: var(--vblg-c-white);
   z-index: 99;
 
   @media screen and (max-width: 600px) {
@@ -58,7 +58,7 @@
         height: -moz-calc(100% - 2px);
         height: calc(100% - 2px);
         border: none;
-        background: #ffffff;
+        background: var(--vblg-c-white);
         border-radius: 30px;
         font-family: Montserrat, sans-serif;
         font-style: normal;
@@ -199,7 +199,7 @@
   .search-result {
     position: absolute;
     height: 60px;
-    background-color: #ffffff;
+    background-color: var(--vblg-c-white);
     border-radius: 30px;
     width: 100%;
     overflow: hidden;

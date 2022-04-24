@@ -4,8 +4,8 @@
     max-width: 328px;
     width: 100%;
     height: 38px;
-    background: #0f75bd;
-    border: 2px solid #0f75bd;
+    background: var(--vblg-c-primary);
+    border: 2px solid var(--vblg-c-primary);
     box-sizing: border-box;
     border-radius: 35px;
     font-family: Montserrat, sans-serif;
@@ -19,7 +19,9 @@
         box-shadow: 1px 1px 10px 3px rgba(64, 158, 255, 0.5);
     }
 
-    color: #f1f5f7;
+    // & > span {
+    //     color: #f1f5f7 !important;
+    // }
 
     &_modal {
         margin: -30px auto 0 auto;
@@ -38,13 +40,15 @@
         border: #03558a;
     }
 
-    &-disabled, &:disabled {
+    &-disabled,
+    &:disabled {
         background-color: #b0ceec;
         border: 2px solid #b0ceec;
     }
+
     &-outline {
         background-color: white;
-        color: #0f75bd;
+        color: var(--vblg-c-primary);
         border: 2px solid #b0ceec;
     }
 }
