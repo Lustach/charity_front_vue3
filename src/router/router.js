@@ -28,12 +28,12 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      component: () => import('../views/ViewAbout.vue')
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import('@/views/LoginView.vue')
+      component: () => import('@/views/ViewLogin.vue')
     },
     // {
     //   path: '/password',
@@ -43,13 +43,13 @@ const router = createRouter({
     {
       path: '/password', //возможны два случая -> восстановление и создание нового пароля create restore
       name: "password",
-      component: () => import('@/views/PasswordView.vue'),
+      component: () => import('@/views/ViewPassword.vue'),
 
     },
     {
       path: '/registration',
       name: 'registration',
-      component: () => import('@/views/RegistrationView.vue')
+      component: () => import('@/views/ViewRegistration.vue')
     },
     {
       path: '/multi_step-form',
@@ -59,16 +59,21 @@ const router = createRouter({
     {
       path: '/fill_profile',
       name: 'fill_profile',
-      component: () => import('@/views/FillProfile.vue')
+      component: () => import('@/views/ViewFillProfile.vue')
     },
     {
       path: '/lk/nko_info',
       name: 'nko_info',
-      component: () => import('@/views/NkoInfo.vue')
+      component: () => import('@/views/ViewNkoInfo.vue')
+    },
+    {
+      path: '/lk/requisites',
+      name: 'requisites',
+      component: () => import('@/views/ViewRequisites.vue')
     },
     {
       path: '/:pathMatch(.*)*',
-      component: () => import('@/views/NotFound.vue'),
+      component: () => import('@/views/ViewNotFound.vue'),
     },
     {
       path: '/test',
