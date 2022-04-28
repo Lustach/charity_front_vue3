@@ -2,6 +2,9 @@
 import { ref } from "vue";
 import { useField } from "vee-validate";
 import { Props } from "@/components/ui/input/interface.ts";
+import useInputHandlers from "@/components/compositions/useInputHandlers.ts";
+let inputHandlers = useInputHandlers;
+console.log(inputHandlers);
 
 const emit = defineEmits(["update:modelValue"]);
 //* TODO: imported interfaces are not support official by Evan(nice joke) :) https://github.com/vuejs/vue-next/issues/4294
@@ -24,6 +27,8 @@ let { value: modelValue, errorMessage, handleBlur, handleChange, meta } = useFie
   }
 );
 function update(value) {
+  // useInputHandlers.validateFieldByTypePhone(value);
+  // console.log(value, props);
   emit("update:modelValue", value);
 }
 </script>

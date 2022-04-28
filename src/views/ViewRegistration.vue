@@ -1,125 +1,145 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { useForm } from "vee-validate";
-import * as yup from "yup";
+import { computed, ref, watch, markRaw } from "vue";
+import LookupPlugin from "@formvuelate/plugin-lookup";
+import VeeValidatePlugin from "@formvuelate/plugin-vee-validate";
 
-import { ElCheckbox } from "element-plus";
+import { useSchemaForm, SchemaFormFactory } from "formvuelate";
+import { object, bool } from "yup";
+import { rules } from "@/compositions/validation_rules";
+
 import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
 import ChCheckbox from "@/components/ui/checkbox/checkbox.vue";
 // import myButton from "@/ui/button.vue";
-import { Props as FormField } from "@/components/ui/input/interface";
-import { Props as FormCheckbox } from "@/components/ui/checkbox/interface";
-import { setLocale } from "yup";
 // TODO: вообще лучше не использовать генераторы форм по типу yup или zod, так как в случае необходимости гибких настроек, можно потратить
 // очень много времени не получив результата (use <Field></Field> <Form></Form> and options API)
-setLocale({
-  mixed: {
-    required: "Обязательное поле",
-  },
-  string: {
-    email: "Невалидный e-mail",
-    min: "Минимальная длина ${min} символов",
-  },
-});
 //  TODO: для полной красоты нужно прописать matches для всех, так как i18 yup не работает ?
-const schema = yup.object({
-  email: yup
-    .string()
-    .matches(/\S+@\S+\.+(com|ru|org|net|info|io)$/, "Неверный формат эл. почты")
-    .required(),
-  phone: yup
-    .string()
-    .matches(/^\+7[0-9]{10}$/, "Невалидный номер телефона")
-    .required(),
-  password: yup.string().min(8).required(),
-  password_confirm: yup
-    .string()
-    .required()
-    .oneOf([yup.ref("password")], "Повторите пароль"),
-  offerRules: yup.bool().required(), // вот это должно быть array ?
-  privacyRules: yup.bool().required(),
+
+markRaw(ChInput);
+markRaw(ChCheckbox);
+const SchemaFormWithPlugins = SchemaFormFactory([LookupPlugin({}), VeeValidatePlugin()]);
+
+const validationSchema = object({
+  email: rules.email,
+  phone: rules.phone,
+  password: rules.password,
+  passwordConfirm: rules.passwordConfirm,
+  offerRules: bool().required(), // вот это должно быть array ?
+  privacyRules: bool().required(),
+});
+const form = ref({
+  email: "",
+  phone: "",
+  password: "",
+  passwordConfirm: "",
+  offerRules: "",
+  privacyRules: "",
+});
+useSchemaForm(form);
+
+const schema = ref({
+  email: {
+    component: ChInput,
+    type: "email",
+    placeholder: "Введите ваш email",
+    label: "E-mail",
+    id: "email",
+    error: "",
+    maxWidth: "328px",
+  },
+  phone: {
+    component: ChInput,
+    type: "phone",
+    placeholder: "Введите номер телефона",
+    label: "Номер телефона",
+    id: "phone",
+    error: "",
+    maxWidth: "328px",
+  },
+  password: {
+    component: ChInput,
+    type: "password",
+    placeholder: "Введите пароль",
+    label: "Пароль",
+    id: "password",
+    maxWidth: "328px",
+    error: "",
+  },
+  passwordConfirm: {
+    component: ChInput,
+    type: "password",
+    placeholder: "Подтвердите пароль",
+    label: "Подтверждение пароля",
+    id: "passwordConfirm",
+    maxWidth: "328px",
+    error: "",
+  },
 });
 
-const { meta } = useForm({
-  validationSchema: schema,
-});
 let modelValue = ref(true);
-let isErrorRequest = false,
-  isPhoneErrorRequest = false,
-  validServiceRules = false,
-  touchServiceRules = false,
-  btnLoading = false;
-
-let serviceRules: Array<string> = ref([]);
+let validServiceRules = ref(false);
+let touchServiceRules = ref(false);
+let isLoadingBtn = ref(false);
+// let serviceRules: Array<string> = ref([]);
+function signUp() {
+  console.log("signUp");
+}
 </script>
 
 <template>
   <section>
-    <div class="form_container" @keypress.enter="login()">
+    <div class="form_container" @keypress.enter="signUp">
       <h1 class="form_title">Регистрация в личном кабинете НКО</h1>
       <p class="form_subtitle">
         Введите телефон или e-mail, чтобы зарегистрироваться, и придумайте надежный
         пароль. Или
-        <router-link to="/login" style="color: var(--vblg-c-primary)">войдите</router-link>
+        <router-link to="/login" style="color: var(--vblg-c-primary)"
+          >войдите</router-link
+        >
         в свой профиль .
       </p>
-      <!-- {{ meta }} -->
       <form class="form__container">
         <!-- <template v-if="!showCodeField"> -->
-        <ChInput type="email" placeholder="E-mail" label="Введите ваш email" id="email" />
-        <ChInput
-          type=""
-          placeholder="Введите номер телефона"
-          label="Номер телефона"
-          id="phone"
-        />
-        <ChInput
-          type="password"
-          placeholder="Введите пароль"
-          label="Пароль"
-          id="password"
-        />
-        <ChInput
-          type="password"
-          placeholder="Подтвердите пароль"
-          label="Подтверждение пароля"
-          id="password_confirm"
-        />
-        <!-- <div class="checkbox coloured">
-          <label>
-            <input type="checkbox" /><span class="checkbox-material"
-              ><span class="check"></span
-            ></span>
-            Experiences
-          </label>
-        </div> -->
-        <ChCheckbox name="offerRules" :value="false">
-          <template #text>
-            <p>
-              Соглашаюсь с
-              <a
-                style="text-decoration: underline; color: initial"
-                href="http://localhost:8000/static/documents/Оферта_для_публичного_сбора_пожертвований.pdf"
-                target="_blank"
-                >офертой</a
-              >
-            </p>
+        <SchemaFormWithPlugins
+          :schema="schema"
+          :validation-schema="validationSchema"
+          @submit="signUp"
+        >
+          <template #afterForm="{ validation }">
+            <ChCheckbox name="offerRules" :value="false">
+              <template #text>
+                <p>
+                  Соглашаюсь с
+                  <a
+                    style="text-decoration: underline; color: initial"
+                    href="http://localhost:8000/static/documents/Оферта_для_публичного_сбора_пожертвований.pdf"
+                    target="_blank"
+                    >офертой</a
+                  >
+                </p>
+              </template>
+            </ChCheckbox>
+            <ChCheckbox name="privacyRules" :value="false">
+              <template #text>
+                <p>
+                  Соглашаюсь на обработку
+                  <a
+                    style="text-decoration: underline; color: initial"
+                    href="http://localhost:8000/static/documents/Политика_в_отношении_обработки_ПД.pdf"
+                    target="_blank"
+                    >персональных данных</a
+                  >
+                </p>
+              </template>
+            </ChCheckbox>
+            <ChButton
+              @click="signUp"
+              :loading="isLoadingBtn"
+              :disabled="!validation.meta.valid"
+              >Продолжить</ChButton
+            >
           </template>
-        </ChCheckbox>
-        <ChCheckbox name="privacyRules" :value="false">
-          <template #text>
-            <p>
-              Соглашаюсь на обработку
-              <a
-                style="text-decoration: underline; color: initial"
-                href="http://localhost:8000/static/documents/Политика_в_отношении_обработки_ПД.pdf"
-                target="_blank"
-                >персональных данных</a
-              >
-            </p>
-          </template>
-        </ChCheckbox>
+        </SchemaFormWithPlugins>
         <div
           class="el-form-item__error"
           style="margin-top: 10px; margin-bottom: 15px; text-align: left !important"
@@ -128,7 +148,7 @@ let serviceRules: Array<string> = ref([]);
           Заполните все поля
         </div>
         <!-- </template> -->
-        <ChButton :disabled="!meta.valid"> Зарегистрироваться </ChButton>
+        <!-- <ChButton :disabled="!meta.valid"> Зарегистрироваться </ChButton> -->
       </form>
     </div>
   </section>

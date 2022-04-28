@@ -19,12 +19,4 @@
     font-size: 22px;
   }
 }
-// .not-found {
-//   position: relative;
-//   padding-top: 68px;
-//   display: flex;
-//   flex-direction: column;
-//   flex: 1 0 auto;
-//   height: calc(100vh - 4px);
-// }
 </style>

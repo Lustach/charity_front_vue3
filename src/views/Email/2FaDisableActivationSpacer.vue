@@ -1,28 +1,27 @@
 <template>
-  <div>
-  </div>
+  <div></div>
 </template>
 
-<script>
-// import {mapMutations} from 'vuex';
-
-export default {
-  name: 't2FaDisableActivationSpacer',
-  async mounted(){
-    console.log('hui');
-    let fd = new FormData();
-    fd.append('uid',this.$route.query.u);
-    fd.append('token',this.$route.query.tk);
-    try {
-      await this.$API.user.disable2Fa(fd);
-      this.setUserData({is2faEnabled: false,});
-      await this.$router.push('/lk/security');
-    }catch (e) {
-      await this.$router.push('/registration');
-    }
-  },
-  methods:{
-    ...mapMutations(['setUserData',]),
-  },
-};
+<script setup lang="ts">
+import { inject, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { useAuthStore } from "@/stores/modules/auth.ts";
+const API = inject("API");
+//store
+const authStore = useAuthStore();
+//router
+const router = useRouter();
+const route = useRoute();
+onMounted(async () => {
+  let fd = new FormData();
+  fd.append("uid", JSON.stringify(route.query.u));
+  fd.append("token", JSON.stringify(route.query.tk));
+  try {
+    await API.user.disable2Fa(fd);
+    authStore.is2faEnabled = false;
+    router.push("/lk/security");
+  } catch (e) {
+    router.push("/registration");
+  }
+});
 </script>

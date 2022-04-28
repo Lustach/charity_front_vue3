@@ -1,90 +1,92 @@
 <template>
-  <!-- <form> -->
-  <SchemaFormWithPlugins
-    :schema="schema"
-    :validation-schema="validationSchema"
-    @submit="onSubmit"
-  >
-    <template #afterForm="{ validation }">
-      <ChButton @click="onSubmit" :disabled="!validation.meta.valid">fasd</ChButton>
-    </template>
-  </SchemaFormWithPlugins>
-  <!-- <button type="submit">fasd</button> -->
-  <!-- </form> -->
+  <form @submit.prevent="formSubmit">
+    <SchemaFormWithPlugins
+      :schema="schema"
+      :debug="true"
+      :validation-schema="validationSchema"
+    />
+
+    <ChButton>Submit</ChButton>
+  </form>
 </template>
 
-<script>
+<script lang="ts">
+import { computed, ref } from "vue";
 import * as yup from "yup";
-import { SchemaForm, useSchemaForm, SchemaFormFactory } from "formvuelate";
-
-import LookupPlugin from "@formvuelate/plugin-lookup";
-import VeeValidatePlugin from "@formvuelate/plugin-vee-validate";
-
 import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
-import { ref, markRaw, computed } from "vue";
-
-markRaw(ChInput);
-
-const SchemaFormWithPlugins = SchemaFormFactory([
-  LookupPlugin({
-    mapComponents: {
-      string: "ChInput",
-      array: "ChInput",
+import LookupPlugin from "@formvuelate/plugin-lookup";
+import VeeValidatePlugin from "@formvuelate/plugin-vee-validate";
+import { SchemaForm, useSchemaForm, SchemaFormFactory } from "formvuelate";
+const SchemaFormWithPlugins = SchemaFormFactory([VeeValidatePlugin()]);
+// const factory = SchemaFormFactory([], { FormText });
+const SCHEMA = [
+  [
+    {
+      component: ChInput,
+      type: "password",
+      placeholder: "Введите пароль",
+      label: "Пароль",
+      id: "password",
+      model: "password",
+      maxWidth: "328px",
+      error: "",
+      // validations: (value) => value && value.length > 6,
     },
-  }),
-  VeeValidatePlugin(),
-]);
+    {
+      component: ChInput,
+      type: "email",
+      placeholder: "E-mail или телефон",
+      label: "E-mail или телефон",
+      id: "emailOrPhone",
+      model: "emailOrPhone",
+      error: "",
+      maxWidth: "328px",
+    },
+  ],
+];
+
+console.log(SchemaForm, SchemaFormWithPlugins, SchemaFormFactory(), "schema_form");
 
 export default {
-  components: { SchemaForm, ChButton, ChInput, SchemaFormWithPlugins },
+  components: { ChButton, SchemaFormWithPlugins, SchemaForm },
   setup() {
-    function onSubmit() {
-      console.log(form.value);
-      form.value.type = "B";
-      delete validationSchema.value.fields.emailOrPhone;
-    }
-
-    const form = ref({
-      type: "A",
-      password: "",
-      code_2fa: "",
-    });
-
+    let form = ref({});
     useSchemaForm(form);
-    const schema = ref({
-      emailOrPhone: {
-        component: ChInput,
-        type: "email",
-        placeholder: "E-mail или телефон",
-        label: "E-mail или телефон",
-        id: "emailOrPhone",
-        error: "",
-        condition: (model) => model.type === "A",
-      },
-      password: {
-        component: ChInput,
-        type: "password",
-        placeholder: "Введите пароль",
-        label: "Пароль",
-        id: "password",
-        error: "",
-        condition: (model) => model.type === "B",
-      },
-      code_2fa: {
-        component: ChInput,
-        type: "text",
-        placeholder: "Код",
-        label: "Код",
-        id: "code_2fa",
-        error: "",
-        condition(model) {
-          return model.type === "B";
+
+    // const schema = computed(() => {
+    //   return SCHEMA;
+    // });
+
+    const schema = computed(() => [
+      [
+        {
+          component: ChInput,
+          type: "password",
+          placeholder: "Введите пароль",
+          label: "Пароль",
+          id: "password",
+          model: "password",
+          maxWidth: "328px",
+          error: "",
+          // validations: (value) => value && value.length > 6,
         },
-      },
-    });
+        {
+          component: ChInput,
+          type: "email",
+          placeholder: "E-mail или телефон",
+          label: "E-mail или телефон",
+          id: "emailOrPhone",
+          model: "emailOrPhone",
+          error: "",
+          maxWidth: "328px",
+        },
+      ],
+    ]);
+
+    let isShowCodeField = ref(false);
     const validationSchema = computed(() => {
-      if (form.value.type === "A") {
+      if (isShowCodeField.value === false) {
         return yup.object().shape({
           emailOrPhone: yup
             .string()
@@ -104,22 +106,68 @@ export default {
                 }
               }
             }),
+          password: yup.string().min(8).required("Обязательное поле"),
         });
-      } else if (form.value.type === "B") {
+      } else if (isShowCodeField.value === true) {
         return yup.object().shape({
-          password: yup.string().min(8).required(),
           code_2fa: yup.string().min(6).max(6).required(),
         });
       }
+      return undefined;
     });
-    // const formData = ref({});
-    // useSchemaForm(formData);
+    const formSubmit = () => {
+      alert("Form submitted!");
+    };
 
     return {
+      form,
       schema,
-      onSubmit,
+      formSubmit,
       validationSchema,
     };
   },
 };
 </script>
+
+<style lang="scss">
+label {
+  font-weight: bold;
+  font-size: 0.9rem;
+  display: block;
+}
+
+input {
+  padding: 8px 10px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+input[type="checkbox"] {
+  width: auto;
+}
+
+select {
+  min-width: 100%;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 8px 10px;
+  font-size: 1rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: white;
+  background-image: linear-gradient(45deg, transparent 50%, gray 50%),
+    linear-gradient(135deg, gray 50%, transparent 50%),
+    linear-gradient(to right, #ccc, #ccc);
+  background-position: calc(100% - 20px) calc(1em + 0px),
+    calc(100% - 15px) calc(1em + 0px), calc(100% - 2.5em) 0.4em;
+  background-size: 5px 5px, 5px 5px, 1px 1.5em;
+  background-repeat: no-repeat;
+}
+
+.schema-row {
+  display: flex;
+}
+</style>

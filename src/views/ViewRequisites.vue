@@ -4,13 +4,13 @@
 
 // let { bidsStatus, disabledBtn, getBidStatus } = useBids;
 // console.log(useBids);
-import NkoInfoAlerts from "@/components/pages/NkoInfo/NkoInfoAlerts.vue";
-import NkoInfoForm from "@/components/pages/NkoInfo/NkoInfoForm.vue";
+import RequisitesAlerts from "@/components/pages/Requisites/RequisitesAlerts.vue";
+import RequisitesForm from "@/components/pages/Requisites/RequisitesForm.vue";
 </script>
 <template>
   <div class="form_container" v-loading="loading">
-    <NkoInfoAlerts></NkoInfoAlerts>
-    <NkoInfoForm></NkoInfoForm>
+    <RequisitesAlerts></RequisitesAlerts>
+    <RequisitesForm></RequisitesForm>
   </div>
 </template>
 <style lang="scss" scoped>

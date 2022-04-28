@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-
+import { useNotification } from "@/components/compositions/ui/elNotification.ts";
+import * as validationMessages from '@/compositions/validation_messages'
 import Api from '@/plugins/axios.js';
 
 import App from '@/components/app/App.vue'
@@ -18,6 +19,7 @@ import 'element-plus/dist/index.css'
 
 const app = createApp(App)
 app.provide('API', Api)
+app.provide('useNotification', useNotification)
 // app.config.globalProperties.$API = Api
 
 
@@ -25,7 +27,7 @@ app.use(PrimeVue, { ripple: true });
 app.component('Button', Button)
 
 app.directive('click-outside', {
-    mounted(el, binding) {        
+    mounted(el, binding) {
         el.addEventListener('click', e => e.stopPropagation());
         document.body.addEventListener('click', binding.value);
     },
@@ -36,4 +38,5 @@ app.directive('click-outside', {
 app.use(createPinia())
 app.use(router)
 app.use(ElementPlus)
+
 app.mount('#app')

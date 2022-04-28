@@ -1,24 +1,17 @@
 <template>
-  <div>
-  </div>
+  <div></div>
 </template>
 
-<script>
-import {mapMutations} from 'vuex';
-
-export default {
-  name: 'ResetPasswordSpacer',
-  mounted() {
-    localStorage.setItem('ResU',this.$route.query.u);
-    localStorage.setItem('ResT',this.$route.query.tk);
-    this.$router.push('/password?action=create');
-  },
-  methods: {
-    ...mapMutations(['setState',]),
-  },
-};
+<script setup lang="ts">
+import { onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
+const router = useRouter();
+const route = useRoute();
+onMounted(async () => {
+  localStorage.setItem("ResU", JSON.stringify(route.query.u));
+  localStorage.setItem("ResT", JSON.stringify(route.query.tk));
+  router.push("/password?action=create");
+});
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

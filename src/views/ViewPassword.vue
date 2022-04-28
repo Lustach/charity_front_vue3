@@ -1,90 +1,179 @@
 <script setup lang="ts">
-import {
-  computed,
-  ref,
-  onMounted,
-  reactive,
-  markRaw,
-  nextTick,
-  getCurrentInstance,
-  inject,
-  watch,
-} from "vue";
+import { computed, ref, markRaw, inject, unref, onMounted, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import useObject from "@/components/compositions/utils/useObject";
-import * as yup from "yup";
+import { object } from "yup";
+import LookupPlugin from "@formvuelate/plugin-lookup";
+import VeeValidatePlugin from "@formvuelate/plugin-vee-validate";
+import { useSchemaForm, SchemaFormFactory } from "formvuelate";
+import { rules } from "@/compositions/validation_rules";
 import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
-import { setLocale } from "yup";
-import FormWizard from "@/components/ui/form/FormWizard.vue";
-import FormStep from "@/components/ui/form/FormStep.vue";
 import { useAuthStore } from "@/stores/modules/auth.ts";
 import { useProfileStore } from "@/stores/modules/profile.ts";
 import AppModal from "@/components/app/AppModal.vue";
 
-const schema = ref([
-  yup.object({
-    emailOrPhone: yup.string().when("isShowCodeField", {
-      is: true,
-      otherwise: yup
-        .string()
-        .required("Заполните поле")
-        .test("test-name", "Неверный e-mail или телефон", function (value) {
-          if (value === "") {
-            return false;
-          } else {
-            if (
-              value &&
-              (new RegExp(/\S+@\S+\.+(com|ru|org|net|info|io)$/).test(value) ||
-                new RegExp(/^\+7[0-9]{10}$/).test(value))
-            ) {
-              return true;
-            } else {
-              return false;
-            }
-          }
-        }),
-    }),
-  }),
-  yup.object({
-    password: yup.string().when("isShowCodeField", {
-      is: true,
-      otherwise: yup.string().notRequired(),
-      then: yup.string().min(8).required(),
-    }),
-    password_confirm: yup.string().when("isShowCodeField", {
-      is: true,
-      otherwise: yup.string().notRequired(),
-      then: yup
-        .string()
-        .required()
-        .oneOf([yup.ref("password")], "Повторите пароль"),
-    }),
-  }).when,
-  yup.object({
-    code_2fa: yup.string().min(6).max(6).required(),
-  }),
-]);
+markRaw(ChInput);
+const SchemaFormWithPlugins = SchemaFormFactory([LookupPlugin({}), VeeValidatePlugin()]);
 
-function test() {
-  isShowCodeField = true;
-  console.log(isShowCodeField);
-  
-  // return false;
-}
+const validationSchema = computed(() => {
+  if (!isShowCodeField.value && !isShowPasswordField.value) {
+    return object().shape({
+      emailOrPhone: rules.emailOrPhone,
+    });
+  } else if (!isShowCodeField.value && isShowPasswordField.value) {
+    return object().shape({
+      password: rules.password,
+      passwordConfirm: rules.passwordConfirm,
+    });
+  } else if (isShowCodeField.value) {
+    return object().shape({
+      code_2fa: rules.code_2fa,
+    });
+  }
+  return undefined;
+});
 
+const form = ref({
+  emailOrPhone: "",
+  password: "",
+  passwordConfirm: "",
+  code_2fa: "",
+});
+
+useSchemaForm(form);
+const schema = ref({
+  emailOrPhone: {
+    component: ChInput,
+    type: "email",
+    placeholder: "E-mail или телефон",
+    label: "E-mail или телефон",
+    id: "emailOrPhone",
+    error: "",
+    maxWidth: "328px",
+    condition: () => !isShowCodeField.value && !isShowPasswordField.value,
+  },
+  password: {
+    component: ChInput,
+    type: "password",
+    placeholder: "Введите пароль",
+    label: "Пароль",
+    id: "password",
+    maxWidth: "328px",
+    error: "",
+    condition: () => !isShowCodeField.value && isShowPasswordField.value,
+  },
+  passwordConfirm: {
+    component: ChInput,
+    type: "password",
+    placeholder: "Введите пароль",
+    label: "Пароль",
+    id: "passwordConfirm",
+    maxWidth: "328px",
+    error: "",
+    condition: () => !isShowCodeField.value && isShowPasswordField.value,
+  },
+  code_2fa: {
+    component: ChInput,
+    type: "text",
+    placeholder: "Код",
+    label: "Код",
+    id: "code_2fa",
+    maxWidth: "328px",
+    error: "",
+    condition: () => isShowCodeField.value,
+  },
+});
+
+//store
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
-
+//app
 const API = inject("API");
+const useNotification = inject("useNotification");
+//router
 const router = useRouter();
 const route = useRoute();
-
-// let showNextStep = ref(false);
+//flags
 let isShowCodeField = ref(false);
-
+let isShowPasswordField = ref(false);
+let isBtnLoading = ref(false);
+//modals
 let isPasswordReseted = ref(false);
 let isEmailSended = ref(false);
+
+async function createNewPassword() {
+  //todo
+  isBtnLoading.value = true;
+  if (authStore.is2faEnabled && !isShowCodeField.value) {
+    console.log();
+
+    isShowCodeField.value = true;
+    isBtnLoading.value = false;
+    return;
+  }
+  let values = unref(form);
+  if (route.query.action === "create") {
+    isShowPasswordField.value = true;
+    try {
+      await API.user.resetPasswordConfirmSpacer({
+        new_password: values.password,
+        re_new_password: values.passwordConfirm,
+        uid: localStorage.getItem("ResU"),
+        token: localStorage.getItem("ResT"),
+        otp: isShowCodeField.value ? values.code_2fa : null,
+      });
+      isPasswordReseted.value = true;
+      isShowCodeField.value = false;
+      localStorage.removeItem("ResU");
+      localStorage.removeItem("ResT");
+    } catch (e) {
+      console.error(e);
+      useNotification();
+    } finally {
+      isBtnLoading.value = false;
+    }
+  } else if (route.query.action === "restore") {
+    try {
+      await API.user.resetPasswordEmail({
+        email: values.emailOrPhone,
+        otp: isShowCodeField.value ? values.code_2fa : null,
+      });
+      isShowPasswordField.value = true;
+      isEmailSended.value = true;
+      isShowCodeField.value = false;
+      await router.push("password?action=create");
+    } catch (e) {
+      if (e.response.data.otp.length) {
+        authStore.is2faEnabled = true;
+        isShowCodeField.value = true;
+      }
+      console.error(e.response);
+      useNotification();
+    } finally {
+      isBtnLoading.value = false;
+    }
+  }
+}
+
+// console.log(useNotification(), "useNotification");
+
+onMounted(() => {
+  if (route.query.action === "create") isShowPasswordField.value = true;
+});
+
+watch(
+  () => route.query.action,
+  (nV) => {
+    if (nV === "create") {
+      isShowPasswordField.value = true;
+    } else {
+      isShowPasswordField.value = false;
+    }
+  },
+  {
+    deep: true,
+  }
+);
 </script>
 
 <template>
@@ -94,47 +183,20 @@ let isEmailSended = ref(false);
       Пожалуйста, укажите email или телефон, который вы использовали для входа на сайт.
     </p>
     <p class="form_subtitle" v-else>Введите новый надежный пароль.</p>
-    {{ isShowCodeField }}
-    <FormWizard
-      :validation-schema="schema"
-      @submit="test"
-      class="form__container"
-      :showPrevStep="false"
-      :showNextStep="true"
-      nextStepText="Продолжить"
-      submitText="Продолжить1"
+    <SchemaFormWithPlugins
+      :schema="schema"
+      :validation-schema="validationSchema"
+      @submit="createNewPassword"
     >
-      <FormStep>
-        <ChInput
-          type="email"
-          placeholder="E-mail или телефон"
-          label="E-mail или телефон"
-          id="emailOrPhone"
+      <template #afterForm="{ validation }">
+        <ChButton
+          @click="createNewPassword"
+          :loading="isBtnLoading"
+          :disabled="!validation.meta.valid"
+          >Продолжить</ChButton
         >
-        </ChInput>
-      </FormStep>
-      <FormStep v-if="isShowCodeField">
-        <ChInput
-          type="password"
-          placeholder="Введите пароль"
-          label="Пароль"
-          id="password"
-        />
-        <ChInput
-          type="password"
-          placeholder="Подтвердите пароль"
-          label="Подтверждение пароля"
-          id="password_confirm"
-        />
-      </FormStep>
-      <FormStep>
-        <ChInput type="text" placeholder="Код" label="Код" id="code_2fa">
-          <template v-if="isCodeError" #my-error-message>
-            <span class="error-message"> Неверный код </span>
-          </template>
-        </ChInput>
-      </FormStep>
-    </FormWizard>
+      </template>
+    </SchemaFormWithPlugins>
     <p
       v-if="$route.query.action === 'restore' && !isShowCodeField"
       class="form_help"
@@ -144,7 +206,10 @@ let isEmailSended = ref(false);
       <a class="vblg-link" href="mailto:info@voblago.io">info@voblago.io</a>
     </p>
     <AppModal
-      @close="$router.push('/login')"
+      @close="
+        $router.push('/login');
+        isPasswordReseted = false;
+      "
       :modelValue="isPasswordReseted"
       :image="'../images/icons/hand-shake.svg'"
       :imgSize="60"

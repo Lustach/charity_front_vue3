@@ -8,141 +8,252 @@ import LookupPlugin from "@formvuelate/plugin-lookup";
 import VeeValidatePlugin from "@formvuelate/plugin-vee-validate";
 import ChFormCategoryTitle from "@/components/pages/NkoInfo/ChFormCategoryTitle.vue";
 // Components
-
-import DropZone from "@/components/ui/file_loader/DropZone.vue";
-import FilePreview from "@/components/ui/file_loader/FilePreview.vue";
-import ChTextArea from "@/components/ui/textarea/textarea.vue";
 import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
 
 markRaw(ChInput);
-markRaw(ChTextArea);
 markRaw(ChButton);
-// File Management
-import useFileList from "@/components/ui/file_loader/compositions/fileList";
-const { files, addFiles, removeFile } = useFileList();
-function onInputChange(e) {
-  addFiles(e.target.files);
-  e.target.value = null; // reset so that selecting the same file again will still cause it to fire this change
-}
-// Uploader
-import createUploader from "@/components/ui/file_loader/compositions/fileUploader";
-const { uploadFiles } = createUploader("YOUR URL HERE");
 //schema validation
 
 const SchemaFormWithPlugins = SchemaFormFactory([LookupPlugin({}), VeeValidatePlugin()]);
 
 const form = ref({
-  shortDescriptionActivity: "",
-  fullDescriptionActivity: "",
-  site: "",
-  phone: "",
-  email: "",
-  vk: "",
-  classmates: "",
-  facebook: "",
-  insta: "",
+  // shortDescriptionActivity: "",
+  // fullDescriptionActivity: "",
+  // site: "",
+  // phone: "",
+  // email: "",
+  // vk: "",
+  // classmates: "",
+  // facebook: "",
+  // insta: "",
 });
 useSchemaForm(form);
-const schema = ref({
-  textDescription: {
-    component: ChFormCategoryTitle,
-    title: "Описание НКО",
-  },
-  shortDescriptionActivity: {
-    component: ChTextArea,
-    label: "Краткое описание деятельности *",
-    placeholder: "",
-    id: "shortDescriptionActivity",
+const schema = computed(() => [
+  {
+    component: ChInput,
+    type: "url",
+    label: "ИНН *",
+    placeholder: "www",
+    id: "inn",
+    model: "inn",
+    apiKey: "inn",
     error: "",
-    maxLength: 150,
-    fullSize: false,
   },
-  fullDescriptionActivity: {
-    component: ChTextArea,
+  {
+    component: ChInput,
     type: "text",
-    label: "Полное описание деятельности *",
-    placeholder: "",
-    id: "fullDescriptionActivity",
-    error: "",
-    maxLength: 2000,
-    fullSize: true,
-  },
-  textContacts: {
-    component: ChFormCategoryTitle,
-    title: "Контакты НКО",
-  },
-  site: {
-    component: ChInput,
-    type: "url",
-    label: "Сайт",
-    placeholder: "www",
-    id: "site",
-    error: "",
-  },
-  phone: {
-    component: ChInput,
-    type: "phone",
-    label: "Телефон *",
+    label: "КПП *",
     placeholder: "+7",
-    id: "phone",
+    id: "kpp",
+    apiKey: "kpp",
+    model: "kpp",
     error: "",
   },
-  email: {
+  {
     component: ChInput,
-    type: "email",
-    label: "Эл. почта *",
-    placeholder: "email@email.ru",
-    id: "email",
+    type: "text",
+    label: "ОГРН *",
+    placeholder: "",
+    id: "ogrn",
+    apiKey: "ogrn",
+    model: "ogrn",
     error: "",
   },
-  textSocialWebs: {
+  {
     component: ChFormCategoryTitle,
-    title: "Социальные сети",
+    title: "Банковские реквизиты",
+    model: "",
   },
-  vk: {
+  {
     component: ChInput,
-    type: "url",
-    label: "Вконтакте",
-    placeholder: "www",
-    id: "vk",
+    type: "text",
+    label: "Полное наименование банка *",
+    placeholder: "",
+    id: "fullNameBank",
+    apiKey: "full_name",
+    model: "fullNameBank",
     error: "",
   },
-  classmates: {
+  {
     component: ChInput,
     type: "url",
-    label: "Одноклассники",
-    placeholder: "www",
-    id: "classmates",
+    label: "БИК *",
+    placeholder: "",
+    id: "bik",
+    apiKey: "bik",
+    model: "bik",
     error: "",
   },
-  facebook: {
+  {
     component: ChInput,
     type: "url",
-    label: "Фейсбук",
-    placeholder: "www",
-    id: "facebook",
+    label: "Расчетный счет *",
+    placeholder: "",
+    id: "countScore",
+    apiKey: "checking_account",
+    model: "countScore",
     error: "",
   },
-  insta: {
+  {
     component: ChInput,
     type: "url",
-    label: "Инстаграм",
-    placeholder: "www",
+    label: "Корреспондентский счет *",
+    placeholder: "",
     id: "insta",
+    apiKey: "correspondent_account",
+    model: "insta",
     error: "",
   },
-  textMediaFiles: {
+  {
     component: ChFormCategoryTitle,
-    title: "Медиа файлы",
+    title: "Юридический адрес",
+    model: "",
   },
-});
+  {
+    component: ChInput,
+    type: "url",
+    label: "Город или населенный пункт *",
+    placeholder: "",
+    id: "city",
+    apiKey: "city",
+    model: "city",
+    error: "",
+  },
+  {
+    component: ChInput,
+    type: "url",
+    label: "Адрес *",
+    placeholder: "",
+    id: "address",
+    apiKey: "address",
+    model: "address",
+    error: "",
+  },
+  [
+    {
+      component: ChInput,
+      type: "url",
+      label: "Офис/квартира *",
+      placeholder: "",
+      id: "officeOrFlat",
+      apiKey: "office",
+      model: "officeOrFlat",
+      error: "",
+    },
+    {
+      component: ChInput,
+      type: "url",
+      label: "Индекс *",
+      placeholder: "",
+      id: "index",
+      apiKey: "index",
+      model: "index",
+      error: "",
+    },
+  ],
+  // acutal address
+  {
+    component: ChFormCategoryTitle,
+    title: "Фактический адрес",
+    model: "",
+  },
+  {
+    component: ChInput,
+    type: "url",
+    label: "Город или населенный пункт *",
+    placeholder: "",
+    id: "city_actual",
+    apiKey: "city",
+    model: "city_actual",
+    error: "",
+  },
+  {
+    component: ChInput,
+    type: "url",
+    label: "Адрес *",
+    placeholder: "",
+    id: "address_actual",
+    apiKey: "address",
+    model: "address_actual",
+    error: "",
+  },
+  [
+    {
+      component: ChInput,
+      type: "url",
+      label: "Офис/квартира *",
+      placeholder: "",
+      id: "officeOrFlat_actual",
+      apiKey: "office",
+      model: "officeOrFlat_actual",
+      error: "",
+    },
+    {
+      component: ChInput,
+      type: "url",
+      label: "Индекс *",
+      placeholder: "",
+      id: "index_actual",
+      apiKey: "index",
+      model: "index_actual",
+      error: "",
+    },
+  ],
+
+  //mailing address
+  {
+    component: ChFormCategoryTitle,
+    title: "Почтовый адрес",
+    model: "",
+  },
+  {
+    component: ChInput,
+    type: "url",
+    label: "Город или населенный пункт *",
+    placeholder: "",
+    id: "city_mailing",
+    apiKey: "city",
+    model: "city_mailing",
+    error: "",
+  },
+  {
+    component: ChInput,
+    type: "url",
+    label: "Адрес *",
+    placeholder: "",
+    id: "address_mailing",
+    apiKey: "address",
+    model: "address_mailing",
+    error: "",
+  },
+  [
+    {
+      component: ChInput,
+      type: "url",
+      label: "Офис/квартира *",
+      placeholder: "",
+      id: "officeOrFlat_mailing",
+      apiKey: "office",
+      model: "officeOrFlat_mailing",
+      error: "",
+    },
+    {
+      component: ChInput,
+      type: "url",
+      label: "Индекс *",
+      placeholder: "",
+      id: "index_mailing",
+      apiKey: "index",
+      model: "index_mailing",
+      error: "",
+    },
+  ],
+]);
 
 const urlPattern = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w\?[a-zA-Z-_%\/@?]+)*([^\/\w\?[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/;
 const validationSchema = computed(() => {
   return yup.object().shape({
-    shortDescriptionActivity: yup.string().max(150).required("Заполните поле"),
-    fullDescriptionActivity: yup.string().max(2000).required("Заполните поле"),
     site: yup.string().matches(
       // /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
       urlPattern,
@@ -173,42 +284,13 @@ const validationSchema = computed(() => {
           >
         </template>
       </SchemaFormWithPlugins>
-      <DropZone class="drop-area" @files-dropped="addFiles" #default="{ dropZoneActive }">
-        <label for="file-input">
-          <span v-if="dropZoneActive">
-            <span>Перетащите или загрузите файлы</span>
-            <span class="smaller">Добавьте</span>
-          </span>
-          <p class="action" v-else>
-            <span>Перетащите </span>
-            <span class="smaller">
-              <strong>или <em>загрузите файлы</em></strong>
-            </span>
-          </p>
-          <input type="file" id="file-input" multiple @change="onInputChange" />
-        </label>
-        <ul class="image-list" v-show="files.length">
-          <FilePreview
-            v-for="file of files"
-            :key="file.id"
-            :file="file"
-            tag="li"
-            @remove="removeFile"
-          />
-        </ul>
-      </DropZone>
     </div>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.profile_form_wrapper {
-  max-width: 720px;
-  &::v-deep {
-    .schema-col {
-      flex-direction: row !important;
-    }
-  }
+<style lang="scss">
+.schema-row {
+  display: flex;
 }
 .action {
   display: flex;

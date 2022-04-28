@@ -1,66 +1,32 @@
 <script setup lang="ts">
-import {
-  computed,
-  ref,
-  onMounted,
-  reactive,
-  markRaw,
-  nextTick,
-  getCurrentInstance,
-  inject,
-  watch,
-  toRaw,
-  unref,
-} from "vue";
+import axios from "axios";
+import { computed, ref, markRaw, inject, unref } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { useForm } from "vee-validate";
-import { SchemaForm, useSchemaForm, SchemaFormFactory } from "formvuelate";
+import { useSchemaForm, SchemaFormFactory } from "formvuelate";
 import LookupPlugin from "@formvuelate/plugin-lookup";
 import VeeValidatePlugin from "@formvuelate/plugin-vee-validate";
-import * as yup from "yup";
+import { object } from "yup";
+import { rules } from "@/compositions/validation_rules";
 import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
-import { setLocale } from "yup";
-import FormWizard from "@/components/ui/form/FormWizard.vue";
-import FormStep from "@/components/ui/form/FormStep.vue";
-import { useAuthStore } from "@/stores/modules/auth.ts";
-import { useProfileStore } from "@/stores/modules/profile.ts";
-const authStore = useAuthStore();
-const profileStore = useProfileStore();
+import { useAuthStore } from "@/stores/modules/auth";
+import { useProfileStore } from "@/stores/modules/profile";
+import useTimeOut from "@/components/compositions/utils/watchers";
 
 markRaw(ChInput);
+const SchemaFormWithPlugins = SchemaFormFactory([LookupPlugin({}), VeeValidatePlugin()]);
 
-const SchemaFormWithPlugins = SchemaFormFactory([
-  LookupPlugin({
-    // mapComponents: {
-    //   string: "ChInput",
-    //   array: "ChInput",
-    // },
-  }),
-  VeeValidatePlugin(),
-]);
-
-import useTimeOut from "@/components/compositions/utils/watchers";
+const authStore = useAuthStore();
+const profileStore = useProfileStore();
 const { timeOut } = useTimeOut;
-// TODO: вообще лучше не использовать генераторы форм по типу yup или zod, так как в случае необходимости гибких настроек, можно потратить
-// очень много времени не получив результата (use <Field></Field> <Form></Form> and options API)
-setLocale({
-  mixed: {
-    required: "Обязательное поле",
-  },
-  string: {
-    email: "Невалидный e-mail",
-    min: "Минимальная длина ${min} символов",
-    max: "Максимальная длина ${max} символов",
-  },
-});
-//  TODO: для полной красоты нужно прописать matches для всех, так как i18 yup не работает ?
+
 const form = ref({
   isShowCodeField: false,
   emailOrPhone: "",
   password: "",
   code_2fa: "",
 });
+
 useSchemaForm(form);
 const schema = ref({
   emailOrPhone: {
@@ -98,32 +64,16 @@ const schema = ref({
 });
 const validationSchema = computed(() => {
   if (form.value.isShowCodeField === false) {
-    return yup.object().shape({
-      emailOrPhone: yup
-        .string()
-        .required("Заполните поле")
-        .test("test-name", "Неверный e-mail или телефон", function (value) {
-          if (value === "") {
-            return false;
-          } else {
-            if (
-              value &&
-              (new RegExp(/\S+@\S+\.+(com|ru|org|net|info|io)$/).test(value) ||
-                new RegExp(/^\+7[0-9]{10}$/).test(value))
-            ) {
-              return true;
-            } else {
-              return false;
-            }
-          }
-        }),
-      password: yup.string().min(8).required(),
+    return object().shape({
+      emailOrPhone: rules.emailOrPhone,
+      password: rules.password,
     });
   } else if (form.value.isShowCodeField === true) {
-    return yup.object().shape({
-      code_2fa: yup.string().min(6).max(6).required(),
+    return object().shape({
+      code_2fa: rules.code_2fa,
     });
   }
+  return undefined;
 });
 
 const API = inject("API");
@@ -135,7 +85,7 @@ let emailOrPhoneErrorType = ref("");
 let isEmailError = ref(false);
 let isPasswordError = ref(false);
 let isCodeError = ref(false);
-let isShowCodeField = ref(false);
+// let isShowCodeField = ref(false);
 let isLoadingBtn = ref(false);
 
 timeOut(isEmailError, 3500);
@@ -160,16 +110,17 @@ async function login() {
       router.push("/fill_profile");
     }
   } catch (e) {
-    if (e.response.status === 401) {
-      if (e.response.data.detail === "Неверный пароль") {
-        isPasswordError.value = true;
-      } else if (e.response.data.detail === "Неверный e-mail или телефон") {
-        isEmailError.value = true;
-        values.emailOrPhone.includes("@")
-          ? (emailOrPhoneErrorType.value = "e-mail")
-          : (emailOrPhoneErrorType.value = "телефон");
+    if (axios.isAxiosError(e))
+      if (e.response.status === 401) {
+        if (e.response.data.detail === "Неверный пароль") {
+          isPasswordError.value = true;
+        } else if (e.response.data.detail === "Неверный e-mail или телефон") {
+          isEmailError.value = true;
+          values.emailOrPhone.includes("@")
+            ? (emailOrPhoneErrorType.value = "e-mail")
+            : (emailOrPhoneErrorType.value = "телефон");
+        }
       }
-    }
     if (e.response.status === 400) {
       if (e.response.data.otp[0] === "Invalid otp") {
         showNextStep.value = true;
@@ -188,7 +139,9 @@ async function login() {
       <h1 class="form_title">Авторизация в личном кабинете НКО</h1>
       <p class="form_subtitle">
         Введите вашу почту или телефон, указанные при регистрации, и пароль. Или пройдите
-        <router-link to="/registration" style="color: var(--vblg-c-primary)">регистрацию</router-link>.
+        <router-link to="/registration" style="color: var(--vblg-c-primary)"
+          >регистрацию</router-link
+        >.
       </p>
       <SchemaFormWithPlugins
         :schema="schema"
@@ -209,7 +162,6 @@ async function login() {
           </div>
         </template>
       </SchemaFormWithPlugins>
-      {{ form }}
     </div>
   </section>
 </template>

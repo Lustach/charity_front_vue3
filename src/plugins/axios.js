@@ -70,7 +70,7 @@ const API = {
         }),
         setPassword: (data) => axios.post('/auth/users/set_password/', { ...data, }),
         resetPasswordEmail: (data) => axios.post('/auth/users/reset_password/', { ...data, }),
-        resetPasswordConfirmSpacer: (data) => axios.post('/auth/users/reset_password_confirm/', { ...data, }),
+        resetPasswordConfirmSpacer: (data) => axios.post('/auth/users/reset_passwordConfirm/', { ...data, }),
         prepare2Fa: () => axios.post('/prepare_2fa/'),
         sendEmail2Fa: (data) => axios({
             data: data,
