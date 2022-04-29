@@ -1,4 +1,8 @@
 import axios from 'axios';
+import { useAuthStore } from "@/stores/modules/auth.ts";
+import { useRouter, useRoute } from "vue-router";
+const router = useRouter();
+// const authStore = useAuthStore();
 // import router from '@/router/router';
 // import store from '@/store/store';
 
@@ -164,39 +168,39 @@ const API = {
 // Vue.use({
 //     install(Vue) {
 axios.defaults.baseURL = 'http://localhost:8000';
-// const token = localStorage.getItem('access_token');
-// if (token) {
-//     axios.defaults.headers.common.Authorization = 'JWT ' + token;
-// }
+const token = localStorage.getItem('access_token');
+if (token) {
+    axios.defaults.headers.common.Authorization = 'JWT ' + token;
+}
 // axios.defaults.headers.common['Content-Type'] = 'application/json';
-// axios.interceptors.request.use(async (request) => {
-//     if (store.getters.loggedIn) {
-//         try {
-//             await store.dispatch('inspectToken');
-//         } catch (e) {
-//             console.error(e);
-//             await store.dispatch('logoutUser');
-//             await router.push({ name: 'Login', });
-//             return;
-//         }
-//     }
-//     return request;
-// });
+axios.interceptors.request.use(async (request) => {
+    const authStore = useAuthStore();
+    if (authStore.loggedIn) {
+        try {
+            await authStore.inspectToken;
+        } catch (e) {
+            console.error(e);
+            await authStore.logoutUser();
+            await router.push({ name: 'Login', });
+            return;
+        }
+    }
+    return request;
+});
 
-// axios.interceptors.response.use(function (response) {
-//     console.log('Interceptor Response')
-//     return response.data;
-// }, function (error) {
-//     console.log('Interceptor Response error')
-//     if (error.response?.status === 401) {
-//         localStorage.removeItem('access_token');
-//         axios.defaults.headers.common.Authorization = '';
-//         if (router.currentRoute.name !== 'Login')
-//             router.push({ name: 'Login', });
-//     }
-
-//     return Promise.reject(error);
-// });
+axios.interceptors.response.use(function (response) {
+    console.log('Interceptor Response')
+    return response;
+}, function (error) {
+    console.log(error,'Interceptor Response error')
+    if (error.response?.status === 401) {
+        localStorage.removeItem('access_token');
+        axios.defaults.headers.common.Authorization = '';
+        if (router.currentRoute.name !== 'Login')
+            router.push({ name: 'Login', });
+    }
+    return Promise.reject(error);
+});
 // Vue.prototype.$http = axios;
 // Object.defineProperty(Vue.prototype, '$API', { value: API, });
 // },

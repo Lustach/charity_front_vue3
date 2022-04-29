@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 // import routes from '@/router/routes.js';
-
+import { useAuthStore } from "@/stores/modules/auth.ts";
+import { useProfileStore } from '@/stores/modules/profile.ts'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   // routes,
@@ -86,3 +87,21 @@ const router = createRouter({
 })
 
 export default router
+router.beforeResolve(async (to, from, next) => {
+  console.log(to, from);
+  const authStore = useAuthStore();
+  const profileStore = useProfileStore();
+  console.log(profileStore);
+  if (!profileStore.profile?.loading) {
+    console.log('fa');
+    await authStore.setToken()
+    try {
+      console.log('adsf');
+      await profileStore.initDataFromLocalStorage()
+    } catch (e) {
+      console.log('adsf1');
+      console.error(e,'router e');
+    }
+  }
+  next()
+})

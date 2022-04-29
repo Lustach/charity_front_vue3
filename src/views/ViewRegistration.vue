@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, ref, watch, markRaw } from "vue";
+import { computed, ref, unref, watch, markRaw } from "vue";
 import LookupPlugin from "@formvuelate/plugin-lookup";
 import VeeValidatePlugin from "@formvuelate/plugin-vee-validate";
+import { useRouter, useRoute } from "vue-router";
 
 import { useSchemaForm, SchemaFormFactory } from "formvuelate";
 import { object, bool } from "yup";
@@ -10,10 +11,11 @@ import { rules } from "@/compositions/validation_rules";
 import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
 import ChCheckbox from "@/components/ui/checkbox/checkbox.vue";
-// import myButton from "@/ui/button.vue";
-// TODO: вообще лучше не использовать генераторы форм по типу yup или zod, так как в случае необходимости гибких настроек, можно потратить
-// очень много времени не получив результата (use <Field></Field> <Form></Form> and options API)
-//  TODO: для полной красоты нужно прописать matches для всех, так как i18 yup не работает ?
+
+import { useAuthStore } from "@/stores/modules/auth";
+import { useProfileStore } from "@/stores/modules/profile";
+const authStore = useAuthStore();
+const profileStore = useProfileStore();
 
 markRaw(ChInput);
 markRaw(ChCheckbox);
@@ -80,10 +82,47 @@ let modelValue = ref(true);
 let validServiceRules = ref(false);
 let touchServiceRules = ref(false);
 let isLoadingBtn = ref(false);
+const router = useRouter();
+const route = useRoute();
 // let serviceRules: Array<string> = ref([]);
-function signUp() {
-  console.log("signUp");
+async function signUp() {
+  let values = unref(form);
+  localStorage.clear();
+  authStore.$reset();
+  profileStore.$reset();
+  // this.resetProfileState();
+  // this.resetUserState();
+  const data = {
+    password: values.password,
+    username: values.email,
+    re_password: values.passwordConfirm,
+    email: values.email,
+    phone_number: values.phone,
+  };
+  isLoadingBtn.value = true;
+  try {
+    await authStore.signUp(data);
+    if (localStorage.getItem("isEmailActivation")) {
+      localStorage.removeItem("isEmailActivation");
+    }
+    await router.push("/fill_profile");
+  } catch (e) {
+    if (e.response.status === 400) {
+      if (e.response.data.email) {
+        isErrorRequest = true;
+      }
+      if (e.response.data.phone_number) {
+        isPhoneErrorRequest = true;
+      }
+      console.error(e.response);
+    }
+  } finally {
+    isLoadingBtn.value = false;
+  }
 }
+// function signUp() {
+//   console.log("signUp");
+// }
 </script>
 
 <template>

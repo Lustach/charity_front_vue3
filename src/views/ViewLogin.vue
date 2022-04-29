@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import axios from "axios";
-import { computed, ref, markRaw, inject, unref } from "vue";
+import { computed, ref, markRaw, inject, unref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useSchemaForm, SchemaFormFactory } from "formvuelate";
 import LookupPlugin from "@formvuelate/plugin-lookup";
@@ -62,6 +62,39 @@ const schema = ref({
     },
   },
 });
+watch(
+  () => form.value.emailOrPhone,
+  (nV) => {
+    if (nV) {
+      schema.value.emailOrPhone.error = "";
+    }
+  },
+  {
+    deep: true,
+  }
+);
+watch(
+  () => form.value.password,
+  (nV) => {
+    if (nV) {
+      schema.value.password.error = "";
+    }
+  },
+  {
+    deep: true,
+  }
+);
+watch(
+  () => form.value.code_2fa,
+  (nV) => {
+    if (nV) {
+      schema.value.code_2fa.error = "";
+    }
+  },
+  {
+    deep: true,
+  }
+);
 const validationSchema = computed(() => {
   if (form.value.isShowCodeField === false) {
     return object().shape({
@@ -81,7 +114,6 @@ const router = useRouter();
 const route = useRoute();
 
 let showNextStep = ref(false);
-let emailOrPhoneErrorType = ref("");
 let isEmailError = ref(false);
 let isPasswordError = ref(false);
 let isCodeError = ref(false);
@@ -113,17 +145,16 @@ async function login() {
     if (axios.isAxiosError(e))
       if (e.response.status === 401) {
         if (e.response.data.detail === "Неверный пароль") {
-          isPasswordError.value = true;
+          schema.value.password.error = "Неверный пароль";
         } else if (e.response.data.detail === "Неверный e-mail или телефон") {
-          isEmailError.value = true;
-          values.emailOrPhone.includes("@")
-            ? (emailOrPhoneErrorType.value = "e-mail")
-            : (emailOrPhoneErrorType.value = "телефон");
+          schema.value.emailOrPhone.error = values.emailOrPhone.includes("@")
+            ? "Данный e-mail не зарегистрирован"
+            : "Данный телефон не зарегистрирован";
         }
       }
     if (e.response.status === 400) {
       if (e.response.data.otp[0] === "Invalid otp") {
-        showNextStep.value = true;
+          schema.value.code_2fa.error = "Неверный код";
       }
     }
     console.error(e);

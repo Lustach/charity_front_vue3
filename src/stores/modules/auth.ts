@@ -63,22 +63,25 @@ export const useAuthStore = defineStore('auth', {
                     });
             });
         },
+        async setToken() {
+            this.accessToken = localStorage.getItem('access_token');
+            this.refreshToken = localStorage.getItem('refresh_token');
+            if (this.accessToken) {
+                const profileStore = useProfileStore();
+                axios.defaults.headers.common.Authorization = 'JWT ' + this.accessToken;
+                await profileStore.initDataFromLocalStorage()
+            }
+        },
         async loginUser(payload: { email?: string, phone_number?: string, otp?: string, password: string }) {
             // return new Promise((resolve, reject) => {
             try {
                 const response = (await API.user.obtainJWT(payload)).data
                 localStorage.setItem('access_token', response.access);
                 localStorage.setItem('refresh_token', response.refresh);
-                this.accessToken = localStorage.getItem('access_token');
-                this.refreshToken = localStorage.getItem('refresh_token');
-                if (this.accessToken) {
-                    const profileStore = useProfileStore();
-                    axios.defaults.headers.common.Authorization = 'JWT ' + this.accessToken;
-                    await profileStore.initDataFromLocalStorage()
-                }
+                await this.setToken();
             } catch (e) {
                 console.error(e);
-                throw new Error()
+                throw e
             }
             // });
         },

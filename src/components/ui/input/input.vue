@@ -4,7 +4,7 @@ import { useField } from "vee-validate";
 import { Props } from "@/components/ui/input/interface.ts";
 import useInputHandlers from "@/components/compositions/useInputHandlers.ts";
 let inputHandlers = useInputHandlers;
-console.log(inputHandlers);
+// console.log(inputHandlers);
 
 const emit = defineEmits(["update:modelValue"]);
 //* TODO: imported interfaces are not support official by Evan(nice joke) :) https://github.com/vuejs/vue-next/issues/4294
@@ -27,8 +27,6 @@ let { value: modelValue, errorMessage, handleBlur, handleChange, meta } = useFie
   }
 );
 function update(value) {
-  // useInputHandlers.validateFieldByTypePhone(value);
-  // console.log(value, props);
   emit("update:modelValue", value);
 }
 </script>
@@ -36,12 +34,12 @@ function update(value) {
 <template>
   <div
     class="vblg-input__container"
-    :class="{ 'has-error': !!errorMessage, success: meta.valid && meta.dirty }"
+    :class="{ 'has-error': !!errorMessage || error, success: meta.valid && meta.dirty }"
     :style="{ 'max-width': maxWidth }"
   >
     <label :for="id">{{ label }}</label>
     <input
-      :class="{ 'is-error': errorMessage }"
+      :class="{ 'is-error': errorMessage || error }"
       :type="type"
       :value="modelValue"
       @input="update($event.target.value)"
@@ -51,7 +49,9 @@ function update(value) {
       autocomplete="off"
       class="vblg-input"
     />
-    <span class="error-message" v-if="errorMessage">{{ errorMessage }}</span>
+    <span class="error-message" v-if="errorMessage || error">{{
+      error || errorMessage
+    }}</span>
     <slot name="my-error-message"></slot>
   </div>
 </template>
