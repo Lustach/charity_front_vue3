@@ -73,6 +73,16 @@ const router = createRouter({
       component: () => import('@/views/ViewRequisites.vue')
     },
     {
+      path: '/lk/security',
+      name: 'security',
+      component: () => import('@/views/ViewSecurity.vue')
+    },
+    {
+      path: '/lk/settings',
+      name: 'settings',
+      component: () => import('@/views/ViewSettings.vue')
+    },
+    {
       path: '/:pathMatch(.*)*',
       component: () => import('@/views/ViewNotFound.vue'),
     },
@@ -100,7 +110,7 @@ router.beforeResolve(async (to, from, next) => {
       await profileStore.initDataFromLocalStorage()
     } catch (e) {
       console.log('adsf1');
-      console.error(e,'router e');
+      console.error(e, 'router e');
     }
   }
   next()

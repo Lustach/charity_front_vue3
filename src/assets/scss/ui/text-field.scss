@@ -7,7 +7,7 @@
     box-sizing: border-box;
     border-radius: 35px;
     padding-left: 18px;
-    font-size: 13.23px;
+    font-size: 14px;
     color: #0d549b !important;
     font-weight: 600;
 
@@ -27,7 +27,7 @@
     &::placeholder {
         font-style: normal;
         font-weight: 600;
-        font-size: 13.23px;
+        font-size: 14px;
         width: 230px;
         height: 70px;
         color: #b0ceec;
@@ -65,4 +65,20 @@
             }
         }
     }
+}
+
+
+.question_mark {
+    top: 4px;
+    position: absolute;
+    right: -8px;
+    width: 16px;
+    height: 16px;
+    z-index: 1;
+
+    &-lk {
+        top: -12px;
+        right: -13px;
+    }
+    cursor: pointer;
 }

@@ -16,7 +16,7 @@
     align-items: center;
     font-style: normal;
     font-weight: 600;
-    font-size: 13.23px;
+    font-size: 14px;
     text-decoration-line: underline;
     color: #0F75BD;
     margin: 0 22px 0 0;
@@ -50,7 +50,7 @@
   }
 
   &_description {
-    font-size: 13.23px;
+    font-size: 14px;
     display: flex;
     align-items: center;
     text-align: center;
@@ -128,7 +128,7 @@ a {
   }
   @media(max-width: 382px) {
     .my-btn {
-      font-size: 13.23px !important;
+      font-size: 14px !important;
       &:first-child {
         margin-right: 0 !important;
       }

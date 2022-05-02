@@ -17,7 +17,6 @@ import NkoInfoForm from "@/components/pages/NkoInfo/NkoInfoForm.vue";
 .form {
   &_container {
     max-width: 1000px;
-    margin: 0 auto;
   }
 }
 </style>

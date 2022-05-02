@@ -145,7 +145,7 @@ export default {
       },
       {
         title: "Реквизиты НКО",
-        to: "/lk/requisite",
+        to: "/lk/requisites",
       },
       {
         title: "Сгенерировать QR",

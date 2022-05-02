@@ -3,16 +3,12 @@
     >click to open the Dialog</el-button
   > -->
   <div class="app-modal">
-    <el-dialog
-      class="app-modal"
-      v-model="props.modelValue"
-      :before-close="handleClose"
-    >
+    <el-dialog class="app-modal" :model-value="modelValue" :before-close="handleClose">
       <div class="app-modal__content">
         <!-- <div> -->
         <img :src="image" alt="" :style="{ width: imgSize + 'px' }" />
         <div class="app-modal__content--message">
-          <p class="content" v-for="(message, key) in messages" :key="message">
+          <p class="content" v-for="(message, key) in messages" :key="key">
             <span v-if="key === 0" style="font-weight: 600">{{ message }}</span>
             <span v-else style="font-weight: 400">{{ message }}</span>
           </p>
@@ -45,7 +41,7 @@ import { ref, defineEmits } from "vue";
 import { ElMessageBox } from "element-plus";
 let emit = defineEmits(["close"]);
 const dialogVisible = ref(false);
-const props = defineProps({
+let props = defineProps({
   modelValue: {
     required: true,
     default: false,

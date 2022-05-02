@@ -16,6 +16,13 @@
     &[type="number"] {
         -moz-appearance: textfield;
     }
+
+    &:disabled {
+        background-color: #F5F7FA;
+        border-color: #E4E7ED;
+        color: #C0C4CC !important;
+        cursor: not-allowed;
+    }
 }
 
 .vblg-error {

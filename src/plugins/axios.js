@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useAuthStore } from "@/stores/modules/auth.ts";
-import { useRouter, useRoute } from "vue-router";
-const router = useRouter();
+import router from '@/router/router.js'
+console.log(router);
 // const authStore = useAuthStore();
 // import router from '@/router/router';
 // import store from '@/store/store';
@@ -181,7 +181,7 @@ axios.interceptors.request.use(async (request) => {
         } catch (e) {
             console.error(e);
             await authStore.logoutUser();
-            await router.push({ name: 'Login', });
+            await router.push({ name: 'login', });
             return;
         }
     }
@@ -196,8 +196,9 @@ axios.interceptors.response.use(function (response) {
     if (error.response?.status === 401) {
         localStorage.removeItem('access_token');
         axios.defaults.headers.common.Authorization = '';
-        if (router.currentRoute.name !== 'Login')
-            router.push({ name: 'Login', });
+        console.log(router);
+        if (router.currentRoute.name !== 'login')
+            router.push({ name: 'login', });
     }
     return Promise.reject(error);
 });

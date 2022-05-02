@@ -241,7 +241,7 @@ watch(
   &_help {
     font-style: normal;
     font-weight: 600;
-    font-size: 13.23px;
+    font-size: 14px;
     text-align: center;
     color: var(--vblg-c-primary);
     max-width: 772px;

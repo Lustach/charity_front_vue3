@@ -9,7 +9,7 @@
     box-sizing: border-box;
     border-radius: 35px;
     padding-left: 18px;
-    font-size: 13.23px;
+    font-size: 14px;
     margin-top: 4px;
     //&:hover{
     //  border-color: #96cbe9 !important;
@@ -17,7 +17,7 @@
     &::placeholder {
       font-style: normal;
       font-weight: 600;
-      font-size: 13.23px;
+      font-size: 14px;
       width: 230px;
       height: 70px;
       color: #B0CEEC;
@@ -107,7 +107,7 @@
     border: 2px solid #B0CEEC !important;
     box-sizing: border-box !important;
     border-radius: 10px !important;
-    font-size: 13.23px;
+    font-size: 14px;
     text-align: center;
   }
 }
@@ -160,7 +160,7 @@
     padding-top: 0 !important;
     font-style: normal;
     font-weight: 600;
-    font-size: 13.23px !important;
+    font-size: 14px !important;
     color: #F56E6E !important;
     text-align: left !important;
   }
@@ -170,7 +170,7 @@
     line-height: 1em !important;
 
     label {
-      font-size: 13.23px;
+      font-size: 14px;
       margin-bottom: 4px;
       text-align: center;
       color: #0F75BD;
@@ -204,7 +204,7 @@
         margin: 12px 0 20px 0 !important;
         font-style: normal;
         font-weight: 600;
-        font-size: 13.23px;
+        font-size: 14px;
         color: #5F9DD8;
         text-align: left;
         width: fit-content;
@@ -226,7 +226,7 @@
       width: 100%;
       text-align: left !important;
       max-width: 528px;
-      font-size: 13.23px;
+      font-size: 14px;
       //text-align: center;
       color: #0F75BD;
       font-weight: 600;
@@ -299,7 +299,7 @@
   &_subtitle {
     font-style: normal;
     font-weight: normal;
-    font-size: 13.23px;
+    font-size: 14px;
     text-align: center;
     color: var(--vblg-c-indigo);
     margin: 0 auto 16px auto;
@@ -321,7 +321,7 @@
   font-style: normal;
   font-weight: normal;
   font-family: Montserrat, sans-serif;
-  font-size: 13.23px;
+  font-size: 14px;
   text-align: justify;
   color: #5F9DD8;
   z-index: 1000 !important;

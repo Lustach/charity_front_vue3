@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { useNotification } from "@/components/compositions/ui/elNotification.ts";
 import * as validationMessages from '@/compositions/validation_messages'
+import "@/compositions/tooltip"
 import Api from '@/plugins/axios.js';
 
 import App from '@/components/app/App.vue'
@@ -40,3 +41,5 @@ app.use(router)
 app.use(ElementPlus)
 
 app.mount('#app')
+
+

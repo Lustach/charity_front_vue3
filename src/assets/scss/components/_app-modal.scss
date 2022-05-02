@@ -6,7 +6,6 @@
   @media screen and (max-width: 740px) {
     width: 100%;
   }
-
 }
 
 .app-modal .el-dialog__close {
@@ -27,7 +26,6 @@
 }
 
 .app-modal {
-
   &__content {
     padding: 60px 40px 90px 40px;
 
@@ -48,7 +46,7 @@
       padding-bottom: 30px;
     }
 
-    >div>img {
+    > div > img {
       width: 80px;
       object-fit: contain;
 
@@ -59,12 +57,10 @@
       @media screen and (max-width: 480px) {
         width: 70px;
       }
-
     }
 
     &--message {
-
-      >p {
+      > p {
         display: block;
         float: left;
         width: 100%;
@@ -73,7 +69,7 @@
         font-family: Montserrat, sans-serif;
         font-style: normal;
         font-weight: 600;
-        font-size: 13.23px;
+        font-size: 14px;
         text-align: center;
         word-break: break-word;
 
@@ -95,11 +91,7 @@
         @media screen and (max-width: 480px) {
           font-size: 10px;
         }
-
       }
-
     }
-
   }
-
 }

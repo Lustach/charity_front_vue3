@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, unref } from "vue";
 import { useField } from "vee-validate";
 import { Props } from "@/components/ui/input/interface.ts";
 import useInputHandlers from "@/components/compositions/useInputHandlers.ts";
+import { useMouseInElement } from "@vueuse/core";
+
 let inputHandlers = useInputHandlers;
 // console.log(inputHandlers);
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "toggleEye"]);
 //* TODO: imported interfaces are not support official by Evan(nice joke) :) https://github.com/vuejs/vue-next/issues/4294
 /* we need to use plugin https://github.com/wheatjs/vite-plugin-vue-type-imports
  */
@@ -26,8 +28,20 @@ let { value: modelValue, errorMessage, handleBlur, handleChange, meta } = useFie
     validateOnValueUpdate: false,
   }
 );
+const target = ref(null);
+
+const { x, y, isOutside } = useMouseInElement(target);
 function update(value) {
   emit("update:modelValue", value);
+}
+function showInfoByKey(id) {
+  let values = unref(props);
+  if (modelValue.value === values.modelOriginal) {
+    modelValue.value = values.modelHidden;
+  } else {
+    modelValue.value = values.modelOriginal;
+  }
+  // emit("toggleEye",id)
 }
 </script>
 
@@ -38,6 +52,22 @@ function update(value) {
     :style="{ 'max-width': maxWidth }"
   >
     <label :for="id">{{ label }}</label>
+    <img
+      v-if="tooltip"
+      class="question_mark"
+      src="@/assets/images/icons/question_mark.svg"
+      alt="tooltip"
+      :data-tooltip="tooltip"
+      ref="target"
+    />
+    <img
+      src="@/assets/images/icons/eye.svg"
+      alt=""
+      class="eye"
+      v-if="eye"
+      @click="showInfoByKey(id)"
+    />
+
     <input
       :class="{ 'is-error': errorMessage || error }"
       :type="type"
@@ -46,6 +76,7 @@ function update(value) {
       :placeholder="placeholder"
       :id="id"
       :name="id"
+      :disabled="disabled"
       autocomplete="off"
       class="vblg-input"
     />
@@ -58,4 +89,14 @@ function update(value) {
 
 <style scoped lang="scss">
 @import "@/assets/scss/ui/input.scss";
+.eye {
+  display: block;
+  position: absolute;
+  top: calc(0% + 30px);
+  left: calc(100% - 33px);
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  z-index: 1;
+}
 </style>

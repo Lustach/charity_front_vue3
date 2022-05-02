@@ -4,6 +4,11 @@ export interface Props {
     placeholder: string;
     id: string;
     modelValue?: string;
-    error: any;
+    error: string;
+    tooltip?: string,
     maxWidth: string;
+    disabled?: boolean;
+    eye?: boolean;
+    modelOriginal: string;
+    modelHidden: string;
 }
