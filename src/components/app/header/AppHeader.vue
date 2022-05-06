@@ -1,6 +1,5 @@
 <template>
   <header class="header">
-    <div class="container">
       <div class="header__wrapper">
         <router-link class="link" to="/">
           <!-- <img src="@/assets/icons/logo-iphone.png" alt="" v-if="$store.state.isIphone"> -->
@@ -90,7 +89,6 @@
           </template>
         </div>
       </div>
-    </div>
   </header>
 </template>
 
@@ -185,7 +183,7 @@ export default {
       }
     }
   }
-  &:v-deep {
+  &:deep {
     .el-dropdown-menu__item {
       justify-content: center !important;
     }
@@ -193,7 +191,7 @@ export default {
 }
 
 .el-dropdown__popper {
-  &:v-deep {
+  &:deep {
     .header__menu--item {
       font-weight: 400 !important;
     }

@@ -38,9 +38,7 @@ export const useProfileStore = defineStore('profile', {
         },
         //actions 
         async getBids() {
-            const result = (await API.user.getUserProfileById(this.authStore.profileId)).data;
-            console.log(result.bids.fundbid === null);
-
+            const result = await API.user.getUserProfileById(this.authStore.profileId);
             this.bids = result.bids
             return result;
         },
@@ -49,7 +47,7 @@ export const useProfileStore = defineStore('profile', {
             if (this.authStore.loggedIn) {
                 localStorage.setItem('isEmailActivation', '1');
                 try {
-                    const result = (await API.user.meUser()).data;
+                    const result = await API.user.meUser();
                     this.authStore.$patch({
                         userId: result.id,
                         email: result.email,
@@ -69,10 +67,10 @@ export const useProfileStore = defineStore('profile', {
                     }
                     // todo при нажатии на кнопкИ сохранить или прочее (редактирование текущего фонда) - сделать обновление данных в сторе, а не запросом
                     // if(!this.fund) {
-                    this.fund = (await API.fill_profile.getFund((this.fundIdFromStorage))).data;
+                    this.fund = await API.fill_profile.getFund((this.fundIdFromStorage));
                     // }
                     if (this.fund.bank_details) {
-                        this.bankDetails = (await API.fill_profile.getBankDetails(this.fund.bank_details)).data;
+                        this.bankDetails = await API.fill_profile.getBankDetails(this.fund.bank_details);
                         this.bankDetailsIdFromStorage = this.fund.bank_details;
                         this.mailingAddressIdFromStorage = this.bankDetails.mailing_address;
                         this.actualAddressIdFromStorage = this.bankDetails.actual_address;

@@ -128,7 +128,6 @@ onMounted(async () => {
     phone.slice(8, 10) +
     "-" +
     phone.slice(10, 12);
-  console.log(schema.value.phone.modelOriginal, values.phone);
   schema.value.phone.modelHidden =
     values.phone.substr(0, 7) +
     "-" +

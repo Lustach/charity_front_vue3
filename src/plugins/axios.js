@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { useAuthStore } from "@/stores/modules/auth.ts";
 import router from '@/router/router.js'
-console.log(router);
 // const authStore = useAuthStore();
 // import router from '@/router/router';
 // import store from '@/store/store';
@@ -189,14 +188,11 @@ axios.interceptors.request.use(async (request) => {
 });
 
 axios.interceptors.response.use(function (response) {
-    console.log('Interceptor Response')
-    return response;
+    return response.data;
 }, function (error) {
-    console.log(error,'Interceptor Response error')
     if (error.response?.status === 401) {
         localStorage.removeItem('access_token');
         axios.defaults.headers.common.Authorization = '';
-        console.log(router);
         if (router.currentRoute.name !== 'login')
             router.push({ name: 'login', });
     }

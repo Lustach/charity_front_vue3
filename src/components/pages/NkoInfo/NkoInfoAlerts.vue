@@ -3,7 +3,6 @@ import Alert from "@/components/app/Alert.vue";
 import useBids from "@/components/compositions/utils/useBids";
 
 let { bidsStatus, disabledBtn, getBidStatus } = useBids;
-console.log(useBids);
 </script>
 <template>
   <alert

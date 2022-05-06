@@ -1,5 +1,4 @@
 let tooltipElem;
-console.log('fasgas');
 //todo data-side (сделать поддержку сторон для тултипа)
 document.onmouseover = function (event) {
     

@@ -3,7 +3,6 @@
 // import useBids from "@/components/compositions/utils/useBids";
 
 // let { bidsStatus, disabledBtn, getBidStatus } = useBids;
-// console.log(useBids);
 import NkoInfoAlerts from "@/components/pages/NkoInfo/NkoInfoAlerts.vue";
 import NkoInfoForm from "@/components/pages/NkoInfo/NkoInfoForm.vue";
 </script>

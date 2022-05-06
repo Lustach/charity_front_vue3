@@ -120,9 +120,7 @@ async function signUp() {
     isLoadingBtn.value = false;
   }
 }
-// function signUp() {
-//   console.log("signUp");
-// }
+
 </script>
 
 <template>

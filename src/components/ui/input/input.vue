@@ -6,7 +6,6 @@ import useInputHandlers from "@/components/compositions/useInputHandlers.ts";
 import { useMouseInElement } from "@vueuse/core";
 
 let inputHandlers = useInputHandlers;
-// console.log(inputHandlers);
 
 const emit = defineEmits(["update:modelValue", "toggleEye"]);
 //* TODO: imported interfaces are not support official by Evan(nice joke) :) https://github.com/vuejs/vue-next/issues/4294

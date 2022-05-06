@@ -105,8 +105,6 @@ async function createNewPassword() {
   //todo
   isBtnLoading.value = true;
   if (authStore.is2faEnabled && !isShowCodeField.value) {
-    console.log();
-
     isShowCodeField.value = true;
     isBtnLoading.value = false;
     return;
@@ -155,8 +153,6 @@ async function createNewPassword() {
   }
 }
 
-// console.log(useNotification(), "useNotification");
-
 onMounted(() => {
   if (route.query.action === "create") isShowPasswordField.value = true;
 });
@@ -193,8 +189,8 @@ watch(
           @click="createNewPassword"
           :loading="isBtnLoading"
           :disabled="!validation.meta.valid"
-          >Продолжить</ChButton
-        >
+          >Продолжить
+        </ChButton>
       </template>
     </SchemaFormWithPlugins>
     <p

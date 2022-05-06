@@ -1,5 +1,6 @@
 import { sub, format, getDaysInMonth } from 'date-fns';
 import { defineStore } from 'pinia'
+import API from '@/plugins/axios.js';
 
 export const useChartStore = defineStore('chart', {
     state: () => {
@@ -69,7 +70,7 @@ export const useChartStore = defineStore('chart', {
             let query = payload.isShowAll ? '' : `?${'date_before=' + format_after}&${'date_after=' + format_before}&${this.selectedTool ? '&donation_tool=' + this.selectedTool : ''}`;
             // &${'date_before=' + date_before}&${'date_after='+date_after}
 
-            let result = (await this.$API.analytics.getReceiptsList(query));
+            let result = (await API.analytics.getReceiptsList(query));
             this.chartDataList = result.results.sort((a, b) => new Date(b.date) - new Date(a.date));
             this.loading = false;
         },

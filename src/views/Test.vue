@@ -46,8 +46,6 @@ const SCHEMA = [
   ],
 ];
 
-console.log(SchemaForm, SchemaFormWithPlugins, SchemaFormFactory(), "schema_form");
-
 export default {
   components: { ChButton, SchemaFormWithPlugins, SchemaForm },
   setup() {

@@ -83,6 +83,16 @@ const router = createRouter({
       component: () => import('@/views/ViewSettings.vue')
     },
     {
+      path: '/lk/terminals',
+      name: 'terminals',
+      component: () => import('@/views/ViewTerminals.vue')
+    },
+    {
+      path: '/lk/generate_qr',
+      name: 'generate_qr',
+      component: () => import('@/views/ViewQrGenerate.vue')
+    },
+    {
       path: '/:pathMatch(.*)*',
       component: () => import('@/views/ViewNotFound.vue'),
     },
@@ -98,18 +108,13 @@ const router = createRouter({
 
 export default router
 router.beforeResolve(async (to, from, next) => {
-  console.log(to, from);
   const authStore = useAuthStore();
   const profileStore = useProfileStore();
-  console.log(profileStore);
   if (!profileStore.profile?.loading) {
-    console.log('fa');
     await authStore.setToken()
     try {
-      console.log('adsf');
       await profileStore.initDataFromLocalStorage()
     } catch (e) {
-      console.log('adsf1');
       console.error(e, 'router e');
     }
   }

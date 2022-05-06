@@ -3,7 +3,6 @@
 // import useBids from "@/components/compositions/utils/useBids";
 
 // let { bidsStatus, disabledBtn, getBidStatus } = useBids;
-// console.log(useBids);
 import RequisitesAlerts from "@/components/pages/Requisites/RequisitesAlerts.vue";
 import RequisitesForm from "@/components/pages/Requisites/RequisitesForm.vue";
 </script>

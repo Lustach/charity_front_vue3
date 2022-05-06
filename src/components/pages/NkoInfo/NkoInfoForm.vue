@@ -204,7 +204,7 @@ const validationSchema = computed(() => {
 <style lang="scss" scoped>
 .profile_form_wrapper {
   max-width: 720px;
-  &::v-deep {
+  &:deep {
     .schema-col {
       flex-direction: row !important;
     }

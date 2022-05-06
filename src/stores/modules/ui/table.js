@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import API from '@/plugins/axios.js';
 
 export const useTableStore = defineStore('table', {
     state: () => {
@@ -79,7 +80,8 @@ export const useTableStore = defineStore('table', {
                 }, {
                     title: 'Собрано',
                     active: false,
-                },],
+                },
+            ],
             currentPage: 1,
             pageSize: 15,
 
@@ -97,15 +99,15 @@ export const useTableStore = defineStore('table', {
     actions: {
         initHeaderData() {
             for (const key in this.dataHeader) {
-                Vue.set(this.dataHeader[key], 'sortable', this.dataHeader[key].sortable !== false);
+                this.dataHeader[key].sortable = this.dataHeader[key].sortable !== false
                 if (this.dataHeader[key].sortable) {
-                    Vue.set(this.dataHeader[key], 'sortDirection', 'downUp');
+                    this.dataHeader[key].sortable.sortDirection = 'downUp'
                 }
             }
         },
         setSortDirection(item) {
             let itemSortDirection = this.dataHeader[this.dataHeader.findIndex(e => e.key === item.key)];
-            Vue.set(itemSortDirection, 'sortDirection', itemSortDirection.sortDirection === 'upDown' ? 'downUp' : 'upDown');
+            itemSortDirection.sortDirection = itemSortDirection.sortDirection === 'upDown' ? 'downUp' : 'upDown'
         },
         setCurrentPage(number) {
             this.currentPage = number;
@@ -120,7 +122,6 @@ export const useTableStore = defineStore('table', {
             this.pageSize = 15;
         },
         setSelectedDonationTool(payload) {
-            console.log(payload)
             if (payload > 0) this.selectedTool = payload;
             else if (payload === 0) this.selectedTool = null;
         },
@@ -168,7 +169,7 @@ export const useTableStore = defineStore('table', {
                 this.pageSize = 15;
             }
             this.setCurrentPage(1)
-            await dispatch('setDataList', { isShowAll: this.isShowAll, resetCurrentPage: true, });
+            this.setDataList({ isShowAll: this.isShowAll, resetCurrentPage: true })
         },
         async setDataList(payload) {
             this.timeFilter = this.timeList.find(e => e.active);
@@ -176,9 +177,9 @@ export const useTableStore = defineStore('table', {
             this.setQueryForRequest()
             let result = null;
             if (this.categoryList[1].active === false) {
-                result = (await this.$API.analytics.getReceiptsList(this.query));
+                result = await API.analytics.getReceiptsList(this.query);
             } else {
-                result = (await this.$API.analytics.getTransactionsList(this.query));
+                result = await API.analytics.getTransactionsList(this.query);
             }
             this.dataList = result.results;
             this.tableItemsCount = result.count;
@@ -191,7 +192,7 @@ export const useTableStore = defineStore('table', {
             payload.date = this.timeFilter.value !== 'all' ? this.timeFilter.apiKey + '_' + this.timeFilter.value : ''
             this.isShowAll = true
             this.setQueryForRequest()
-            const result = await this.$API.analytics.getCsv(payload);
+            const result = await API.analytics.getCsv(payload);
             this.isShowAll = true
             this.setQueryForRequest()
             return result;

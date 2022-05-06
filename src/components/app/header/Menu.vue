@@ -101,7 +101,7 @@ export default {
       }
     }
   }
-  &:v-deep {
+  &:deep {
     .el-dropdown-menu__item {
       justify-content: center !important;
     }
@@ -109,7 +109,7 @@ export default {
 }
 
 .el-dropdown__popper {
-  &:v-deep {
+  &:deep {
     .header__menu--item {
       font-weight: 400 !important;
     }

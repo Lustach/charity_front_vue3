@@ -35,7 +35,7 @@
       .my-input {
         width: 140px !important;
 
-        &::v-deep .el-input__inner {
+        &:deep .el-input__inner {
           &::placeholder {
             color: #0F75BD !important;
             top: 7px !important;
@@ -55,7 +55,7 @@
 }
 
 .my-input {
-  &::v-deep .el-input__inner {
+  &:deep .el-input__inner {
     margin-top: 0 !important;
   }
 }
@@ -76,7 +76,7 @@
   margin: 0;
 
   .my-input {
-    &::v-deep .el-input__inner {
+    &:deep .el-input__inner {
       max-width: 344px !important;
     }
   }

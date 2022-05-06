@@ -1,3 +1,4 @@
+import API from '@/plugins/axios.js';
 import { defineStore } from 'pinia'
 
 export const useTerminalsStore = defineStore('terminals', {
@@ -38,7 +39,6 @@ export const useTerminalsStore = defineStore('terminals', {
             itemSortDirection.sortDirection = itemSortDirection.sortDirection === 'upDown' ? 'downUp' : 'upDown'
         },
         setQueryOrder(payload) {
-            console.log(payload)
             let queryOrder = [];
             this.dataHeader.forEach(e => {
                 if (Object.prototype.hasOwnProperty.call(e, 'sortDirection')) {
@@ -65,7 +65,7 @@ export const useTerminalsStore = defineStore('terminals', {
         //actions 
         async setTerminalList(payload) {
             this.setQueryOrder(payload)
-            this.terminalList = (await this.$API.terminals.getDonationTerminals(this.queryOrder)).results
+            this.terminalList = (await API.terminals.getDonationTerminals(this.queryOrder)).results
         },
         async filterData(payload) {
             this.setSortDirection(payload)
@@ -77,4 +77,4 @@ export const useTerminalsStore = defineStore('terminals', {
             return state.terminalList.map(e => e.address)
         }
     }
-};
+})

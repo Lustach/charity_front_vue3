@@ -12,7 +12,6 @@ function fixEnterChar(e: string): string {
 }
 
 function validateFieldByTypePhone(field: string) {
-    console.log(field);
     if (field.type === 'phone') {
     const fieldValue = JSON.parse(JSON.stringify(field.length));
     for (let i = 0; i < fieldValue; i++) {
@@ -21,8 +20,6 @@ function validateFieldByTypePhone(field: string) {
         }
     }
     }
-    console.log(field);
-
     // else if (e.type === 'text') {
     //     // const fieldValue = JSON.parse(JSON.stringify(event.target.value));
     //     let test = event.target.value

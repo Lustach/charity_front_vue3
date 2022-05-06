@@ -75,7 +75,7 @@ export const useAuthStore = defineStore('auth', {
         async loginUser(payload: { email?: string, phone_number?: string, otp?: string, password: string }) {
             // return new Promise((resolve, reject) => {
             try {
-                const response = (await API.user.obtainJWT(payload)).data
+                const response = await API.user.obtainJWT(payload);
                 localStorage.setItem('access_token', response.access);
                 localStorage.setItem('refresh_token', response.refresh);
                 await this.setToken();
