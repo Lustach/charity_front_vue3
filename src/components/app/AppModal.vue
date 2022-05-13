@@ -1,11 +1,7 @@
 <template>
-  <!-- <el-button type="text" @click="dialogVisible = true"
-    >click to open the Dialog</el-button
-  > -->
   <div class="app-modal">
     <el-dialog class="app-modal" :model-value="modelValue" :before-close="handleClose">
       <div class="app-modal__content">
-        <!-- <div> -->
         <img :src="image" alt="" :style="{ width: imgSize + 'px' }" />
         <div class="app-modal__content--message">
           <p class="content" v-for="(message, key) in messages" :key="key">
@@ -13,7 +9,6 @@
             <span v-else style="font-weight: 400">{{ message }}</span>
           </p>
         </div>
-        <!-- </div> -->
       </div>
       <el-button
         v-if="propFn"
@@ -25,19 +20,10 @@
       >
     </el-dialog>
   </div>
-  <!-- <el-dialog v-model="dialogVisible" title="Tips" width="30%" :before-close="handleClose">
-    <span>This is a message</span>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
-      </span>
-    </template>
-  </el-dialog> -->
 </template>
 
 <script lang="ts" setup>
-import { ref, defineEmits } from "vue";
+import { ref} from "vue";
 import { ElMessageBox } from "element-plus";
 let emit = defineEmits(["close"]);
 const dialogVisible = ref(false);

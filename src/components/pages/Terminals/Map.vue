@@ -120,7 +120,6 @@ export default {
               }
             );
             myMap.geoObjects.events.add("click", function (e) {
-              console.log(e);
               // Получение ссылки на дочерний объект, на котором произошло событие.
               var object = e.get("target");
             });

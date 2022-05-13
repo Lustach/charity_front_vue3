@@ -1,157 +1,81 @@
 <script setup lang="ts">
 import axios from "axios";
 import { computed, ref, markRaw, inject, unref, watch } from "vue";
+const API = inject("API");
 //store
 import { useAuthStore } from "@/stores/modules/auth";
 import { useProfileStore } from "@/stores/modules/profile";
-//router
-import { useRouter, useRoute } from "vue-router";
-//validation
-import { useSchemaForm, SchemaFormFactory } from "formvuelate";
-import LookupPlugin from "@formvuelate/plugin-lookup";
-import VeeValidatePlugin from "@formvuelate/plugin-vee-validate";
-import { object } from "yup";
-import { rules } from "@/compositions/validation_rules";
+let authStore = useAuthStore();
 // components
-import ChFormCategoryTitle from "@/components/pages/NkoInfo/ChFormCategoryTitle.vue";
-import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
-import alert from "@/components/app/Alert.vue";
-import AppModal from "@/components/app/AppModal.vue";
-markRaw(ChInput);
-markRaw(ChFormCategoryTitle);
-const SchemaFormWithPlugins = SchemaFormFactory([LookupPlugin({}), VeeValidatePlugin()]);
-const authStore = useAuthStore();
-const profileStore = useProfileStore();
-const API = inject("API");
-const router = useRouter();
-const route = useRoute();
+import SecurityChangePassword from "@/components/pages/Security/SecurityChangePassword.vue";
+//modals
+import Security2FaEnableStep1 from "@/components/pages/Security/Security2FaEnableStep1.vue";
+import Security2FaEnableStep2 from "../components/pages/Security/Security2FaEnableStep2.vue";
 
-const form = ref({
-  password: "",
-  oldPassword: "",
-  passwordConfirm: "",
+// 2Fa steps
+let isEnable2FaStep1 = ref(false);
+let isEnable2FaStep2 = ref(true);
+
+let isDisable2FaStep1 = ref(false);
+
+
+//
+let isBtn2FaLoading = ref(false);
+
+let info2Fa = ref({
+  qrCode: "",
+  code: "",
 });
 
-useSchemaForm(form);
-const schema = ref({
-  title: {
-    component: ChFormCategoryTitle,
-    title: "Смена пароля",
-    model: "",
-  },
-  oldPassword: {
-    component: ChInput,
-    type: "password",
-    placeholder: "",
-    label: "Старый пароль",
-    id: "oldPassword",
-    maxWidth: "420px",
-    error: "",
-  },
-  password: {
-    component: ChInput,
-    type: "password",
-    placeholder: "",
-    label: "Новый пароль",
-    id: "password",
-    maxWidth: "420px",
-    error: "",
-  },
-  passwordConfirm: {
-    component: ChInput,
-    type: "password",
-    placeholder: "",
-    label: "Подтвердите новый пароль",
-    id: "passwordConfirm",
-    maxWidth: "420px",
-    error: "",
-  },
-});
-watch(
-  () => form.value.oldPassword,
-  (nV) => {
-    if (nV) {
-      schema.value.oldPassword.error = "";
-    }
-  },
-  {
-    deep: true,
+async function enable2Fa() {
+  isBtn2FaLoading.value = true;
+  if (authStore.is2faEnabled) {
+    // isDisable2FaStep1.value = true;
+  } else {
+    const result = await API.user.prepare2Fa();
+    info2Fa.value.qrCode = result.qrcode;
+    info2Fa.value.code_2fa = result.code_2fa;
+    isEnable2FaStep1.value = true;
   }
-);
-const validationSchema = computed(() => {
-  return object().shape({
-    oldPassword: rules.password,
-    password: rules.password,
-    passwordConfirm: rules.passwordConfirm,
-  });
-});
-
-let isPasswordReseted = ref(false);
-let isLoadingBtn = ref(false);
-
-async function changePassword() {
-  isLoadingBtn.value = true;
-  let values = unref(form);
-  try {
-    await API.user.setPassword({
-      new_password: values.password,
-      current_password: values.oldPassword,
-      re_new_password: values.passwordConfirm,
-      // otp: otpCode,
-    });
-    isPasswordReseted.value = true;
-    authStore.logoutUser();
-    router.push("/login");
-  } catch (e) {
-    if (e?.response?.data?.current_password?.length) {
-      schema.value.oldPassword.error = "Неверный пароль";
-    } else if (e?.response?.data?.otp?.length) {
-      // this.showModalChangePassword = true;
-    }
-    console.error(e);
-  } finally {
-    isLoadingBtn.value = false;
-  }
+  isBtn2FaLoading.value = false;
 }
 </script>
 
 <template>
   <section>
-    <alert
-      title="Управление безопасностью профиля"
-      description="На этой странице вы можете установить двухфакторную аутентификацию, чтобы обеспечить дополнительную защиту для своего личного кабинета."
-    ></alert>
-    <div class="form_container" @keypress.enter="changePassword">
-      <SchemaFormWithPlugins
-        :schema="schema"
-        :validation-schema="validationSchema"
-        @submit="changePassword"
-      >
-        <template #afterForm="{ validation }">
-          <ChButton
-            style="max-width: 228px; margin-right: 0"
-            @click="changePassword"
-            :loading="isLoadingBtn"
-            :disabled="!validation.meta.valid"
-            >Изменить</ChButton
-          >
-        </template>
-      </SchemaFormWithPlugins>
-      <AppModal
-        @close="$router.push('/login')"
-        :modelValue="isPasswordReseted"
-        :image="'../images/icons/check_mark.svg'"
-        :imgSize="76"
-        :messages="['Пароль успешно обновлен!']"
-      >
-      </AppModal>
-    </div>
+    <SecurityChangePassword></SecurityChangePassword>
+    <ChButton class="my-btn" @click="enable2Fa" :loading="isBtn2FaLoading"
+      >Включить защиту</ChButton
+    >
+
+    <Security2FaEnableStep1 :modelValue="isEnable2FaStep1" @showStep2="showStep2()" :code="info2Fa.code"></Security2FaEnableStep1>
+    <!-- <Security2FaEnableStep2 :modelValue="isEnable2FaStep2"></Security2FaEnableStep2> -->
   </section>
 </template>
 
 <style scoped lang="scss">
 @import "@/assets/scss/ui/input.scss";
+.primary_text {
+  color: #0f75bd;
+  font-family: Montserrat, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13.23px;
+  text-align: left;
+  //width: max-content;
+  @media (max-width: 768px) {
+    width: auto;
+  }
+
+  a {
+    border-bottom: 1px solid #0f75bd;
+    color: inherit;
+  }
+}
+.my-btn {
+  max-width: 270px;
+}
 .form {
   &_container {
     max-width: 420px;

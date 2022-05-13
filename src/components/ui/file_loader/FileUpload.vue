@@ -1,3 +1,34 @@
+<script setup lang="ts">
+import { useField } from "vee-validate";
+//Components
+import DropZone from "@/components/ui/file_loader/DropZone.vue";
+import FilePreview from "@/components/ui/file_loader/FilePreview.vue";
+// File Management
+import useFileList from "@/components/ui/file_loader/compositions/fileList";
+
+const emit = defineEmits(['updateFiles'])
+
+let { files, addFiles, removeFile } = useFileList();
+function onInputChange(e) {
+  addFiles(e.target.files);
+  e.target.value = null; // reset so that selecting the same file again will still cause it to fire this change
+  emit('updateFiles')
+  // form.value.files = files
+}
+// Uploader
+import createUploader from "@/components/ui/file_loader/compositions/fileUploader";
+const { uploadFiles } = createUploader("YOUR URL HERE");
+const props = defineProps(["id"]);
+let { value, errorMessage, handleBlur, handleChange, meta } = useField(
+  props.id,
+  undefined,
+  {
+    initialValue: files,
+    validateOnValueUpdate: false,
+  }
+);
+value = files;
+</script>
 <template>
   <DropZone class="drop-area" @files-dropped="addFiles" #default="{ dropZoneActive }">
     <label for="file-input">
@@ -75,6 +106,12 @@ label {
     clip: rect(0, 0, 0, 0) !important;
     white-space: nowrap !important;
     border: 0 !important;
+  }
+  input[type="file"] {
+    &::file-selector-button,
+    &::-webkit-file-upload-button {
+      display: none;
+    }
   }
 }
 .image-list {

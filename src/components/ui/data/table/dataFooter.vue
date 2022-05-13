@@ -13,7 +13,7 @@
     <div style="display: flex; width: 100%; justify-content: flex-end">
       <p
         id="show-all"
-        @click="setShowAll"
+        @click="tableStore.setShowAll"
         v-show="tableStore.categoryList[1].active === false"
       >
         Показать всё
@@ -38,15 +38,16 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { ElPagination } from "element-plus";
 import { useTableStore } from "@/stores/modules/ui/table";
 const tableStore = useTableStore();
 
 import ChButton from "@/components/ui/button/button.vue";
-
+let isBtnLoading = ref(false);
 async function setPage(number) {
-  tableStore.settableStore.currentPage(number);
-  await tableStore.settableStore.dataList({});
+  tableStore.currentPage = number;
+  await tableStore.setDataList({});
 }
 async function getReport() {
   let json;
@@ -180,7 +181,7 @@ async function parseFile(data) {
 #show-all {
   display: flex;
   justify-content: flex-end;
-  font-size: 13.23px;
+  font-size: 14px;
   line-height: 22px;
   color: #0f75bd;
   align-items: center;

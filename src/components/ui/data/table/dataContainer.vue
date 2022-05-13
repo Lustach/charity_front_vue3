@@ -7,7 +7,7 @@
             style="
               color: #01bf5a;
               font-weight: 600;
-              font-size: 13.23px;
+              font-size: 14px;
               line-height: 22px;
             "
             >{{ item[col.key] }} ₽</span
@@ -23,7 +23,7 @@
         </template>
         <template v-else-if="col.key === 'donation_tool'">
           {{
-            stateDonationTools.filter((e) => e.id === item[col.key]).map((e) => e.name)[0]
+            stateDonationTools?.filter((e) => e.id === item[col.key]).map((e) => e.name)[0]
           }}
         </template>
         <template v-else-if="col.key === 'last_seen_at'">

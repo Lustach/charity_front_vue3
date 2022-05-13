@@ -17,9 +17,6 @@
 
     }
 
-    // &:focus:not(.is-error) {
-    // }
-
     &:hover {
         border-color: var(--vblg-c-primary);
     }
@@ -80,5 +77,6 @@
         top: -12px;
         right: -13px;
     }
+
     cursor: pointer;
 }

@@ -6,9 +6,9 @@ export interface Props {
     modelValue?: string;
     error: string;
     tooltip?: string,
-    maxWidth: string;
+    maxWidth?: string;
     disabled?: boolean;
     eye?: boolean;
-    modelOriginal: string;
-    modelHidden: string;
+    modelOriginal?: string;
+    modelHidden?: string;
 }

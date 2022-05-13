@@ -63,7 +63,7 @@
 export default {
   name: "app-footer",
   components: {
-    logoMobile: () => import("@/assets/iconsVue/logoMobile"),
+    logoMobile: () => import("@/assets/iconsVue/logoMobile.vue"),
   },
 };
 </script>

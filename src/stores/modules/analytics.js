@@ -10,7 +10,7 @@ export const useAnalyticsStore = defineStore("analytics", {
     },
     actions: {
         async getDonationList() {
-            let res = await API.analytics.getDonationList().results;
+            let res = (await API.analytics.getDonationList()).results;
             this.donationTools = JSON.parse(JSON.stringify(res));
             this.donationTools[0].name = "Терминалы";
             this.donationTools.unshift({ name: "По всем инструментам" });

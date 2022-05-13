@@ -88,6 +88,11 @@ const router = createRouter({
       component: () => import('@/views/ViewTerminals.vue')
     },
     {
+      path: '/lk/analytics',
+      name: 'analytics',
+      component: () => import('@/views/ViewAnalytics.vue')
+    },
+    {
       path: '/lk/generate_qr',
       name: 'generate_qr',
       component: () => import('@/views/ViewQrGenerate.vue')

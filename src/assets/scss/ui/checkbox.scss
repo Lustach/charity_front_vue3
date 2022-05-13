@@ -10,7 +10,9 @@ $checked-colour: #B0CEEC;
     line-height: 16px;
     color: #f56e6e;
 }
-
+.vblg-checkbox-text{
+    display: flex;
+}
 .checkbox {
     display: inline-block;
     transform: translateZ(0); // Force 3d rendering

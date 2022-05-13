@@ -1,9 +1,16 @@
 import { ref } from 'vue'
 
+interface removedFile {
+    file: File
+    id: string
+    status: null
+    url: string
+}
+
 export default function () {
     const files = ref([])
 
-    function addFiles(newFiles) {
+    function addFiles(newFiles: FileList) {
         let newUploadableFiles = [...newFiles].map((file) => new UploadableFile(file)).filter((file) => !fileExists(file.id))
         files.value = files.value.concat(newUploadableFiles)
     }
@@ -21,8 +28,8 @@ export default function () {
     return { files, addFiles, removeFile }
 }
 
-class UploadableFile {
-    constructor(file) {
+class UploadableFile implements removedFile {
+    constructor(public file: File, public id: string, public status: null, public url: string) {
         this.file = file
         this.id = `${file.name}-${file.size}-${file.lastModified}-${file.type}`
         this.url = URL.createObjectURL(file)

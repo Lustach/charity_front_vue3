@@ -90,7 +90,7 @@ const terminalList = terminalsStore.terminalList;
   flex-direction: column;
   align-items: center;
   p {
-    font-size: 13.23px;
+    font-size: 14px;
     color: #18191c;
   }
 

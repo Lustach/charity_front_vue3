@@ -130,7 +130,7 @@ export default {
   &:deep &__placeholder {
     color: initial !important;
     position: absolute;
-    font-size: 13.23px;
+    font-size: 14px;
     width: 100%;
     margin-bottom: 2px;
     display: block !important;

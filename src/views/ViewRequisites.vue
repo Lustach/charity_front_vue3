@@ -16,7 +16,7 @@ import RequisitesForm from "@/components/pages/Requisites/RequisitesForm.vue";
 .form {
   &_container {
     max-width: 1000px;
-    margin: 0 auto;
+    margin: 40px auto 100px auto;
   }
 }
 </style>

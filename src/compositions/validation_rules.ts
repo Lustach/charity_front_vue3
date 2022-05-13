@@ -32,4 +32,27 @@ export const rules = {
         .string()
         .required()
         .oneOf([yup.ref("password")], "Повторите пароль"),
+
+    // requisites: {
+    inn: yup.string().min(10).max(10).required(),
+    kpp: yup.string().min(9).max(9).required(),
+    ogrn: yup.string().min(13).max(13).required(),
+    fullNameBank: yup.string().required(),
+    bik: yup.string().min(9).max(9).required(),
+    countScore: yup.string().min(20).max(20).required(),
+    correspondentScore: yup.string().min(20).max(20).required(),
+    city: yup.string().required(),
+    city_actual: yup.string().required(),
+    city_mailing: yup.string().required(),
+    address: yup.string().required(),
+    address_actual: yup.string().required(),
+    address_mailing: yup.string().required(),
+    officeOrFlat: yup.string().required(),
+    officeOrFlatActual: yup.string().required(),
+    officeOrFlatMailing: yup.string().required(),
+    index: yup.string().min(6).max(6).required(),
+    index_actual: yup.string().min(6).max(6).required(),
+    index_mailing: yup.string().min(6).max(6).required(),
+    // }
+
 }

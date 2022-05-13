@@ -26,16 +26,16 @@ const validationSchema = object({
   phone: rules.phone,
   password: rules.password,
   passwordConfirm: rules.passwordConfirm,
-  offerRules: bool().required(), // вот это должно быть array ?
-  privacyRules: bool().required(),
+  offerRules: bool().oneOf([true], "Обязательное поле"), // вот это должно быть array ?
+  privacyRules: bool().oneOf([true], "Обязательное поле"),
 });
 const form = ref({
   email: "",
   phone: "",
   password: "",
   passwordConfirm: "",
-  offerRules: "",
-  privacyRules: "",
+  offerRules: false,
+  privacyRules: false,
 });
 useSchemaForm(form);
 
@@ -75,6 +75,24 @@ const schema = ref({
     id: "passwordConfirm",
     maxWidth: "328px",
     error: "",
+  },
+  offerRules: {
+    component: ChCheckbox,
+    type: "checkbox",
+    label: "Соглашаюсь с офертой",
+    id: "offerRules",
+    error: "",
+    name: "offerRules",
+    slot: `<p>Соглашаюсь с <a style="text-decoration: underline; color: initial" href="http://localhost:8000/static/documents/Оферта_для_публичного_сбора_пожертвований.pdf" target="_blank">офертой</a></p>`,
+  },
+  privacyRules: {
+    component: ChCheckbox,
+    type: "checkbox",
+    label: "Соглашаюсь на обработку",
+    id: "privacyRules",
+    error: "",
+    name: "privacyRules",
+    slot: `<p>Соглашаюсь на обработку <a style="text-decoration: underline; color: initial" href="http://localhost:8000/static/documents/Политика_в_отношении_обработки_ПД.pdf" target="_blank">персональных данных</a></p>`,
   },
 });
 
@@ -120,7 +138,6 @@ async function signUp() {
     isLoadingBtn.value = false;
   }
 }
-
 </script>
 
 <template>
@@ -143,32 +160,6 @@ async function signUp() {
           @submit="signUp"
         >
           <template #afterForm="{ validation }">
-            <ChCheckbox name="offerRules" :value="false">
-              <template #text>
-                <p>
-                  Соглашаюсь с
-                  <a
-                    style="text-decoration: underline; color: initial"
-                    href="http://localhost:8000/static/documents/Оферта_для_публичного_сбора_пожертвований.pdf"
-                    target="_blank"
-                    >офертой</a
-                  >
-                </p>
-              </template>
-            </ChCheckbox>
-            <ChCheckbox name="privacyRules" :value="false">
-              <template #text>
-                <p>
-                  Соглашаюсь на обработку
-                  <a
-                    style="text-decoration: underline; color: initial"
-                    href="http://localhost:8000/static/documents/Политика_в_отношении_обработки_ПД.pdf"
-                    target="_blank"
-                    >персональных данных</a
-                  >
-                </p>
-              </template>
-            </ChCheckbox>
             <ChButton
               @click="signUp"
               :loading="isLoadingBtn"

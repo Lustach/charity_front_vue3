@@ -203,7 +203,4 @@ export const useTableStore = defineStore('table', {
         },
 
     },
-    getters: {
-        dataHeader: (state) => state.dataHeader,
-    },
 });

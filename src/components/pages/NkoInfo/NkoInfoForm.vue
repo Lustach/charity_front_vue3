@@ -1,4 +1,24 @@
 <script setup lang="ts">
+import { Form, Field, defineRule } from "vee-validate";
+  function isEmpty(value) {
+      if (value === null || value === undefined || value === '') {
+          return true;
+      }
+      if (Array.isArray(value) && value.length === 0) {
+          return true;
+      }
+      return false;
+  }
+  const imageValidator = (files) => {
+      if (isEmpty(files[0])) {
+          return true;
+      }
+      const regex = /\.(jpg|svg|jpeg|png|bmp|gif|webp)$/i;
+      if (Array.isArray(files[0])) {
+          return files[0].every(file => regex.test(file.name));
+      }
+      return regex.test(files[0].name);
+  };
 //vue
 import { computed, markRaw, ref } from "vue";
 // schema & validation
@@ -14,16 +34,20 @@ import FilePreview from "@/components/ui/file_loader/FilePreview.vue";
 import ChTextArea from "@/components/ui/textarea/textarea.vue";
 import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
+import ChFileUpload from "@/components/ui/file_loader/FileUpload.vue";
 
 markRaw(ChInput);
 markRaw(ChTextArea);
 markRaw(ChButton);
+markRaw(ChFileUpload);
+
 // File Management
 import useFileList from "@/components/ui/file_loader/compositions/fileList";
 const { files, addFiles, removeFile } = useFileList();
 function onInputChange(e) {
   addFiles(e.target.files);
   e.target.value = null; // reset so that selecting the same file again will still cause it to fire this change
+  form.value.files = files;
 }
 // Uploader
 import createUploader from "@/components/ui/file_loader/compositions/fileUploader";
@@ -42,6 +66,7 @@ const form = ref({
   classmates: "",
   facebook: "",
   insta: "",
+  files: "",
 });
 useSchemaForm(form);
 const schema = ref({
@@ -136,9 +161,19 @@ const schema = ref({
     component: ChFormCategoryTitle,
     title: "Медиа файлы",
   },
+  // files: {
+  //   component: ChFileUpload,
+  //   type: "file",
+  //   label: "Инстаграм",
+  //   placeholder: "www",
+  //   id: "files",
+  //   error: "",
+  // },
 });
 
 const urlPattern = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w\?[a-zA-Z-_%\/@?]+)*([^\/\w\?[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/;
+const FILE_SIZE = 160 * 1024;
+const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/gif", "image/png"];
 const validationSchema = computed(() => {
   return yup.object().shape({
     shortDescriptionActivity: yup.string().max(150).required("Заполните поле"),
@@ -160,11 +195,24 @@ const validationSchema = computed(() => {
     classmates: yup.string().matches(urlPattern, "Неверный формат сайта"),
     facebook: yup.string().matches(urlPattern, "Неверный формат сайта"),
     insta: yup.string().matches(urlPattern, "Неверный формат сайта"),
+    files: yup
+      .mixed()
+      .test(1000, "File Size is too large", (value) => value?.size <= FILE_SIZE)
+      .test("fileType", "Unsupported File Format", (value) =>
+        SUPPORTED_FORMATS.includes(["image/*"])
+      ),
   });
 });
 </script>
 <template>
   <div class="profile_form_container">
+
+
+
+   <Form @submit="onSubmit" v-slot="{ errors }">
+    <Field name="field" type="file" multiple :rules="imageValidator" />
+    <span>{{ errors.field }}</span>
+  </Form>
     <div class="profile_form_wrapper">
       <SchemaFormWithPlugins :schema="schema" :validation-schema="validationSchema">
         <template #afterForm="{ validation }">
@@ -173,6 +221,7 @@ const validationSchema = computed(() => {
           >
         </template>
       </SchemaFormWithPlugins>
+      {{ form.files }}ff
       <DropZone class="drop-area" @files-dropped="addFiles" #default="{ dropZoneActive }">
         <label for="file-input">
           <span v-if="dropZoneActive">

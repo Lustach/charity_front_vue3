@@ -17,13 +17,14 @@ import Button from 'primevue/button'
 
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
-
+import '@formkit/themes/genesis'
+import { plugin, defaultConfig } from '@formkit/vue'
 const app = createApp(App)
 app.provide('API', Api)
 app.provide('useNotification', useNotification)
 // app.config.globalProperties.$API = Api
 
-
+app.use(plugin,defaultConfig())
 app.use(PrimeVue, { ripple: true });
 app.component('Button', Button)
 

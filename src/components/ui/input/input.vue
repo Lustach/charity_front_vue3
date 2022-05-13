@@ -8,10 +8,6 @@ import { useMouseInElement } from "@vueuse/core";
 let inputHandlers = useInputHandlers;
 
 const emit = defineEmits(["update:modelValue", "toggleEye"]);
-//* TODO: imported interfaces are not support official by Evan(nice joke) :) https://github.com/vuejs/vue-next/issues/4294
-/* we need to use plugin https://github.com/wheatjs/vite-plugin-vue-type-imports
- */
-// https://vee-validate.logaretm.com/v4/guide/composition-api/validation#handling-events
 
 const props = withDefaults(defineProps<Props>(), {
   type: "text",

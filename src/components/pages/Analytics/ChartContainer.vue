@@ -2,67 +2,59 @@
   <div class="chart__container">
     <h2>Выплаченные средства</h2>
     <div class="filters__container">
-      <dataFilters :time-list="timeList" :isChart="true"></dataFilters>
-      <multiselect :options="JSON.parse(JSON.stringify(donationTools.map(e=>e.name)))" class="my-input my-input_profile" :limit="4" v-model="selectFilter" placeholder=""
-                   :searchable="false" open-direction="bottom" selectLabel="" selectGroupLabel="" deselectLabel="" selectedLabel="" :hideSelected="false" @select="selectItem()">
-      </multiselect>
+      <DataFilters :time-list="chartStore.timeList" :isChart="true"></DataFilters>
+      <Multiselect
+        :options="JSON.parse(JSON.stringify(donationTools))"
+        class="my-input my-input_profile"
+        :limit="4"
+        v-model="selectFilter"
+        placeholder=""
+        :searchable="false"
+        open-direction="bottom"
+        selectLabel=""
+        selectGroupLabel=""
+        deselectLabel=""
+        selectedLabel=""
+        :hideSelected="false"
+        @select="selectItem"
+        label="name"
+      >
+      </Multiselect>
     </div>
-    <lineChart></lineChart>
+    <Line />
   </div>
 </template>
-<script>
-import dataFilters from '@/components/ui/data/dataFilters';
-import line from '@/components/ui/charts/line';
-import Multiselect from 'vue-multiselect';
-import {mapActions, mapState} from 'vuex';
-// import {mapState} from "vuex";
+<script setup lang="ts">
+import { ref, markRaw } from "vue";
+import DataFilters from "@/components/ui/data/filter/dataFilters.vue";
+import Multiselect from "vue-multiselect";
+import Line from "@/components/ui/charts/line.vue";
+import { useChartStore } from "@/stores/modules/ui/chart";
+const chartStore = useChartStore();
 
-export default {
-  name: 'LineChart',
-  components: {
-    dataFilters,
-    lineChart: line,
-    Multiselect,
+const props = defineProps({
+  donationTools: {
+    type: Array,
   },
-  props: {
-    donationTools: {
-      type: Array,
-    },
-  },
-  mounted() {
-  },
-  data: () => ({
-    selectFilter: 'По всем инструментам',
-  }),
-  methods: {
-    ...mapActions('chart', ['setChartDataList',]),
-    async selectItem() {
-      await this.$nextTick(async () => {
-        await this.setChartDataList({
-          isShowAll: false,
-          selectedItem: this.selectFilter === 'По всем инструментам' ? 0 : this.donationTools.filter(e => e.name === this.selectFilter)[0].id,
-        });
-      });
-    },
-  },
-  computed: {
-    ...mapState({
-      timeList: state => state.chart.timeList,
-    }),
-  },
-};
+});
+let selectFilter = ref({ name: "По всем инструментам" });
+async function selectItem(e) {
+  await chartStore.setChartDataList({
+    isShowAll: false,
+    selectedItem: e.name === "По всем инструментам" ? 0 : e.id,
+  });
+}
 </script>
-<style lang="scss" scoped>
-@import "~@/assets/scss/components/analytics/multiselect.scss";
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
 
+<style lang="scss" scoped>
 .multiselect {
   cursor: pointer !important;
 }
 
 .chart__container {
+  position: initial;
   box-sizing: border-box;
-  //width: 829px;
-  //height: 470px;
   left: 514px;
   width: 620px;
   height: 356px;
@@ -74,7 +66,7 @@ export default {
   h2 {
     font-weight: bold;
     font-size: 26.87px;
-    color: #18191C;
+    color: #18191c;
     margin: 0 auto 12.5px auto;
     text-align: left;
   }
@@ -83,5 +75,67 @@ export default {
 .filters__container {
   display: flex;
   justify-content: space-between;
+}
+
+//multiselect
+.multiselect {
+  width: 211.86px;
+  height: 26.06px;
+  border-radius: 5px !important;
+  min-height: initial;
+  &:deep * {
+    min-height: initial;
+  }
+  &:deep &__tags {
+    border: none !important;
+    background-color: #dfebf7 !important;
+    display: flex;
+    align-items: center;
+    padding: 0 0 0 8.24px;
+    height: 26.06px;
+  }
+
+  &:deep &__content-wrapper {
+    font-size: 14px;
+    background: #ffffff;
+    border: 1px solid #b0ceec;
+    box-sizing: border-box;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  &:deep .multiselect__element {
+    span:hover {
+      background: #eff5fb;
+      color: initial;
+      //background-color: initial;
+    }
+    span {
+      padding: 6px;
+    }
+  }
+
+  &:deep .multiselect__option {
+    background: white;
+    color: initial;
+    font-weight: 400;
+    &--selected {
+      font-weight: 600;
+    }
+  }
+
+  &:deep .multiselect__single {
+    background-color: #dfebf7 !important;
+    font-weight: 400;
+    font-size: 14px;
+    padding-left: 0;
+    margin-bottom: 0;
+  }
+  &:deep .multiselect__select {
+    padding: 0;
+    width: 26px;
+    height: 26px;
+    z-index: 1;
+  }
 }
 </style>

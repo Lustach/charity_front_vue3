@@ -13,7 +13,7 @@
     </table>
     <div
       v-if="!data.length"
-      style="margin: 50px 0; font-size: 13.23px; text-align: center"
+      style="margin: 50px 0; font-size: 14px; text-align: center"
     >
       Здесь будет отчет по Вашим поступлениям
     </div>
@@ -48,7 +48,7 @@ export default {
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13.23px !important;
+  font-size: 14px !important;
   &:deep {
     .question_mark {
       right: -15px;

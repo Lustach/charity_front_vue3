@@ -3,10 +3,21 @@ const props = defineProps({
   title: {
     type: String,
   },
+  line: {
+    type: Boolean,
+  },
 });
 </script>
 <template>
-  <h2>{{ title }}</h2>
+  <div class="d-flex">
+    <img
+      v-if="line"
+      class="line"
+      src="@/assets/images/icons/step_line-horizontal.svg"
+      alt=""
+    />
+    <h2>{{ title }}</h2>
+  </div>
 </template>
 <style lang="scss" scoped>
 h2 {
@@ -17,5 +28,9 @@ h2 {
   color: #5f9dd8;
   text-align: left;
   width: fit-content;
+}
+.line {
+  width: 100%;
+  margin-top: 18px;
 }
 </style>

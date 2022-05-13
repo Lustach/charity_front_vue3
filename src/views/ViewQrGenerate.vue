@@ -120,7 +120,7 @@ async function generateQr() {
 
 .el-radio__label {
   font-weight: normal;
-  font-size: 13.23px !important;
+  font-size: 14px !important;
   line-height: 30px;
   color: #333333;
 }
@@ -195,7 +195,7 @@ async function generateQr() {
       justify-content: center;
       align-items: center;
       font-weight: 600;
-      font-size: 13.23px;
+      font-size: 14px;
       line-height: 30px;
       text-align: center;
       color: #b0ceec;
