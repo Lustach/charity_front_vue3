@@ -57,7 +57,7 @@
 
 <script lang="ts" setup>
 import { ref, markRaw, onMounted } from "vue";
-import { useAuthStore } from "@/stores/modules/auth";
+import { useAuthStore } from "@/stores/modules/auth/auth";
 const authStore = useAuthStore();
 //components
 import ChCheckbox from "@/components/ui/checkbox/checkbox.vue";

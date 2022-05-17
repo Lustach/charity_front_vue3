@@ -1,6 +1,6 @@
 import { sub, format, getDaysInMonth } from 'date-fns';
 import { defineStore } from 'pinia'
-import API from '@/plugins/axios.js';
+import API from '@/plugins/axios';
 
 export const useChartStore = defineStore('chart', {
     state: () => {

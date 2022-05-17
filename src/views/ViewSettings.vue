@@ -8,8 +8,8 @@ import {
   onMounted,
 } from "vue";
 //store
-import { useAuthStore } from "@/stores/modules/auth";
-import { useProfileStore } from "@/stores/modules/profile";
+import { useAuthStore } from "@/stores/modules/auth/auth";
+import { useProfileStore } from "@/stores/modules/profile/profile";
 //validation
 import { useSchemaForm, SchemaFormFactory } from "formvuelate";
 import LookupPlugin from "@formvuelate/plugin-lookup";

@@ -3,8 +3,8 @@ import axios from "axios";
 import { computed, ref, markRaw, inject, unref, watch } from "vue";
 const API = inject("API");
 //store
-import { useAuthStore } from "@/stores/modules/auth";
-import { useProfileStore } from "@/stores/modules/profile";
+import { useAuthStore } from "@/stores/modules/auth/auth";
+import { useProfileStore } from "@/stores/modules/profile/profile";
 let authStore = useAuthStore();
 // components
 import ChButton from "@/components/ui/button/button.vue";

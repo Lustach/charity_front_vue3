@@ -1,24 +1,5 @@
 <script setup lang="ts">
 import { Form, Field, defineRule } from "vee-validate";
-  function isEmpty(value) {
-      if (value === null || value === undefined || value === '') {
-          return true;
-      }
-      if (Array.isArray(value) && value.length === 0) {
-          return true;
-      }
-      return false;
-  }
-  const imageValidator = (files) => {
-      if (isEmpty(files[0])) {
-          return true;
-      }
-      const regex = /\.(jpg|svg|jpeg|png|bmp|gif|webp)$/i;
-      if (Array.isArray(files[0])) {
-          return files[0].every(file => regex.test(file.name));
-      }
-      return regex.test(files[0].name);
-  };
 //vue
 import { computed, markRaw, ref } from "vue";
 // schema & validation
@@ -35,27 +16,57 @@ import ChTextArea from "@/components/ui/textarea/textarea.vue";
 import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
 import ChFileUpload from "@/components/ui/file_loader/FileUpload.vue";
+// File Management
+import useFileList from "@/components/ui/file_loader/compositions/fileList";
 
 markRaw(ChInput);
 markRaw(ChTextArea);
 markRaw(ChButton);
 markRaw(ChFileUpload);
 
-// File Management
-import useFileList from "@/components/ui/file_loader/compositions/fileList";
+// function isEmpty(value) {
+//   if (value === null || value === undefined || value === "") {
+//     return true;
+//   }
+//   if (Array.isArray(value) && value.length === 0) {
+//     return true;
+//   }
+//   return false;
+// }
+// const imageValidator = (files) => {
+//   if (!files) {
+//     console.log("isEmpty");
+
+//     return false;
+//   }
+//   const regex = /\.(jpg|svg|jpeg|png|bmp|gif|webp)$/i;
+//   if (Array.isArray(files[0])) {
+//     return files[0].every((file) => regex.test(file.name));
+//   }
+//   return regex.test(files[0].name);
+// };
 const { files, addFiles, removeFile } = useFileList();
-function onInputChange(e) {
-  addFiles(e.target.files);
-  e.target.value = null; // reset so that selecting the same file again will still cause it to fire this change
-  form.value.files = files;
-}
+// function onInputChange(e) {
+//   addFiles(e.target.files);
+//   e.target.value = null; // reset so that selecting the same file again will still cause it to fire this change
+//   form.value.files = files;
+// }
 // Uploader
 import createUploader from "@/components/ui/file_loader/compositions/fileUploader";
 const { uploadFiles } = createUploader("YOUR URL HERE");
 //schema validation
 
 const SchemaFormWithPlugins = SchemaFormFactory([LookupPlugin({}), VeeValidatePlugin()]);
-
+const urlPattern = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w\?[a-zA-Z-_%\/@?]+)*([^\/\w\?[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/;
+const FILE_SIZE = 160 * 1024;
+const SUPPORTED_FORMATS = [
+  "image/jpg",
+  "image/jpeg",
+  "image/gif",
+  "image/png",
+  "application/pdf",
+  "image/svg+xml",
+];
 const form = ref({
   shortDescriptionActivity: "",
   fullDescriptionActivity: "",
@@ -66,7 +77,7 @@ const form = ref({
   classmates: "",
   facebook: "",
   insta: "",
-  files: "",
+  files: [],
 });
 useSchemaForm(form);
 const schema = ref({
@@ -161,19 +172,18 @@ const schema = ref({
     component: ChFormCategoryTitle,
     title: "Медиа файлы",
   },
-  // files: {
-  //   component: ChFileUpload,
-  //   type: "file",
-  //   label: "Инстаграм",
-  //   placeholder: "www",
-  //   id: "files",
-  //   error: "",
-  // },
+  files: {
+    component: ChFileUpload,
+    type: "file",
+    label: "Логотип",
+    placeholder: "www",
+    id: "files",
+    error: "",
+    accept: SUPPORTED_FORMATS.join(","),
+    uploadTextTip: "PNG, SVG, AI, PDF, JPG до 5 Мб",
+  },
 });
 
-const urlPattern = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w\?[a-zA-Z-_%\/@?]+)*([^\/\w\?[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/;
-const FILE_SIZE = 160 * 1024;
-const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/gif", "image/png"];
 const validationSchema = computed(() => {
   return yup.object().shape({
     shortDescriptionActivity: yup.string().max(150).required("Заполните поле"),
@@ -197,33 +207,46 @@ const validationSchema = computed(() => {
     insta: yup.string().matches(urlPattern, "Неверный формат сайта"),
     files: yup
       .mixed()
-      .test(1000, "File Size is too large", (value) => value?.size <= FILE_SIZE)
-      .test("fileType", "Unsupported File Format", (value) =>
-        SUPPORTED_FORMATS.includes(["image/*"])
+      .test("fileSize", "File Size is too large", (value) => {
+        for (const iterator of value) {
+          return iterator.file.size <= FILE_SIZE;
+        }
+      })
+      .test(
+        "fileType",
+        "Unsupported File Format",
+        (value) => {
+          for (const iterator of value) {
+            if (!SUPPORTED_FORMATS.includes(iterator?.file.type)) return false;
+          }
+          return true;
+        }
+        // SUPPORTED_FORMATS.includes(value[0]?.file.type)
       ),
   });
 });
+
+form.value.files = files.value;
 </script>
 <template>
   <div class="profile_form_container">
-
-
-
-   <Form @submit="onSubmit" v-slot="{ errors }">
-    <Field name="field" type="file" multiple :rules="imageValidator" />
-    <span>{{ errors.field }}</span>
-  </Form>
+    <!-- <Form @submit="onSubmit" v-slot="{ errors }">
+      <Field name="field" type="file" multiple :rules="imageValidator" />
+      <span>{{ errors.field }}</span>
+    </Form> -->
     <div class="profile_form_wrapper">
       <SchemaFormWithPlugins :schema="schema" :validation-schema="validationSchema">
         <template #afterForm="{ validation }">
-          <ChButton :loading="isLoadingBtn" :disabled="!validation.meta.valid"
-            >Продолжить</ChButton
+          <ChButton
+            :loading="isLoadingBtn"
+            :disabled="!validation.meta.valid"
+            style="margin-right: 0"
+            >Сохранить изменения</ChButton
           >
         </template>
       </SchemaFormWithPlugins>
-      {{ form.files }}ff
-      <DropZone class="drop-area" @files-dropped="addFiles" #default="{ dropZoneActive }">
-        <label for="file-input">
+      <!-- <DropZone class="drop-area" @files-dropped="addFiles" #default="{ dropZoneActive }">
+        <label for="files">
           <span v-if="dropZoneActive">
             <span>Перетащите или загрузите файлы</span>
             <span class="smaller">Добавьте</span>
@@ -234,7 +257,7 @@ const validationSchema = computed(() => {
               <strong>или <em>загрузите файлы</em></strong>
             </span>
           </p>
-          <input type="file" id="file-input" multiple @change="onInputChange" />
+          <input type="file" id="files" multiple @change="onInputChange" />
         </label>
         <ul class="image-list" v-show="files.length">
           <FilePreview
@@ -245,7 +268,7 @@ const validationSchema = computed(() => {
             @remove="removeFile"
           />
         </ul>
-      </DropZone>
+      </DropZone> -->
     </div>
   </div>
 </template>

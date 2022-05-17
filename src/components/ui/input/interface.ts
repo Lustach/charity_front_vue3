@@ -7,6 +7,7 @@ export interface Props {
     error: string;
     tooltip?: string,
     maxWidth?: string;
+    maxLength?: number;
     disabled?: boolean;
     eye?: boolean;
     modelOriginal?: string;

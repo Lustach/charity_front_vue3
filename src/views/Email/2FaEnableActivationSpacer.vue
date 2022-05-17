@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { inject, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { useAuthStore } from "@/stores/modules/auth.ts";
+import { useAuthStore } from "@/stores/modules/auth/auth";
 const API = inject("API");
 //store
 const authStore = useAuthStore();

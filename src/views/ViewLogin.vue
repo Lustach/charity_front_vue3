@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import axios from "axios";
 import { computed, ref, markRaw, inject, unref, watch } from "vue";
+import type { Ref } from "vue";
+
 import { useRouter, useRoute } from "vue-router";
 import { useSchemaForm, SchemaFormFactory } from "formvuelate";
 import LookupPlugin from "@formvuelate/plugin-lookup";
@@ -9,8 +11,8 @@ import { object } from "yup";
 import { rules } from "@/compositions/validation_rules";
 import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
-import { useAuthStore } from "@/stores/modules/auth";
-import { useProfileStore } from "@/stores/modules/profile";
+import { useAuthStore } from "@/stores/modules/auth/auth";
+import { useProfileStore } from "@/stores/modules/profile/profile";
 import useTimeOut from "@/components/compositions/utils/watchers";
 
 markRaw(ChInput);
@@ -20,7 +22,13 @@ const authStore = useAuthStore();
 const profileStore = useProfileStore();
 const { timeOut } = useTimeOut;
 
-const form = ref({
+type TForm = {
+  isShowCodeField: boolean;
+  emailOrPhone: string;
+  password: string;
+  code_2fa: string;
+};
+const form: Ref<TForm> = ref({
   isShowCodeField: false,
   emailOrPhone: "",
   password: "",
@@ -37,7 +45,7 @@ const schema = ref({
     id: "emailOrPhone",
     error: "",
     maxWidth: "328px",
-    condition: (model) => !model.isShowCodeField,
+    condition: (model: TForm) => !model.isShowCodeField,
   },
   password: {
     component: ChInput,
@@ -57,7 +65,7 @@ const schema = ref({
     id: "code_2fa",
     maxWidth: "328px",
     error: "",
-    condition(model) {
+    condition(model: TForm) {
       return model.isShowCodeField;
     },
   },
@@ -109,7 +117,6 @@ const validationSchema = computed(() => {
   return undefined;
 });
 
-const API = inject("API");
 const router = useRouter();
 const route = useRoute();
 
@@ -154,7 +161,7 @@ async function login() {
       }
     if (e.response.status === 400) {
       if (e.response.data.otp[0] === "Invalid otp") {
-          schema.value.code_2fa.error = "Неверный код";
+        schema.value.code_2fa.error = "Неверный код";
       }
     }
     console.error(e);

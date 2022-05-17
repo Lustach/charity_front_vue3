@@ -60,7 +60,7 @@ import { inject, ref, onMounted } from "vue";
 import { ElRadio } from "element-plus";
 import ChButton from "@/components/ui/button/button.vue";
 import Alert from "@/components/app/Alert.vue";
-import { useProfileStore } from "@/stores/modules/profile.ts";
+import { useProfileStore } from "@/stores/modules/profile/profile";
 const profileStore = useProfileStore();
 const API = inject("API");
 let loading = ref(true);

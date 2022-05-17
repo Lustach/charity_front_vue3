@@ -1,4 +1,4 @@
-import API from '@/plugins/axios.js';
+import API from '@/plugins/axios';
 import { defineStore } from 'pinia'
 
 export const useTerminalsStore = defineStore('terminals', {

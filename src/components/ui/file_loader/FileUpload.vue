@@ -5,20 +5,19 @@ import DropZone from "@/components/ui/file_loader/DropZone.vue";
 import FilePreview from "@/components/ui/file_loader/FilePreview.vue";
 // File Management
 import useFileList from "@/components/ui/file_loader/compositions/fileList";
-
-const emit = defineEmits(['updateFiles'])
+import createUploader from "@/components/ui/file_loader/compositions/fileUploader";
+const emit = defineEmits(["updateFiles", "update:modelValue"]);
 
 let { files, addFiles, removeFile } = useFileList();
 function onInputChange(e) {
   addFiles(e.target.files);
   e.target.value = null; // reset so that selecting the same file again will still cause it to fire this change
-  emit('updateFiles')
+  emit("update:modelValue", files);
   // form.value.files = files
 }
 // Uploader
-import createUploader from "@/components/ui/file_loader/compositions/fileUploader";
 const { uploadFiles } = createUploader("YOUR URL HERE");
-const props = defineProps(["id"]);
+const props = defineProps(["id", "label", "accept", "uploadTextTip"]);
 let { value, errorMessage, handleBlur, handleChange, meta } = useField(
   props.id,
   undefined,
@@ -30,34 +29,49 @@ let { value, errorMessage, handleBlur, handleChange, meta } = useField(
 value = files;
 </script>
 <template>
-  <DropZone class="drop-area" @files-dropped="addFiles" #default="{ dropZoneActive }">
-    <label for="file-input">
-      <span v-if="dropZoneActive">
-        <span>Перетащите или загрузите файлы</span>
-        <span class="smaller">Добавьте</span>
-      </span>
-      <p class="action" v-else>
-        <span>Перетащите </span>
-        <span class="smaller">
-          <strong>или <em>загрузите файлы</em></strong>
+  <div class="file__container">
+    <label for="drop-area-id" id="drop-area_label">{{ label }}</label>
+    <DropZone
+      class="drop-area"
+      id="drop-area-id"
+      @files-dropped="addFiles"
+      #default="{ dropZoneActive }"
+    >
+      <label :for="id">
+        <span v-if="dropZoneActive">
+          <span>Перетащите или загрузите файлы</span>
+          <span class="smaller">Добавьте</span>
         </span>
-      </p>
-      <input type="file" id="file-input" multiple @change="onInputChange" />
-    </label>
-    <ul class="image-list" v-show="files.length">
-      <FilePreview
-        v-for="file of files"
-        :key="file.id"
-        :file="file"
-        tag="li"
-        @remove="removeFile"
-      />
-    </ul>
-  </DropZone>
+        <div v-else-if="!files.length">
+          <div class="action">
+            <span>Перетащите </span>
+            <p class="smaller">
+              <strong>или <em>загрузите файлы</em></strong>
+            </p>
+          </div>
+          <p style="text-align: center;">{{uploadTextTip}}</p>
+        </div>
+        <p class="action" style="padding-bottom: 20px" v-else-if="files.length">
+          <span>Добавить ещё</span>
+        </p>
+        <input type="file" :accept="accept" :id="id" multiple @change="onInputChange" />
+      </label>
+      <ul class="image-list" v-show="files.length">
+        <FilePreview
+          v-for="file of files"
+          :key="file.id"
+          :file="file"
+          tag="li"
+          @remove="removeFile"
+        />
+      </ul>
+    </DropZone>
+  </div>
 </template>
 <style lang="scss" scoped>
 .action {
   display: flex;
+  justify-content: center;
   white-space: break-spaces;
   * {
     font-weight: 600 !important;
@@ -67,20 +81,33 @@ value = files;
     //   text-decoration: underline;
   }
 }
+
+.file__container {
+  display: flex;
+}
+
+#drop-area_label {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--vblg-c-primary);
+  width: 50%;
+}
+
 .drop-area {
   display: flex;
+  padding: 0;
+  justify-content: center;
   flex-direction: column-reverse;
   color: var(--vblg-c-primary);
   width: 100%;
   //   max-width: 800px;
   margin: 0 auto;
-  padding: 50px;
   background: #ffffff55;
   //   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   transition: 0.2s ease;
   min-height: 76px;
-  padding: 22px 78px;
-  max-width: 420px;
+  max-width: 366.11px;
   border: 2px solid #b0ceec;
   border-radius: 10px;
   &[data-active="true"] {

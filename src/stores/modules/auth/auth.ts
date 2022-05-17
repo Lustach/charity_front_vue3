@@ -1,50 +1,61 @@
-import API from '@/plugins/axios.js';
+import API from '@/plugins/axios';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
 import { defineStore } from 'pinia';
-import { useProfileStore } from "@/stores/modules/profile.ts";
+import { useProfileStore } from "@/stores/modules/profile/profile";
+//types
+import type { TSignUp } from "@/types/auth"
 
 // pinia.use(() => ({ API }));
+type TAuthStore = {
+    accessToken: string,
+    refreshToken: string,
+    is2faEnabled: boolean,
+    userId: string,
+    email: string,
+    profileId: string,
+}
+// <string, TAuthStore >
 export const useAuthStore = defineStore('auth', {
     // arrow function recommended for full type inference
-    state: () => {
+    state: (): TAuthStore => {
         return {
-            accessToken: null,
-            refreshToken: null,
-            is2faEnabled: 0,
-            userId: '' || null,
+            accessToken: '',
+            refreshToken: '',
+            is2faEnabled: false,
+            userId: '',
             email: '',
-            profileId: '' || null,
+            profileId: '',
         }
     },
     actions: {
         destroyToken() {
-            this.accessToken = null;
-            this.refreshToken = null;
+            this.accessToken = '';
+            this.refreshToken = '';
             // axios.defaults.headers.common.Authorization = null
         },
-        updateToken(payload: { access_token: string, refresh_token: string }) {
-            this.accessToken = payload;
+        setTokens(payload: { access_token: string, refresh_token: string }) {
+            this.accessToken = payload.access_token;
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
             localStorage.setItem('access_token', payload.access_token);
             localStorage.setItem('refresh_token', payload.refresh_token);
         },
         //actions
-        refreshToken() {
+        updateToken() {
             const payload = {
                 refresh: this.refreshToken,
             };
-            this.accessToken = null
+            this.accessToken = ''
             API.user.refreshJWT(payload)
                 .then((response) => {
-                    this.updateToken(response)
+                    this.setTokens(response)
                 })
                 .catch((error: Error) => {
                     console.error(error);
                 });
         },
-        async signUp(data) {
+        async signUp(data: TSignUp) {
             const result = await API.user.signUp(data);
             this.userId = result.id;
             this.email = result.email;
@@ -64,8 +75,8 @@ export const useAuthStore = defineStore('auth', {
             });
         },
         async setToken() {
-            this.accessToken = localStorage.getItem('access_token');
-            this.refreshToken = localStorage.getItem('refresh_token');
+            this.accessToken = localStorage.getItem('access_token') || '';
+            this.refreshToken = localStorage.getItem('refresh_token') || '';
             if (this.accessToken) {
                 const profileStore = useProfileStore();
                 axios.defaults.headers.common.Authorization = 'JWT ' + this.accessToken;
@@ -73,7 +84,6 @@ export const useAuthStore = defineStore('auth', {
             }
         },
         async loginUser(payload: { email?: string, phone_number?: string, otp?: string, password: string }) {
-            // return new Promise((resolve, reject) => {
             try {
                 const response = await API.user.obtainJWT(payload);
                 localStorage.setItem('access_token', response.access);
@@ -83,7 +93,6 @@ export const useAuthStore = defineStore('auth', {
                 console.error(e);
                 throw e
             }
-            // });
         },
         logoutUser() {
             if (this.loggedIn) {
@@ -98,14 +107,14 @@ export const useAuthStore = defineStore('auth', {
                 const decoded: { exp: number | string } = jwt_decode(token);
                 const exp = decoded.exp;
                 if (Date.now() >= +exp * 1000) {
-                    this.refreshToken()
+                    this.updateToken()
                 }
             }
         },
     },
     getters: {
         loggedIn(state) {
-            return state.accessToken != null;
+            return state.accessToken;
         },
         userId(state) {
             return state.userId;

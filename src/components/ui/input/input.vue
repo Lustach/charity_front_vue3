@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, unref } from "vue";
 import { useField } from "vee-validate";
-import { Props } from "@/components/ui/input/interface.ts";
-import useInputHandlers from "@/components/compositions/useInputHandlers.ts";
+import type { Props } from "@/components/ui/input/interface";
+import { fieldHandlerMaxLength } from "@/components/compositions/useInputHandlers";
 import { useMouseInElement } from "@vueuse/core";
 
-let inputHandlers = useInputHandlers;
+// let inputHandlers = useInputHandlers;
 
 const emit = defineEmits(["update:modelValue", "toggleEye"]);
 
@@ -24,10 +24,16 @@ let { value: modelValue, errorMessage, handleBlur, handleChange, meta } = useFie
   }
 );
 const target = ref(null);
-
+let field = ref(null);
 const { x, y, isOutside } = useMouseInElement(target);
-function update(value) {
-  emit("update:modelValue", value);
+function update(value: string) {
+  if (props.maxLength) {
+    let handledValue = fieldHandlerMaxLength({ value, maxLength: props.maxLength });
+    // value=+11
+    field.value.value = handledValue;
+    return emit("update:modelValue", field.value.value);
+  }
+  emit("update:modelValue", field.value.value);
 }
 function showInfoByKey(id) {
   let values = unref(props);
@@ -62,8 +68,8 @@ function showInfoByKey(id) {
       v-if="eye"
       @click="showInfoByKey(id)"
     />
-
     <input
+      ref="field"
       :class="{ 'is-error': errorMessage || error }"
       :type="type"
       :value="modelValue"

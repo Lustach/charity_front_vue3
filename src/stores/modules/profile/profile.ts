@@ -1,40 +1,41 @@
-import { defineStore } from 'pinia'
-import { useAuthStore } from "@/stores/modules/auth.ts";
-import API from '@/plugins/axios.js';
+import { defineStore, acceptHMRUpdate } from 'pinia'
+import { useAuthStore } from "@/stores/modules/auth/auth";
+import API from '@/plugins/axios';
+import type { TProfileStore } from '@/stores/modules/profile/profile_types';
 export const useProfileStore = defineStore('profile', {
     // arrow function recommended for full type inference
-    state: () => {
+    state: (): TProfileStore => {
         return {
-            fund: null,
-            bankDetails: null,
-            stepFromStorage: null,
-            bankDetailsIdFromStorage: null,
-            fundIdFromStorage: null,
-            mailingAddressIdFromStorage: null,
-            actualAddressIdFromStorage: null,
-            legalAddressIdFromStorage: null,
-            fillAllStepsFromStorage: null, // '0' || '1'
-            logoIdFromStorage: null,
-            isLogo: null, // true || false
+            fund: undefined,
+            bankDetails: undefined,
+            stepFromStorage: undefined,
+            bankDetailsIdFromStorage: undefined,
+            fundIdFromStorage: undefined,
+            mailingAddressIdFromStorage: undefined,
+            actualAddressIdFromStorage: undefined,
+            legalAddressIdFromStorage: undefined,
+            fillAllStepsFromStorage: undefined, // '0' || '1'
+            logoIdFromStorage: undefined,
+            isLogo: undefined, // true || false
             loading: false, // для роутера
             authStore: useAuthStore(),
             bids: {
-                bankdetailsbid: null,
-                actualaddressbid: null,
-                mailingaddressbid: null,
-                legaladdressbid: null,
+                bankdetailsbid: undefined,
+                actualaddressbid: undefined,
+                mailingaddressbid: undefined,
+                legaladdressbid: undefined,
             },
         }
     },
     actions: {
         updateMediaFile(payload) {
-            this.fund.media_files.splice(this.fund.media_files.findIndex(e => e.is_logo), 1, payload);
+            this.fund?.media_files.splice(this.fund.media_files.findIndex(e => e.is_logo), 1, payload);
         },
         deleteMediaFiles(payload) {
-            this.fund.media_files.splice(this.fund.media_files.findIndex(e => e.id === payload), 1);
+            this.fund?.media_files.splice(this.fund.media_files.findIndex(e => e.id === payload), 1);
         },
         setFundMediaFiles(payload) {
-            this.fund.media_files.push(payload);
+            this.fund?.media_files.push(payload);
         },
         //actions 
         async getBids() {
@@ -61,36 +62,33 @@ export const useProfileStore = defineStore('profile', {
                 if (this.authStore.profileId) {
                     if (!this.fundIdFromStorage) {
                         const result = (await this.getBids())
-                        // const result = await API.user.getUserProfileById(this.state.user.profileId)
                         this.fundIdFromStorage = result.fund;
-                        // this.commit('setStateVar',{varName: 'bids',value: result.bids})
                     }
                     // todo при нажатии на кнопкИ сохранить или прочее (редактирование текущего фонда) - сделать обновление данных в сторе, а не запросом
-                    // if(!this.fund) {
                     this.fund = await API.fill_profile.getFund((this.fundIdFromStorage));
-                    // }
-                    if (this.fund.bank_details) {
+                    if (this.fund?.bank_details) {
                         this.bankDetails = await API.fill_profile.getBankDetails(this.fund.bank_details);
-                        this.bankDetailsIdFromStorage = this.fund.bank_details;
-                        this.mailingAddressIdFromStorage = this.bankDetails.mailing_address;
-                        this.actualAddressIdFromStorage = this.bankDetails.actual_address;
-                        this.legalAddressIdFromStorage = this.bankDetails.legal_address;
+                        this.bankDetailsIdFromStorage = this.fund?.bank_details;
+                        this.mailingAddressIdFromStorage = this.bankDetails?.mailing_address;
+                        this.actualAddressIdFromStorage = this.bankDetails?.actual_address;
+                        this.legalAddressIdFromStorage = this.bankDetails?.legal_address;
                     }
-                    if (this.fund.nko_director_name) {
+                    if (this.fund?.nko_director_name) {
                         this.fillAllStepsFromStorage = 1;
                     }
-                    for (let key of this.fund.media_files) {
-                        // key.is_logo ? this.isLogo = true : false
-                        if (key.is_logo) {
-                            this.isLogo = true;
-                            return;
+                    if (this.fund?.media_files) {
+                        for (const key of this.fund.media_files) {
+                            if (key.is_logo) {
+                                this.isLogo = true;
+                                return;
+                            }
                         }
                     }
                 }
             }
             this.loading = true;
         },
-    },
+    },  
     getters: {
         getStepFromStorage: (state) => state.stepFromStorage,
         getBankDetailsIdFromStorage: (state) => state.bankDetailsIdFromStorage,
@@ -106,3 +104,7 @@ export const useProfileStore = defineStore('profile', {
         // getBids: (state) => state.bids,
     }
 })
+
+if (import.meta.hot) {
+    import.meta.hot.accept(acceptHMRUpdate(useProfileStore, import.meta.hot))
+}

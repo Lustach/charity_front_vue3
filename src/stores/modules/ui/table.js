@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import API from '@/plugins/axios.js';
+import API from '@/plugins/axios';
 
 export const useTableStore = defineStore('table', {
     state: () => {

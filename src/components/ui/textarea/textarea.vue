@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useField } from "vee-validate";
-import { Props } from "@/components/ui/textarea/interface.ts";
+import type { Props } from "@/components/ui/textarea/interface";
+import { fieldHandlerMaxLength } from "@/components/compositions/useInputHandlers";
 import useInputHandlers from "@/components/compositions/useInputHandlers";
 const emit = defineEmits(["update:modelValue"]);
 //* TODO: imported interfaces are not support official by Evan(nice joke) :) https://github.com/vuejs/vue-next/issues/4294
@@ -26,11 +27,17 @@ let { value: modelValue, errorMessage, handleBlur, handleChange, meta } = useFie
     validateOnValueUpdate: false,
   }
 );
-
-function update(value) {
+let field = ref(null);
+function update(value: string) {
+  if (props.maxLength) {
+    let fixedValue = inputHandlers.fixCrlf(value);
+    let handledValue = fieldHandlerMaxLength({ value: fixedValue, maxLength: props.maxLength });
+    // value=+11
+    field.value.value = handledValue;
+    return emit("update:modelValue", field.value.value);
+  }
   let fixedValue = inputHandlers.fixCrlf(value);
   emit("update:modelValue", fixedValue);
-  modelValue.value = fixedValue;
 }
 </script>
 
@@ -41,6 +48,7 @@ function update(value) {
   >
     <label :for="id">{{ label }} </label>
     <textarea
+      ref="field"
       :class="[
         errorMessage ? 'is-error' : '',
         fullSize ? 'vblg-textarea-full' : 'vblg-textarea-short',

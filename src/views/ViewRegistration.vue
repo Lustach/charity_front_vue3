@@ -1,4 +1,7 @@
 <script setup lang="ts">
+//types
+import type { TSignUp } from "@/types/auth";
+//vue
 import { computed, ref, unref, watch, markRaw } from "vue";
 import LookupPlugin from "@formvuelate/plugin-lookup";
 import VeeValidatePlugin from "@formvuelate/plugin-vee-validate";
@@ -12,8 +15,8 @@ import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
 import ChCheckbox from "@/components/ui/checkbox/checkbox.vue";
 
-import { useAuthStore } from "@/stores/modules/auth";
-import { useProfileStore } from "@/stores/modules/profile";
+import { useAuthStore } from "@/stores/modules/auth/auth";
+import { useProfileStore } from "@/stores/modules/profile/profile";
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
 
@@ -57,6 +60,7 @@ const schema = ref({
     id: "phone",
     error: "",
     maxWidth: "328px",
+    maxLength: 12,
   },
   password: {
     component: ChInput,
@@ -95,22 +99,41 @@ const schema = ref({
     slot: `<p>Соглашаюсь на обработку <a style="text-decoration: underline; color: initial" href="http://localhost:8000/static/documents/Политика_в_отношении_обработки_ПД.pdf" target="_blank">персональных данных</a></p>`,
   },
 });
+const router = useRouter();
 
-let modelValue = ref(true);
 let validServiceRules = ref(false);
 let touchServiceRules = ref(false);
 let isLoadingBtn = ref(false);
-const router = useRouter();
-const route = useRoute();
+
+watch(
+  () => form.value.email,
+  (nV) => {
+    if (nV) {
+      schema.value.email.error = "";
+    }
+  },
+  {
+    deep: true,
+  }
+);
+watch(
+  () => form.value.phone,
+  (nV) => {
+    if (nV) {
+      schema.value.phone.error = "";
+    }
+  },
+  {
+    deep: true,
+  }
+);
 // let serviceRules: Array<string> = ref([]);
 async function signUp() {
   let values = unref(form);
   localStorage.clear();
   authStore.$reset();
   profileStore.$reset();
-  // this.resetProfileState();
-  // this.resetUserState();
-  const data = {
+  const data: TSignUp = {
     password: values.password,
     username: values.email,
     re_password: values.passwordConfirm,
@@ -127,10 +150,10 @@ async function signUp() {
   } catch (e) {
     if (e.response.status === 400) {
       if (e.response.data.email) {
-        isErrorRequest = true;
+        schema.value.email.error = 'Данный e-mail уже зарегистрирован'
       }
       if (e.response.data.phone_number) {
-        isPhoneErrorRequest = true;
+        schema.value.phone.error = 'Данный телефон уже зарегистрирован'
       }
       console.error(e.response);
     }

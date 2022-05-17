@@ -1,10 +1,17 @@
 import axios from 'axios';
-import { useAuthStore } from "@/stores/modules/auth.ts";
+import { useAuthStore } from "@/stores/modules/auth/auth";
 import router from '@/router/router.js'
+
+import type {TBids} from "@/stores/modules/profile/profile_types"
 // const authStore = useAuthStore();
 // import router from '@/router/router';
 // import store from '@/store/store';
-
+// type FillProfile = {
+//     getHelpCategory: new ()=>Promise<T>,
+// }
+// interface API {
+//     fill_profile: FillProfile
+// }
 const API = {
     fill_profile: {
         getHelpCategory: () => axios.get('/health/category/'),
@@ -111,7 +118,7 @@ const API = {
         generateQr: (data) => axios.post('/health/fund_resource/', { ...data, }),
         createProfileModel: (data) => axios.post('/health/profiles/', { ...data, }),
         meUser: () => axios.get('/auth/users/me/'),
-        getUserProfileById: (id) => axios.get(`/health/profiles/${id}/`),
+        getUserProfileById: (id: number): Promise<{ bids: TBids }> => axios.get(`/health/profiles/${id}/`),
         getGeneratedQr: (id) => axios.get(`/health/fund_resource/${id}/`),
     },
     bid: {

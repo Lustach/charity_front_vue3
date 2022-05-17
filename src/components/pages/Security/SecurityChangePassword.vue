@@ -2,8 +2,8 @@
 import axios from "axios";
 import { computed, ref, markRaw, inject, unref, watch } from "vue";
 //store
-import { useAuthStore } from "@/stores/modules/auth";
-import { useProfileStore } from "@/stores/modules/profile";
+import { useAuthStore } from "@/stores/modules/auth/auth";
+import { useProfileStore } from "@/stores/modules/profile/profile";
 //router
 import { useRouter, useRoute } from "vue-router";
 //validation
@@ -155,12 +155,14 @@ async function changePassword() {
         <h2 style="margin: 65px 0 16px 0 !important">Двухфакторная аутентификация</h2>
         Защитите свой профиль. Для этого установите Google Authenticator для
         <a
+        class="vblg-link"
           href="https://apps.apple.com/ru/app/google-authenticator/id388497605"
           target="_blank"
           >Apple
         </a>
         или
         <a
+        class="vblg-link"
           href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=ru&gl=US"
           target="_blank"
           >Android </a
@@ -193,7 +195,6 @@ async function changePassword() {
   }
 
   a {
-    border-bottom: 1px solid #0f75bd;
     color: inherit;
   }
 }

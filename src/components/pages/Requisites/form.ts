@@ -4,7 +4,7 @@ import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
 import ChCheckbox from "@/components/ui/checkbox/checkbox.vue";
 import ChFormCategoryTitle from "@/components/pages/NkoInfo/ChFormCategoryTitle.vue";
-import { object, bool } from "yup";
+import { object, bool, lazy } from "yup";
 import { rules } from "@/compositions/validation_rules";
 markRaw(ChInput);
 markRaw(ChButton);
@@ -19,20 +19,21 @@ export const form = ref({
     countScore: "",
     correspondentScore: "",
     city: "",
-    city_actual: "",
-    city_mailing: "",
     address: "",
-    address_actual: "",
-    address_mailing: "",
     officeOrFlat: "",
-    officeOrFlatActual: "",
-    officeOrFlatMailing: "",
     index: "",
+    city_actual: "",
+    address_actual: "",
+    officeOrFlatActual: "",
     index_actual: "",
+    city_mailing: "",
+    address_mailing: "",
+    officeOrFlatMailing: "",
     index_mailing: "",
     actualAddress: true,
     mailingAddress: true,
 });
+
 export const validationSchema = computed(() => {
     return object().shape({
         inn: rules.inn,
@@ -58,7 +59,7 @@ export const validationSchema = computed(() => {
         // mailingAddress: bool().oneOf([true], ""),
     });
 });
-
+export const description = validationSchema.value.describe();
 export const schema = computed(() => [
     {
         component: ChInput,
@@ -67,6 +68,7 @@ export const schema = computed(() => [
         placeholder: "",
         id: "inn",
         model: "inn",
+        maxLength: 10,
         apiKey: "inn",
         error: "",
     },
@@ -76,6 +78,7 @@ export const schema = computed(() => [
         label: "КПП *",
         placeholder: "",
         id: "kpp",
+        maxLength: 9,
         apiKey: "kpp",
         model: "kpp",
         error: "",
@@ -86,6 +89,7 @@ export const schema = computed(() => [
         label: "ОГРН *",
         placeholder: "",
         id: "ogrn",
+        maxLength: 13,
         apiKey: "ogrn",
         model: "ogrn",
         error: "",
@@ -112,6 +116,7 @@ export const schema = computed(() => [
         label: "БИК *",
         placeholder: "",
         id: "bik",
+        maxLength: 9,
         apiKey: "bik",
         model: "bik",
         error: "",
@@ -122,6 +127,7 @@ export const schema = computed(() => [
         label: "Расчетный счет *",
         placeholder: "",
         id: "countScore",
+        maxLength: 20,
         apiKey: "checking_account",
         model: "countScore",
         error: "",
@@ -132,6 +138,7 @@ export const schema = computed(() => [
         label: "Корреспондентский счет *",
         placeholder: "",
         id: "correspondentScore",
+        maxLength: 20,
         apiKey: "correspondent_account",
         model: "correspondentScore",
         error: "",
@@ -180,6 +187,7 @@ export const schema = computed(() => [
             label: "Индекс *",
             placeholder: "",
             id: "index",
+            maxLength: 6,
             apiKey: "index",
             model: "index",
             error: "",
@@ -234,6 +242,7 @@ export const schema = computed(() => [
             label: "Индекс *",
             placeholder: "",
             id: "index_actual",
+            maxLength: 6,
             apiKey: "index",
             model: "index_actual",
             error: "",
@@ -290,6 +299,7 @@ export const schema = computed(() => [
             label: "Индекс *",
             placeholder: "",
             id: "index_mailing",
+            maxLength: 6,
             apiKey: "index",
             model: "index_mailing",
             error: "",

@@ -8,8 +8,8 @@ import { useSchemaForm, SchemaFormFactory } from "formvuelate";
 import { rules } from "@/compositions/validation_rules";
 import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
-import { useAuthStore } from "@/stores/modules/auth.ts";
-import { useProfileStore } from "@/stores/modules/profile.ts";
+import { useAuthStore } from "@/stores/modules/auth/auth";
+import { useProfileStore } from "@/stores/modules/profile/profile";
 import AppModal from "@/components/app/AppModal.vue";
 
 markRaw(ChInput);

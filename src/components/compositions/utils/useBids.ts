@@ -1,4 +1,4 @@
-import { useProfileStore } from '@/stores/modules/profile';
+import { useProfileStore } from '@/stores/modules/profile/profile';
 let profileStore = useProfileStore();
 enum BidsStatus {
     REJECTED = "REJECTED",

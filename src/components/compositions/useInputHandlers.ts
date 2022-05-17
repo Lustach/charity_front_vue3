@@ -4,22 +4,36 @@ function fixCrlf(e: string): string {
     }
     return e;
 }
-function fixEnterChar(e: string): string {
+export function fixEnterChar(e: string): string {
     if (!Array.isArray(e)) {
         e = e.replace(/(\r\n|\n|\r)/g, "");
     }
     return e;
 }
 
-function validateFieldByTypePhone(field: string) {
-    if (field.type === 'phone') {
-    const fieldValue = JSON.parse(JSON.stringify(field.length));
-    for (let i = 0; i < fieldValue; i++) {
-        if (field.match(/[a-z]|[а-я]|[A-Z]|[А-Я]|\.|,|-|_|=|!|@|#|%|&|\$|\^|\*|;|'|\[|]|{|}|"|:|<|>|\?|\/\|:*$[^+]/)) {
-            field = field.slice(0, -1);
-        }
+type TField = {
+    value: string
+    maxLength: number,
+}
+
+export function fieldHandlerMaxLength(field: TField): string {
+    if (field.value.length > field.maxLength) {
+        field.value = field.value.slice(0, -(field.value.length - field.maxLength));
     }
-    }
+    return field.value
+}
+
+export function validateFieldByTypePhone(field: object) {
+    console.log(field);
+    // if (field.type === 'phone') {
+    //     const fieldValue = JSON.parse(JSON.stringify(field.length));
+    //     for (let i = 0; i < fieldValue; i++) {
+    //         if (field.match(/[a-z]|[а-я]|[A-Z]|[А-Я]|\.|,|-|_|=|!|@|#|%|&|\$|\^|\*|;|'|\[|]|{|}|"|:|<|>|\?|\/\|:*$[^+]/)) {
+    //             field = field.slice(0, -1);
+    //         }
+    //     }
+    // }
+
     // else if (e.type === 'text') {
     //     // const fieldValue = JSON.parse(JSON.stringify(event.target.value));
     //     let test = event.target.value

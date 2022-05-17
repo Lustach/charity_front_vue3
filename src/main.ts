@@ -3,7 +3,7 @@ import { createPinia } from 'pinia'
 import { useNotification } from "@/components/compositions/ui/elNotification.ts";
 import * as validationMessages from '@/compositions/validation_messages'
 import "@/compositions/tooltip"
-import Api from '@/plugins/axios.js';
+import Api from '@/plugins/axios';
 
 import App from '@/components/app/App.vue'
 import router from './router/router.js'
@@ -24,7 +24,7 @@ app.provide('API', Api)
 app.provide('useNotification', useNotification)
 // app.config.globalProperties.$API = Api
 
-app.use(plugin,defaultConfig())
+app.use(plugin, defaultConfig())
 app.use(PrimeVue, { ripple: true });
 app.component('Button', Button)
 
