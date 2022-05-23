@@ -36,7 +36,7 @@
               >Android
             </a>
           </p>
-          <p style="margin-top: 18px">
+          <p style="margin-top: 6px">
             Остались вопросы? Инструкция
             <a
               class="vblg-link"
@@ -93,12 +93,13 @@ const handleClose = (done: () => void) => {
 <style lang="scss" scoped>
 @import "src/assets/scss/components/_app-modal.scss";
 @import "src/assets/scss/components/_el-dialog.scss";
-
 .app-modal:deep .el-dialog {
   font-size: 17px !important;
   max-width: 480px !important;
 }
-
+h2 {
+  font-size: 16px !important;
+}
 .my-btn_modal {
   margin-top: 40px;
 }
@@ -108,24 +109,35 @@ const handleClose = (done: () => void) => {
 }
 
 .links_container {
+  width: 100%;
+  margin-left: 32px;
+  p {
+    font-size: 16px !important;
+  }
   a {
     color: #0f75bd;
+    font-size: 16px !important;
   }
 }
 
 .qr-info_container {
   display: flex;
-  margin-bottom: 42px;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 12px;
 
   img {
     width: 100% !important;
     max-width: 210px;
-    margin-right: 41.92px;
+    margin-right: 8.92px;
   }
 
   p {
     margin: 0;
     text-align: left;
+  }
+  &_about {
+    margin-top: 11px;
   }
 }
 

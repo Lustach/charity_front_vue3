@@ -15,10 +15,9 @@ import Security2FaEnableStep2 from "../components/pages/Security/Security2FaEnab
 
 // 2Fa steps
 let isEnable2FaStep1 = ref(false);
-let isEnable2FaStep2 = ref(true);
+let isEnable2FaStep2 = ref(false);
 
 let isDisable2FaStep1 = ref(false);
-
 
 //
 let isBtn2FaLoading = ref(false);
@@ -49,8 +48,20 @@ async function enable2Fa() {
       >Включить защиту</ChButton
     >
 
-    <Security2FaEnableStep1 :modelValue="isEnable2FaStep1" @showStep2="showStep2()" :code="info2Fa.code"></Security2FaEnableStep1>
-    <!-- <Security2FaEnableStep2 :modelValue="isEnable2FaStep2"></Security2FaEnableStep2> -->
+    <Security2FaEnableStep1
+      :code="info2Fa.code"
+      :modelValue="isEnable2FaStep1"
+      @close="isEnable2FaStep1 = false"
+      @showEnableStep2="(isEnable2FaStep1 = false), (isEnable2FaStep2 = true)"
+    >
+    </Security2FaEnableStep1>
+    <Security2FaEnableStep2
+      :modelValue="isEnable2FaStep2"
+      @close="isEnable2FaStep2 = false"
+      @showEnableStep3="isEnable2FaStep3 = false"
+      :qrCode="info2Fa.qrCode"
+      :code2Fa="info2Fa.code_2fa"
+    ></Security2FaEnableStep2>
   </section>
 </template>
 

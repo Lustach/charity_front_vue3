@@ -10,14 +10,27 @@
         <p style="color: #0f75bd; margin: 30px auto; font-size: 17px" cy="reserve_code">
           {{ code }}fasdfasdf
         </p>
-        <p style="max-width: 360px; text-align: center; word-break: break-word;margin-bottom: 40px;">
+        <p
+          style="
+            max-width: 360px;
+            text-align: center;
+            word-break: break-word;
+            margin-bottom: 40px;
+          "
+        >
           Если у вас не будет доступа к телефону, вы сможете войти в свой профиль
           <span style="font-weight: 600">только по этому резервному коду.</span>
         </p>
-        <ChCheckbox id="">
+        <ChCheckbox id="confirm" v-model.native="isConfirm">
           <template #text><p>Я сохранил резервный код</p></template>
         </ChCheckbox>
-        <ChButton maxWidth="150px">Подтвердить</ChButton>
+        <ChButton
+          maxWidth="150px"
+          :loading="isLoadingBtn"
+          :disabled="!isConfirm"
+          @click="emit('showEnableStep2')"
+          >Подтвердить</ChButton
+        >
       </div>
     </el-dialog>
   </div>
@@ -25,13 +38,20 @@
 
 <script lang="ts" setup>
 import { ref, markRaw } from "vue";
+import { object, bool } from "yup";
 //components
 import ChCheckbox from "@/components/ui/checkbox/checkbox.vue";
 import ChButton from "@/components/ui/button/button.vue";
 markRaw(ChCheckbox);
 markRaw(ChButton);
-
-let emit = defineEmits(["close"]);
+// const validationSchema = object({
+//   confirm: bool().oneOf([true], ""),
+// });
+// const form = ref({
+//   confirm: false,
+// });
+let isConfirm = ref(false);
+let emit = defineEmits(["close", "showEnableStep2"]);
 const dialogVisible = ref(false);
 let props = defineProps({
   modelValue: {
