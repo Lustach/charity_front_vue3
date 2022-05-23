@@ -31,47 +31,61 @@ value = files;
 <template>
   <div class="file__container">
     <label for="drop-area-id" id="drop-area_label">{{ label }}</label>
-    <DropZone
-      class="drop-area"
-      id="drop-area-id"
-      @files-dropped="addFiles"
-      #default="{ dropZoneActive }"
-    >
-      <label :for="id">
-        <span v-if="dropZoneActive">
-          <span>Перетащите или загрузите файлы</span>
-          <span class="smaller">Добавьте</span>
-        </span>
-        <div v-else-if="!files.length">
-          <div class="action">
-            <span>Перетащите </span>
-            <p class="smaller">
-              <strong>или <em>загрузите файлы</em></strong>
-            </p>
+    <div style="min-height: 76px; max-width: 366.11px; width: 100%">
+      <DropZone
+        tabindex="0"
+        class="drop-area"
+        id="drop-area-id"
+        @files-dropped="addFiles"
+        #default="{ dropZoneActive }"
+        :class="{ 'is-error': errorMessage }"
+      >
+        <label :for="id">
+          <span v-if="dropZoneActive" style="text-align: center">
+            <span>Перетащите или загрузите файлы</span>
+            <!-- <span class="smaller">Добавьте</span> -->
+          </span>
+          <div v-else-if="!files.length">
+            <div class="action">
+              <span>Перетащите </span>
+              <p class="smaller">
+                <strong>или <em>загрузите файлы</em></strong>
+              </p>
+            </div>
+            <p style="text-align: center">{{ uploadTextTip }}</p>
           </div>
-          <p style="text-align: center;">{{uploadTextTip}}</p>
-        </div>
-        <p class="action" style="padding-bottom: 20px" v-else-if="files.length">
-          <span>Добавить ещё</span>
-        </p>
-        <input type="file" :accept="accept" :id="id" multiple @change="onInputChange" />
-      </label>
-      <ul class="image-list" v-show="files.length">
-        <FilePreview
-          v-for="file of files"
-          :key="file.id"
-          :file="file"
-          tag="li"
-          @remove="removeFile"
-        />
-      </ul>
-    </DropZone>
+          <p class="action" style="padding-bottom: 20px" v-else-if="files.length">
+            <span>Добавить ещё</span>
+          </p>
+          <input
+            tabindex="-1"
+            type="file"
+            :accept="accept"
+            :id="id"
+            multiple
+            @change="onInputChange"
+          />
+        </label>
+        <ul class="image-list" v-show="files.length">
+          <FilePreview
+            v-for="(file,key) of files"
+            :key="file.id"
+            :file="file"
+            tag="li"
+            @remove="removeFile"
+          />
+        </ul>
+      </DropZone>
+      <p class="error-message" v-show="errorMessage">{{ errorMessage }}</p>
+    </div>
   </div>
 </template>
 <style lang="scss" scoped>
+@import "@/assets/scss/ui/text-field";
 .action {
   display: flex;
   justify-content: center;
+  width: 100%;
   white-space: break-spaces;
   * {
     font-weight: 600 !important;
@@ -84,6 +98,7 @@ value = files;
 
 .file__container {
   display: flex;
+  width: 100%;
 }
 
 #drop-area_label {
@@ -114,6 +129,14 @@ value = files;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     background: #ffffffcc;
   }
+  &:focus:not(.is-error) {
+    border-color: #409eff;
+    box-shadow: 1px 1px 10px -4px rgba(64, 158, 255, 0.5);
+  }
+
+  &:hover:not(.is-error) {
+    border-color: var(--vblg-c-primary);
+  }
 }
 label {
   font-size: 36px;
@@ -138,6 +161,7 @@ label {
     &::file-selector-button,
     &::-webkit-file-upload-button {
       display: none;
+      opacity: 0;
     }
   }
 }
@@ -162,5 +186,18 @@ label {
 }
 button {
   cursor: pointer;
+}
+.error-message {
+  line-height: 16px;
+  color: #f56e6e;
+}
+.is-error {
+  border-color: #f56c6c;
+
+  &:focus,
+  &:active,
+  &:hover {
+    box-shadow: 1px 1px 10px -4px #f56c6c;
+  }
 }
 </style>

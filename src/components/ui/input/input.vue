@@ -68,23 +68,25 @@ function showInfoByKey(id) {
       v-if="eye"
       @click="showInfoByKey(id)"
     />
-    <input
-      ref="field"
-      :class="{ 'is-error': errorMessage || error }"
-      :type="type"
-      :value="modelValue"
-      @input="update($event.target.value)"
-      :placeholder="placeholder"
-      :id="id"
-      :name="id"
-      :disabled="disabled"
-      autocomplete="off"
-      class="vblg-input"
-    />
-    <span class="error-message" v-if="errorMessage || error">{{
-      error || errorMessage
-    }}</span>
-    <slot name="my-error-message"></slot>
+    <div style="width: 100%;">
+      <input
+        ref="field"
+        :class="{ 'is-error': errorMessage || error }"
+        :type="type"
+        :value="modelValue"
+        @input="update($event.target.value)"
+        :placeholder="placeholder"
+        :id="id"
+        :name="id"
+        :disabled="disabled"
+        autocomplete="off"
+        class="vblg-input"
+      />
+      <span class="error-message" v-if="errorMessage || error">{{
+        error || errorMessage
+      }}</span>
+      <slot name="my-error-message"></slot>
+    </div>
   </div>
 </template>
 

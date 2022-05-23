@@ -16,8 +16,12 @@ import ChTextArea from "@/components/ui/textarea/textarea.vue";
 import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
 import ChFileUpload from "@/components/ui/file_loader/FileUpload.vue";
+import createUploader from "@/components/ui/file_loader/compositions/fileUploader";
 // File Management
 import useFileList from "@/components/ui/file_loader/compositions/fileList";
+//store
+import { useProfileStore } from "@/stores/modules/profile/profile";
+const profileStore = useProfileStore();
 
 markRaw(ChInput);
 markRaw(ChTextArea);
@@ -52,13 +56,12 @@ const { files, addFiles, removeFile } = useFileList();
 //   form.value.files = files;
 // }
 // Uploader
-import createUploader from "@/components/ui/file_loader/compositions/fileUploader";
-const { uploadFiles } = createUploader("YOUR URL HERE");
+const { uploadFiles } = createUploader("/health/media/"); //YOUR URL HERE
 //schema validation
 
 const SchemaFormWithPlugins = SchemaFormFactory([LookupPlugin({}), VeeValidatePlugin()]);
 const urlPattern = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w\?[a-zA-Z-_%\/@?]+)*([^\/\w\?[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/;
-const FILE_SIZE = 160 * 1024;
+const FILE_SIZE = 5242880;
 const SUPPORTED_FORMATS = [
   "image/jpg",
   "image/jpeg",
@@ -207,10 +210,24 @@ const validationSchema = computed(() => {
     insta: yup.string().matches(urlPattern, "Неверный формат сайта"),
     files: yup
       .mixed()
-      .test("fileSize", "File Size is too large", (value) => {
-        for (const iterator of value) {
-          return iterator.file.size <= FILE_SIZE;
+      .test("fileNameLength", "Слишком длинное название файла", (value) => {
+        if (value.length) {
+          for (const iterator of value) {
+            if (iterator.file.name.length >= 100) {
+              return false;
+            }
+          }
         }
+        return true;
+      })
+      .test("fileSize", "Вы превысили допустимый размер файла", (value) => {
+        if (value.length) {
+          for (const iterator of value) {
+            console.log(iterator.file.size <= FILE_SIZE, value, "lole");
+            return iterator.file.size <= FILE_SIZE;
+          }
+        }
+        return true;
       })
       .test(
         "fileType",
@@ -227,6 +244,13 @@ const validationSchema = computed(() => {
 });
 
 form.value.files = files.value;
+
+async function saveChanges() {
+  let fd = new FormData();
+  for (const key of profileStore.fund.category) {
+    fd.append("category", key);
+  }
+}
 </script>
 <template>
   <div class="profile_form_container">
@@ -245,30 +269,7 @@ form.value.files = files.value;
           >
         </template>
       </SchemaFormWithPlugins>
-      <!-- <DropZone class="drop-area" @files-dropped="addFiles" #default="{ dropZoneActive }">
-        <label for="files">
-          <span v-if="dropZoneActive">
-            <span>Перетащите или загрузите файлы</span>
-            <span class="smaller">Добавьте</span>
-          </span>
-          <p class="action" v-else>
-            <span>Перетащите </span>
-            <span class="smaller">
-              <strong>или <em>загрузите файлы</em></strong>
-            </span>
-          </p>
-          <input type="file" id="files" multiple @change="onInputChange" />
-        </label>
-        <ul class="image-list" v-show="files.length">
-          <FilePreview
-            v-for="file of files"
-            :key="file.id"
-            :file="file"
-            tag="li"
-            @remove="removeFile"
-          />
-        </ul>
-      </DropZone> -->
+      <button @click="uploadFiles(form.files)">dwn</button>
     </div>
   </div>
 </template>

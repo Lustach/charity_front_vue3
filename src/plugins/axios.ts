@@ -36,9 +36,9 @@ const API = {
             data: data,
             method: 'post',
             url: '/health/media/',
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
+            // headers: {
+            //     'Content-Type': 'multipart/form-data',
+            // },
         }),
         updateMedia: (id, data) => axios({
             data: data,
@@ -173,12 +173,12 @@ const API = {
 
 // Vue.use({
 //     install(Vue) {
-axios.defaults.baseURL = 'http://localhost:8000';
+axios.defaults.baseURL = import.meta.env.VITE_APP_BACKEND_HOST;
 const token = localStorage.getItem('access_token');
 if (token) {
     axios.defaults.headers.common.Authorization = 'JWT ' + token;
 }
-// axios.defaults.headers.common['Content-Type'] = 'application/json';
+axios.defaults.headers.common['Content-Type'] = 'application/json';
 axios.interceptors.request.use(async (request) => {
     const authStore = useAuthStore();
     if (authStore.loggedIn) {
