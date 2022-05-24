@@ -1,8 +1,9 @@
 export interface Props {
-    modelValue:  null | string,
+    modelValue: boolean,
     // Field's own value
-    value?: null,
+    value: null,
     name: string,
     rules?: undefined,
     error?: any;
+    slot?: string,
 }

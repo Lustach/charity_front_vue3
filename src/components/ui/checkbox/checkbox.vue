@@ -19,45 +19,23 @@
   </div>
 </template>
 
-<script>
-import { toRefs } from "vue";
+<script setup lang="ts">
 import { useField } from "vee-validate";
+import type { Props } from "@/components/ui/checkbox/interface";
 
-export default {
-  props: {
-    modelValue: {
-      type: Boolean,
-    },
-    name: String,
-    value: {
-      type: String,
-    },
-    slot: {
-      type: String,
-    },
-  },
-  setup(props, ctx) {
-    // we are using toRefs to create reactive references to `name` and `value` props
-    // this is important because vee-validte needs to know if any of these props change
-    // https://vee-validate.logaretm.com/v4/guide/composition-api/caveats
-    let { name, value, modelValue } = toRefs(props);
-    let { meta, checked, handleChange, errorMessage } = useField(name, undefined, {
-      type: "checkbox",
-      checkedValue: false,
-      valueProp: modelValue,
-      validateOnValueUpdate: false,
-    });
-    let onChange = (value) => {
-      handleChange(value);
-      ctx.emit("update:modelValue", value);
-    };
-    return {
-      checked,
-      handleChange,
-      errorMessage,
-      onChange,
-    };
-  },
+const emit = defineEmits(["update:modelValue"]);
+
+// eslint-disable-next-line vue/no-setup-props-destructure
+let { name, value, modelValue } = defineProps<Props>();
+let { meta, checked, handleChange, errorMessage } = useField(name, undefined, {
+  type: "checkbox",
+  checkedValue: false,
+  valueProp: modelValue,
+  validateOnValueUpdate: false,
+});
+let onChange = (value: boolean) => {
+  handleChange(value);
+  emit("update:modelValue", value);
 };
 </script>
 
