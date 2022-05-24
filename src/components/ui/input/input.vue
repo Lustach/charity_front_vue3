@@ -3,46 +3,43 @@ import { ref, unref } from "vue";
 import { useField } from "vee-validate";
 import type { Props } from "@/components/ui/input/interface";
 import { fieldHandlerMaxLength } from "@/components/compositions/useInputHandlers";
-import { useMouseInElement } from "@vueuse/core";
 
-// let inputHandlers = useInputHandlers;
-
-const emit = defineEmits(["update:modelValue", "toggleEye"]);
+const emit = defineEmits(["update:modelValue"]);
 
 const props = withDefaults(defineProps<Props>(), {
   type: "text",
-  label: "Label",
-  placeholder: "Placeholder",
+  label: "",
+  placeholder: "",
 });
 
-let { value: modelValue, errorMessage, handleBlur, handleChange, meta } = useField(
-  props.id,
-  undefined,
-  {
-    initialValue: props.modelValue,
-    validateOnValueUpdate: false,
-  }
-);
+//data
+let { value: modelValue, errorMessage, meta } = useField(props.id, undefined, {
+  initialValue: props.modelValue,
+  validateOnValueUpdate: false,
+});
 const target = ref(null);
-let field = ref(null);
-const { x, y, isOutside } = useMouseInElement(target);
+let field = ref<HTMLInputElement | null>(null);
+//methods
+
+const handleInputChange = (event: Event) => (event.target as HTMLInputElement).value;
+
 function update(value: string) {
   if (props.maxLength) {
     let handledValue = fieldHandlerMaxLength({ value, maxLength: props.maxLength });
-    // value=+11
-    field.value.value = handledValue;
-    return emit("update:modelValue", field.value.value);
+    if (field.value) {
+      field.value.value = handledValue;
+      return emit("update:modelValue", field.value.value);
+    }
   }
-  emit("update:modelValue", field.value.value);
+  if (field.value) emit("update:modelValue", field.value.value);
 }
-function showInfoByKey(id) {
+function showInfoByKey() {
   let values = unref(props);
   if (modelValue.value === values.modelOriginal) {
-    modelValue.value = values.modelHidden;
+    modelValue.value = values.modelHidden || "";
   } else {
-    modelValue.value = values.modelOriginal;
+    modelValue.value = values.modelOriginal || "";
   }
-  // emit("toggleEye",id)
 }
 </script>
 
@@ -66,15 +63,15 @@ function showInfoByKey(id) {
       alt=""
       class="eye"
       v-if="eye"
-      @click="showInfoByKey(id)"
+      @click="showInfoByKey()"
     />
-    <div style="width: 100%;">
+    <div style="width: 100%">
       <input
         ref="field"
         :class="{ 'is-error': errorMessage || error }"
         :type="type"
         :value="modelValue"
-        @input="update($event.target.value)"
+        @input="update(handleInputChange($event))"
         :placeholder="placeholder"
         :id="id"
         :name="id"
