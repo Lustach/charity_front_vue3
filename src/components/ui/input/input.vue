@@ -3,6 +3,7 @@ import { ref, unref } from "vue";
 import { useField } from "vee-validate";
 import type { Props } from "@/components/ui/input/interface";
 import { fieldHandlerMaxLength } from "@/components/compositions/useInputHandlers";
+import { handleInputChange } from "@/components/compositions/useInputHandlers";
 
 const emit = defineEmits(["update:modelValue"]);
 
@@ -20,8 +21,6 @@ let { value: modelValue, errorMessage, meta } = useField(props.id, undefined, {
 const target = ref(null);
 let field = ref<HTMLInputElement | null>(null);
 //methods
-
-const handleInputChange = (event: Event) => (event.target as HTMLInputElement).value;
 
 function update(value: string) {
   if (props.maxLength) {

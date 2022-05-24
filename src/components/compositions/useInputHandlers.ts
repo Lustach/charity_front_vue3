@@ -1,4 +1,5 @@
-function fixCrlf(e: string): string {
+export const handleInputChange = (event: Event) => (event.target as HTMLInputElement).value;
+export function fixCrlf(e: string): string {
     if (!Array.isArray(e)) {
         e = e.replace(/(\r\n|\n|\r)/g, "\r\n");
     }
