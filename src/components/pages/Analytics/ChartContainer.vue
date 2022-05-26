@@ -108,7 +108,6 @@ async function selectItem(e) {
     span:hover {
       background: #eff5fb;
       color: initial;
-      //background-color: initial;
     }
     span {
       padding: 6px;

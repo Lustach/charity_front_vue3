@@ -8,15 +8,18 @@
 
 <script>
 export default {
-  name: 'alert',
+  name: "alert",
   props: {
-    title: {},
-    description: {},
+    title: {
+      type: String,
+    },
+    description: {
+      type: String,
+    },
   },
 };
 </script>
 
 <style scoped lang="scss">
 @import "src/assets/scss/components/alert";
-
 </style>

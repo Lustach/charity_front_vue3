@@ -1,5 +1,5 @@
 import { useProfileStore } from '@/stores/modules/profile/profile';
-let profileStore = useProfileStore();
+const profileStore = useProfileStore();
 enum BidsStatus {
     REJECTED = "REJECTED",
     OPENED = "OPENED",
@@ -25,20 +25,20 @@ type TBids = {
     legaladdressbid: TBidsDetails | null,
 }
 
-let bids: TBids = profileStore.bids
+const bids: TBids = profileStore.bids
 
-let bidsStatus = (bidName: BidsName): Boolean => {
+const bidsStatus = (bidName: BidsName): boolean => {
     if (bids[bidName]?.bid_status) {
         return bids[bidName]?.bid_status === 'OPENED';
     }
     else return false
 }
-let disabledBtn = (bidName: BidsName): Boolean => {
+const disabledBtn = (bidName: BidsName): boolean => {
     if (bids[bidName])
         return (getBidStatus(bidName, 'CLOSED') || getBidStatus(bidName, 'REJECTED'));
     else return false
 }
-let getBidStatus = (bidName: BidsName, bidStatus: TBidsStatus): Boolean => {
+const getBidStatus = (bidName: BidsName, bidStatus: TBidsStatus): boolean => {
     if (bids[bidName]?.bid_status) {
         return bids[bidName]?.bid_status === bidStatus;
     }

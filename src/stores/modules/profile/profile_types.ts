@@ -1,3 +1,5 @@
+import type { _GettersTree } from 'pinia'
+import { defineStore } from 'pinia'
 type TMediaFiles = {
     url: string,
     id: number,
@@ -91,7 +93,7 @@ export type TBankDetails = {
     mailing_address: number,
 }
 
-export type TProfileStore = {
+export interface IProfileState {
     fund: TFund | undefined,
     bankDetails: TBankDetails | undefined,
     bids: TBids | undefined,
@@ -108,4 +110,29 @@ export type TProfileStore = {
     authStore: any,
 }
 
+type TGetters = _GettersTree<IProfileState>
 
+export interface IProfileGetters extends TGetters {
+    getStepFromStorage: (state: IProfileState) => number | undefined,
+    getBankDetailsIdFromStorage: (state: IProfileState) => number | undefined,
+    getFundIdFromStorage: (state: IProfileState) => number | undefined,
+    getMailingAddressIdFromStorage: (state: IProfileState) => number | undefined,
+    getActualAddressIdFromStorage: (state: IProfileState) => number | undefined,
+    getLegalAddressIdFromStorage: (state: IProfileState) => number | undefined,
+    getFillAllStepsFromStorage: (state: IProfileState) => number | undefined,
+    getIsLogo: (state: IProfileState) => boolean | undefined,
+    getFund: (state: IProfileState) => TFund | undefined,
+    getBankDetails: (state: IProfileState) => TBankDetails | undefined,
+    getLogoIdFromStorage: (state: IProfileState) => number | undefined,
+}
+
+
+type T = Awaited<Promise<PromiseLike<void>>>
+
+export interface IProfileActions {
+    updateMediaFile: (payload: number) => void
+    deleteMediaFiles: (payload: number) => void
+    setFundMediaFiles: (payload: number) => void
+    getBids: () => Promise<{ bids: TBids; }>
+    initDataFromLocalStorage: () => void
+}

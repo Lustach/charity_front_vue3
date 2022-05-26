@@ -1,8 +1,8 @@
-import type { _GettersTree, _ } from 'pinia'
+import type { _GettersTree, } from 'pinia'
 import type { TSignUp } from "@/types/auth"
 // import { useProfileStore } from "@/stores/modules/profile/profile";
 
-export interface ICounterStore {
+export interface IAuthState {
     accessToken: string
     refreshToken: string
     is2faEnabled: boolean
@@ -11,18 +11,18 @@ export interface ICounterStore {
     profileId: string
 }
 
-type TGetters = _GettersTree<ICounterStore>
+type TGetters = _GettersTree<IAuthState>
 
-export interface ICounterGetters extends TGetters {
-    loggedIn: (state: ICounterStore) => string
-    userId: (state: ICounterStore) => string
-    is2faEnabled: (state: ICounterStore) => boolean
+export interface IAuthGetters extends TGetters {
+    loggedIn: (state: IAuthState) => string
+    userId: (state: IAuthState) => string
+    is2faEnabled: (state: IAuthState) => boolean
 }
 
 
 type T = Awaited<Promise<PromiseLike<void>>>
 
-export interface ICounterActions {
+export interface IAuthActions {
     destroyToken: () => void
     setTokens: (payload: { access_token: string, refresh_token: string }) => void
     updateToken: () => T

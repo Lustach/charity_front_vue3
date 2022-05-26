@@ -17,7 +17,7 @@ function onInputChange(e) {
 }
 // Uploader
 const { uploadFiles } = createUploader("YOUR URL HERE");
-const props = defineProps(["id", "label", "accept", "uploadTextTip"]);
+const props = defineProps(["id", "label", "accept", "uploadTextTip", "maxWidth"]);
 let { value, errorMessage, handleBlur, handleChange, meta } = useField(
   props.id,
   undefined,
@@ -31,9 +31,10 @@ value = files;
 <template>
   <div class="file__container">
     <label for="drop-area-id" id="drop-area_label">{{ label }}</label>
-    <div style="min-height: 76px; max-width: 366.11px; width: 100%">
+    <div :style="{ 'max-width': maxWidth }" style="min-height: 76px; width: 100%">
       <DropZone
         tabindex="0"
+        :style="{ 'max-width': maxWidth }"
         class="drop-area"
         id="drop-area-id"
         @files-dropped="addFiles"
@@ -68,7 +69,7 @@ value = files;
         </label>
         <ul class="image-list" v-show="files.length">
           <FilePreview
-            v-for="(file,key) of files"
+            v-for="(file, key) of files"
             :key="file.id"
             :file="file"
             tag="li"
@@ -99,6 +100,7 @@ value = files;
 .file__container {
   display: flex;
   width: 100%;
+  flex-direction: column;
 }
 
 #drop-area_label {
@@ -122,7 +124,6 @@ value = files;
   //   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   transition: 0.2s ease;
   min-height: 76px;
-  max-width: 366.11px;
   border: 2px solid #b0ceec;
   border-radius: 10px;
   &[data-active="true"] {

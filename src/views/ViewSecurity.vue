@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import axios from "axios";
 import { computed, ref, markRaw, inject, unref, watch } from "vue";
 const API = inject("API");
 //store

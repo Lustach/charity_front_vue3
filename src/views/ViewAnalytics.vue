@@ -45,18 +45,19 @@
           :timeList="tableStore.timeList"
           :data="tableStore.dataList"
           :header="tableStore.dataHeader"
-        ></DataTable>
+        >
+        </DataTable>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { inject } from "vue";
 import LineChart from "@/components/pages/Analytics/ChartContainer.vue";
 import DataTable from "@/components/ui/data/table/dataTable.vue";
 import card from "@/components/ui/card/card.vue";
-import { onMounted, ref, reactive } from "vue";
-import { mapState, mapMutations, mapActions } from "vuex";
+import { onMounted, ref } from "vue";
 import { useAnalyticsStore } from "@/stores/modules/analytics";
 import { useChartStore } from "@/stores/modules/ui/chart";
 import { useTableStore } from "@/stores/modules/ui/table";
@@ -64,6 +65,10 @@ import { useTableStore } from "@/stores/modules/ui/table";
 const chartStore = useChartStore();
 const tableStore = useTableStore();
 const analyticsStore = useAnalyticsStore();
+
+const eventBus = inject("eventBus");
+eventBus.on("filterCol", async (item) => item.key!=='donation_tool' && await tableStore.filterData(item));
+
 onMounted(async () => {
   tableStore.initHeaderData();
   tableStore.setCurrentDataHeader();
@@ -101,6 +106,7 @@ const chartInfoList = ref([
   },
 ]);
 const donationTools = ref([]);
+
 async function matchingApiToChartData() {
   await analyticsStore.getDonationList();
   donationTools.value = JSON.parse(JSON.stringify(analyticsStore.donationTools));

@@ -19,6 +19,7 @@
         Показать всё
       </p>
       <a download="Таблица поступлений" id="loadFile"> </a>
+      <slot name="action"></slot>
       <ChButton
         @click="getReport"
         :loading="isBtnLoading"

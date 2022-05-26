@@ -2,9 +2,9 @@
   <thead>
     <tr>
       <th
-        v-for="(item, key) in header"
+        v-for="(item, key) in props.header"
         :key="key"
-        :style="{ width: 100 / header.length + '%' }"
+        :style="{ width: 100 / props.header.length + '%' }"
         @click="filterCol(item)"
       >
         <div
@@ -21,8 +21,14 @@
           "
         >
           <template v-if="item.key !== 'tool'">
-            <!-- <sortIcon style="margin-left: 3px;" v-show="item.sortable!==false"
-                    :style="{transform: item.sortDirection ==='upDown' ? 'rotate(180deg)' : 'rotate(360deg)'}"></sortIcon> -->
+            <sortIcon
+              style="margin-left: 3px"
+              v-show="item.sortable !== false"
+              :style="{
+                transform:
+                  item.sortDirection === 'upDown' ? 'rotate(180deg)' : 'rotate(360deg)',
+              }"
+            ></sortIcon>
             {{ item.title }}
             <img
               class="question_mark"
@@ -46,61 +52,48 @@
     </tr>
   </thead>
 </template>
-<script>
-// import sortIcon from '@/assets/images/icons/vue/sort';
+<script setup lang="ts">
+import { onMounted, computed, inject } from "vue";
+import sortIcon from "@/assets/images/icons/vue/sort.vue";
+import { useRouter, useRoute } from "vue-router";
+
 // import Multiselect from 'vue-multiselect';
 import { useTableStore } from "@/stores/modules/ui/table";
 import { useAnalyticsStore } from "@/stores/modules/analytics";
 const tableStore = useTableStore();
 const analyticsStore = useAnalyticsStore();
-export default {
-  name: "dataHeader",
-  props: {
-    header: {},
-  },
-  components: {
-    // sortIcon,
-    // Multiselect,
-  },
-  async beforeMount() {
-    await analyticsStore.getDonationList();
-  },
-  data: () => ({
-    isArrowShow: false,
-    selectFilter: "",
-  }),
-  methods: {
-    async filterCol(item) {
-      if (this.$route.name === "Analytics") {
-        if (item.key !== "donation_tool") {
-          tableStore.filterData(item);
-        }
-      } else if (this.$route.name === "Terminals") {
-        await tableStore.filterData(item);
-      }
-    },
-    async selectItem() {
-      tableStore.setSelectedDonationTool(
-        this.selectFilter.name === "По всем инструментам"
-          ? 0
-          : analyticsStore.stateDonationTools.filter(
-              (e) => e.name === this.selectFilter.name
-            )[0].id
-      );
-      await tableStore.setDataList({
-        isShowAll: false,
-      });
-    },
-  },
-  computed: {
-    getDonationToolsList() {
-      return analyticsStore.stateDonationTools.map((e) => ({
-        ...e,
-        $isDisabled: e.name === "Каталог НКО" || e.name === "По всем инструментам",
-      }));
-    },
-  },
-};
+
+const eventBus = inject("eventBus");
+const router = useRouter();
+const route = useRoute();
+const props = defineProps({
+  header: Array,
+});
+onMounted(async () => {
+  await analyticsStore.getDonationList();
+});
+let isArrowShow = false;
+let selectFilter = "";
+async function filterCol(item) {
+  eventBus.emit("filterCol", item);
+}
+async function selectItem() {
+  tableStore.setSelectedDonationTool(
+    selectFilter.name === "По всем инструментам"
+      ? 0
+      : analyticsStore.stateDonationTools.filter((e) => e.name === selectFilter.name)[0]
+          .id
+  );
+  await tableStore.setDataList({
+    isShowAll: false,
+  });
+}
+const getDonationToolsList = computed(() => {
+  return analyticsStore.stateDonationTools.map((e) => ({
+    ...e,
+    $isDisabled: e.name === "Каталог НКО" || e.name === "По всем инструментам",
+  }));
+});
 </script>
 
 <style scoped lang="scss">

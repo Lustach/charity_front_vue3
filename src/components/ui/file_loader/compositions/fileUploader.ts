@@ -1,13 +1,12 @@
 import API from '@/plugins/axios';
 import { useProfileStore } from "@/stores/modules/profile/profile";
-let profileStore = new useProfileStore();
+const profileStore = useProfileStore();
 export async function uploadFile(file, url) {
-    console.log('uploadFIlea');
+    console.log(file,'uploadFile1');
     // set up the request data
     let formData = new FormData()
-    formData.append('fund', profileStore.fund.id)
-    formData.append('upload_image', file.file)
-
+    formData.set('fund', profileStore.fund.id)
+    formData.set('upload_image', file.file)
     // track status and upload file
     file.status = 'loading'
     console.log(formData.get('upload_image'), 'formData');
@@ -36,7 +35,7 @@ export default function createUploader(url) {
             return uploadFile(file, url)
         },
         uploadFiles: function (files) {
-            console.log(files, 'uploadFiles');
+            console.log(files, 'uploadFiles1');
 
             return uploadFiles(files, url)
         },

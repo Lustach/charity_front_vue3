@@ -184,6 +184,7 @@ const schema = ref({
     error: "",
     accept: SUPPORTED_FORMATS.join(","),
     uploadTextTip: "PNG, SVG, AI, PDF, JPG до 5 Мб",
+    maxWidth: "366.11px",
   },
 });
 
@@ -223,7 +224,6 @@ const validationSchema = computed(() => {
       .test("fileSize", "Вы превысили допустимый размер файла", (value) => {
         if (value.length) {
           for (const iterator of value) {
-            console.log(iterator.file.size <= FILE_SIZE, value, "lole");
             return iterator.file.size <= FILE_SIZE;
           }
         }

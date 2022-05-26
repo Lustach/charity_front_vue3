@@ -1,10 +1,10 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { useAuthStore } from "@/stores/modules/auth/auth";
 import API from '@/plugins/axios';
-import type { TProfileStore } from '@/stores/modules/profile/profile_types';
-export const useProfileStore = defineStore('profile', {
+import type { IProfileState, IProfileGetters, IProfileActions } from '@/stores/modules/profile/profile_types';
+export const useProfileStore = defineStore<string, IProfileState, IProfileGetters, IProfileActions>('profile', {
     // arrow function recommended for full type inference
-    state: (): TProfileStore => {
+    state: () => {
         return {
             fund: undefined,
             bankDetails: undefined,
@@ -88,7 +88,7 @@ export const useProfileStore = defineStore('profile', {
             }
             this.loading = true;
         },
-    },  
+    },
     getters: {
         getStepFromStorage: (state) => state.stepFromStorage,
         getBankDetailsIdFromStorage: (state) => state.bankDetailsIdFromStorage,

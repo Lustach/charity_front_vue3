@@ -1,15 +1,21 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, inject } from "vue";
 import { useTerminalsStore } from "@/stores/modules/terminals";
+import { useTableStore } from "@/stores/modules/ui/table";
 import dataFilters from "@/components/ui/data/filter/dataFilters.vue";
 import DataTable from "@/components/ui/data/table/dataTable.vue";
 import multiselect from "@/components/ui/multiselect/multiselect.vue";
 import Map from "@/components/pages/Terminals/Map.vue";
+
 const terminalsStore = useTerminalsStore();
+const terminalList = terminalsStore.terminalList;
+const tableStore = useTableStore();
+const eventBus = inject("eventBus");
+eventBus.on("filterCol", async (item) => await tableStore.filterData(item));
+
 onMounted(async () => {
   await terminalsStore.setTerminalList({});
 });
-const terminalList = terminalsStore.terminalList;
 </script>
 <template>
   <div class="form_container">
@@ -35,7 +41,8 @@ const terminalList = terminalsStore.terminalList;
         <div class="badge_info">
           <p>Требует обслуживания</p>
           <span style="color: #de3b00">{{
-            terminalsStore.terminalList.length - terminalsStore.terminalList.filter((e) => e.is_online).length
+            terminalsStore.terminalList.length -
+            terminalsStore.terminalList.filter((e) => e.is_online).length
           }}</span>
         </div>
       </div>

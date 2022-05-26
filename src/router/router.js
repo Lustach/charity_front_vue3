@@ -98,12 +98,17 @@ const router = createRouter({
       component: () => import('@/views/ViewQrGenerate.vue')
     },
     {
+      path: '/lk/crypto_widget',
+      name: 'crypto_widget',
+      component: () => import('@/views/ViewCryptoWidget.vue')
+    },
+    {
       path: '/:pathMatch(.*)*',
       component: () => import('@/views/ViewNotFound.vue'),
     },
     {
       path: '/test',
-      component: () => import('@/views/Test.vue')
+      component: () => import('@/views/ViewTest.vue')
     }
   ],
   scrollBehavior(to, from, savedPosition) {

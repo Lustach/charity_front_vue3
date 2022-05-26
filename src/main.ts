@@ -1,12 +1,13 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { useNotification } from "@/components/compositions/ui/elNotification.ts";
-import * as validationMessages from '@/compositions/validation_messages'
+import * as validationMessages from '@/compositions/validation_messages';
+import eventBus from '@/plugins/eventBus'
 import "@/compositions/tooltip"
 import Api from '@/plugins/axios';
 
 import App from '@/components/app/App.vue'
-import router from './router/router.js'
+import router from './router/router'
 
 import PrimeVue from 'primevue/config';
 import "primevue/resources/themes/lara-light-blue/theme.css"       //theme
@@ -27,6 +28,9 @@ app.provide('useNotification', useNotification)
 app.use(plugin, defaultConfig())
 app.use(PrimeVue, { ripple: true });
 app.component('Button', Button)
+
+app.config.globalProperties.eventBus = eventBus;
+app.provide('eventBus', eventBus)
 
 app.directive('click-outside', {
     mounted(el, binding) {

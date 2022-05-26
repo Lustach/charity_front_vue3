@@ -5,10 +5,9 @@ import { defineStore } from 'pinia';
 import { useProfileStore } from "@/stores/modules/profile/profile";
 //types
 import type { TSignUp } from "@/types/auth"
-
-import type { ICounterStore, ICounterActions, ICounterGetters } from '@/stores/modules/auth/auth_interface'
+import type { IAuthState, IAuthActions, IAuthGetters } from '@/stores/modules/auth/auth_interface'
 // <string, TAuthStore >
-export const useAuthStore = defineStore<string, ICounterStore, ICounterGetters, ICounterActions>('auth', {
+export const useAuthStore = defineStore<string, IAuthState, IAuthGetters, IAuthActions>('auth', {
     // arrow function recommended for full type inference
     state: () => {
         return {

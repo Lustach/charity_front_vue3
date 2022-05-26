@@ -1,5 +1,10 @@
-<script setup>
+<script setup lang="ts">
+import { useCounterStore } from "@/stores/counter";
 import { ref } from "vue";
+
+const counterStore = useCounterStore();
+
+
 const submitted = ref(false);
 const formData = ref({});
 const submitHandler = async () => {

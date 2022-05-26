@@ -117,46 +117,6 @@ export default {
   created() {
     window.scrollTo(0, 0);
   },
-  beforeMount() {
-    // this.widgetComponentScript = document.createElement('script');
-    // this.widgetComponentScript.setAttribute('src', 'http://localhost:8000/static/dist/bundle.js');
-    // document.head.appendChild(this.widgetComponentScript);
-  },
-  mounted() {
-    // this.$nextTick(() => {
-
-    // setTimeout(() => {
-    // eslint-disable-next-line no-undef
-    // let init = function () {
-    //   // eslint-disable-next-line no-undef
-    //   myCompanyApi.widgetContainer('widget', '1', false, 'DCUjfeicaVXaXQfw6bSjuLCJLKMVsrkCcc', 'doge');
-    // }.bind(this);
-    // if (typeof myCompanyApi !== 'undefined') {
-    //   init();
-    // } else {
-    //   // eslint-disable-next-line no-undef
-    //   (myCompanyApiInitCallbacks = window.myCompanyApiInitCallbacks || []).push(init);
-    // }
-    // },100)
-    // })
-    // eslint-disable-next-line no-undef
-    let init = function () {
-      myCompanyApi.widgetContainer(
-        "widget",
-        1,
-        false,
-        "bc1qj5fww39k40wpr7szlln0sfgwyag0spd6djnsqg",
-        "BTC"
-      );
-    }.bind(this);
-    // eslint-disable-next-line no-undef
-    if (typeof myCompanyApi !== "undefined") {
-      init();
-    } else {
-      // eslint-disable-next-line no-undef
-      (myCompanyApiInitCallbacks = window.myCompanyApiInitCallbacks || []).push(init);
-    }
-  },
 };
 </script>
 
