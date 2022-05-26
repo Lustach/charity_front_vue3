@@ -6,19 +6,11 @@ import { useProfileStore } from "@/stores/modules/profile/profile";
 //types
 import type { TSignUp } from "@/types/auth"
 
-// pinia.use(() => ({ API }));
-type TAuthStore = {
-    accessToken: string,
-    refreshToken: string,
-    is2faEnabled: boolean,
-    userId: string,
-    email: string,
-    profileId: string,
-}
+import type { ICounterStore, ICounterActions, ICounterGetters } from '@/stores/modules/auth/auth_interface'
 // <string, TAuthStore >
-export const useAuthStore = defineStore('auth', {
+export const useAuthStore = defineStore<string, ICounterStore, ICounterGetters, ICounterActions>('auth', {
     // arrow function recommended for full type inference
-    state: (): TAuthStore => {
+    state: () => {
         return {
             accessToken: '',
             refreshToken: '',

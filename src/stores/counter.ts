@@ -1,8 +1,22 @@
-import { defineStore } from 'pinia'
-import { useProfileStore } from "@/stores/modules/profile/profile";
+import { defineStore, type _GettersTree } from 'pinia'
+// import { useProfileStore } from "@/stores/modules/profile/profile";
 
-export const useCounterStore = defineStore({
-  id: 'counter',
+interface ICounterStore {
+  counter: number
+  n: number
+}
+
+type TGetters = _GettersTree<ICounterStore>
+
+interface ICounterGetters extends TGetters {
+  doubleCount: (state: ICounterStore) => number
+}
+interface ICounterActions {
+  increment: () => void
+  setValue: (n: number) => void
+}
+
+export const useCounterStore = defineStore<string, ICounterStore, ICounterGetters, ICounterActions>('counter', {
   state: () => ({
     counter: 0,
     n: 0,
@@ -14,7 +28,7 @@ export const useCounterStore = defineStore({
     increment() {
       this.counter++
     },
-    setValue(n:number) {
+    setValue(n: number) {
       this.n = n
     }
   }

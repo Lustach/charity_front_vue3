@@ -38,6 +38,7 @@ const API = {
             url: '/health/media/',
             // headers: {
             //     'Content-Type': 'multipart/form-data',
+            //     'enctype': 'multipart/form-data'
             // },
         }),
         updateMedia: (id, data) => axios({
