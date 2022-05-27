@@ -25,17 +25,30 @@ const props = defineProps({
     type: Array,
     default: [],
   },
+  options: {
+    type: Array,
+    default: [],
+  },
+  multiselectLabel: {
+    type: String,
+  },
+  trackBy: {
+    type: String,
+  },
+  maxWidth:{
+    type: String
+  }
 });
 
 // const value = ref([]);
-let options = [
-  { name: "Vue.js", language: "JavaScript" },
-  { name: "Adonis", language: "JavaScript" },
-  { name: "Rails", language: "Ruby" },
-  { name: "Sinatra", language: "Ruby" },
-  { name: "Laravel", language: "PHP" },
-  { name: "Phoenix", language: "Elixir" },
-];
+// let options = [
+//   { name: "Vue.js", language: "JavaScript" },
+//   { name: "Adonis", language: "JavaScript" },
+//   { name: "Rails", language: "Ruby" },
+//   { name: "Sinatra", language: "Ruby" },
+//   { name: "Laravel", language: "PHP" },
+//   { name: "Phoenix", language: "Elixir" },
+// ];
 const { value, handleChange, errorMessage, meta } = useField(props.name, undefined, {
   initialValue: props.value,
 });
@@ -66,11 +79,11 @@ const onChange = (event) => {
       searchable
       :limit="4"
       :limitText="(count) => `+ ещё ${count}`"
-      label="name"
+      :label="multiselectLabel"
       :close-on-select="false"
       :clear-on-select="false"
       :preserve-search="true"
-      track-by="name"
+      :track-by="trackBy"
     />
   </div>
 </template>
