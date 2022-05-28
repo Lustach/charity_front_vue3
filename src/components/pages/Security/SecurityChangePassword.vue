@@ -15,6 +15,7 @@ import { rules } from "@/compositions/validation_rules";
 import ChFormCategoryTitle from "@/components/pages/NkoInfo/ChFormCategoryTitle.vue";
 import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
+import ChMultiselect from '@/components/ui/multiselect/multiselect.vue'
 import alert from "@/components/app/Alert.vue";
 //modals
 import AppModal from "@/components/app/AppModal.vue";
@@ -69,15 +70,15 @@ const schema = ref({
     maxWidth: "420px",
     error: "",
   },
-  // multiselect: {
-  //   component: ChMultiselect,
-  //   id: "multiselect",
-  //   placeholder: "",
-  //   label: "multiselect",
-  //   name: "multiselect",
-  //   maxWidth: "420px",
-  //   error: "",
-  // },
+  multiselect: {
+    component: ChMultiselect,
+    id: "multiselect",
+    placeholder: "",
+    label: "multiselect",
+    name: "multiselect",
+    maxWidth: "420px",
+    error: "",
+  },
 });
 watch(
   () => form.value.oldPassword,

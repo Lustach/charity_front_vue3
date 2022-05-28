@@ -1,5 +1,4 @@
-import { ref } from 'vue'
-
+import { ref, inject } from 'vue'
 interface removedFile {
     file: File
     id: string
@@ -15,6 +14,12 @@ export default function () {
         files.value = files.value.concat(newUploadableFiles)
     }
 
+    function setFilePreview(newFiles: FileList) {
+        let newUploadableFiles = [...newFiles].map((file) => new UploadableFile(file)).filter((file) => !fileExists(file.id))
+        files.value = files.value.concat(newUploadableFiles)
+        // files.value = files.value.concat(newFiles)
+    }
+
     function fileExists(otherId) {
         return files.value.some(({ id }) => id === otherId)
     }
@@ -25,13 +30,14 @@ export default function () {
         if (index > -1) files.value.splice(index, 1)
     }
 
-    return { files, addFiles, removeFile }
+    return { files, addFiles, setFilePreview, removeFile }
 }
 
 class UploadableFile implements removedFile {
     constructor(public file: File, public id: string, public status: null, public url: string) {
         this.file = file
         this.id = `${file.name}-${file.size}-${file.lastModified}-${file.type}`
+        // this.url = file.url
         this.url = URL.createObjectURL(file)
         this.status = null
     }

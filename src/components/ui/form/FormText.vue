@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     update(value) {
-      this.$emit("update:modelValue", value);
+      this.$emit("update:purseModel", value);
     },
   },
 };

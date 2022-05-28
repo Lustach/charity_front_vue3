@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { inject } from "vue";
 import { useField } from "vee-validate";
 //Components
 import DropZone from "@/components/ui/file_loader/DropZone.vue";
@@ -7,8 +8,14 @@ import FilePreview from "@/components/ui/file_loader/FilePreview.vue";
 import useFileList from "@/components/ui/file_loader/compositions/fileList";
 import createUploader from "@/components/ui/file_loader/compositions/fileUploader";
 const emit = defineEmits(["updateFiles", "update:modelValue"]);
+const eventBus = inject("eventBus");
 
+// const eventBus = inject("eventBus");
 let { files, addFiles, removeFile } = useFileList();
+eventBus.on("updateFiles", (fileList) => {
+  files.value = fileList;
+  emit("update:modelValue", files);
+});
 function onInputChange(e) {
   addFiles(e.target.files);
   e.target.value = null; // reset so that selecting the same file again will still cause it to fire this change
@@ -17,7 +24,14 @@ function onInputChange(e) {
 }
 // Uploader
 const { uploadFiles } = createUploader("YOUR URL HERE");
-const props = defineProps(["id", "label", "accept", "uploadTextTip", "maxWidth"]);
+const props = defineProps([
+  "id",
+  "label",
+  "accept",
+  "uploadTextTip",
+  "maxWidth",
+  "multiple",
+]);
 let { value, errorMessage, handleBlur, handleChange, meta } = useField(
   props.id,
   undefined,
@@ -63,7 +77,7 @@ value = files;
             type="file"
             :accept="accept"
             :id="id"
-            multiple
+            :multiple="multiple"
             @change="onInputChange"
           />
         </label>
@@ -168,6 +182,7 @@ label {
 }
 .image-list {
   display: flex;
+  justify-content: center;
   list-style: none;
   flex-wrap: wrap;
   padding: 0;

@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { Form, Field, defineRule } from "vee-validate";
 //vue
-import { computed, markRaw, ref } from "vue";
+import { computed, markRaw, ref,inject } from "vue";
 // schema & validation
 import * as yup from "yup";
 import { SchemaForm, useSchemaForm, SchemaFormFactory } from "formvuelate";
@@ -27,36 +26,12 @@ markRaw(ChInput);
 markRaw(ChTextArea);
 markRaw(ChButton);
 markRaw(ChFileUpload);
-
-// function isEmpty(value) {
-//   if (value === null || value === undefined || value === "") {
-//     return true;
-//   }
-//   if (Array.isArray(value) && value.length === 0) {
-//     return true;
-//   }
-//   return false;
-// }
-// const imageValidator = (files) => {
-//   if (!files) {
-//     console.log("isEmpty");
-
-//     return false;
-//   }
-//   const regex = /\.(jpg|svg|jpeg|png|bmp|gif|webp)$/i;
-//   if (Array.isArray(files[0])) {
-//     return files[0].every((file) => regex.test(file.name));
-//   }
-//   return regex.test(files[0].name);
-// };
 const { files, addFiles, removeFile } = useFileList();
-// function onInputChange(e) {
-//   addFiles(e.target.files);
-//   e.target.value = null; // reset so that selecting the same file again will still cause it to fire this change
-//   form.value.files = files;
-// }
+const API = inject("API")
 // Uploader
-const { uploadFiles } = createUploader("/health/media/"); //YOUR URL HERE
+// const { uploadFiles } = createUploader(import.meta.env.VITE_APP_BACKEND_HOST + "/health/media/"); //YOUR URL HERE
+const { uploadFiles } = createUploader(API.fill_profile.createMedia); //YOUR URL HERE
+
 //schema validation
 
 const SchemaFormWithPlugins = SchemaFormFactory([LookupPlugin({}), VeeValidatePlugin()]);
@@ -185,6 +160,7 @@ const schema = ref({
     accept: SUPPORTED_FORMATS.join(","),
     uploadTextTip: "PNG, SVG, AI, PDF, JPG до 5 Мб",
     maxWidth: "366.11px",
+    multiple: true,
   },
 });
 
@@ -282,83 +258,6 @@ async function saveChanges() {
       flex-direction: row !important;
     }
   }
-}
-.action {
-  display: flex;
-  white-space: break-spaces;
-  * {
-    font-weight: 600 !important;
-  }
-  em {
-    border-bottom: 1px solid var(--vblg-c-primary);
-    //   text-decoration: underline;
-  }
-}
-.drop-area {
-  display: flex;
-  flex-direction: column-reverse;
-  color: var(--vblg-c-primary);
-  width: 100%;
-  //   max-width: 800px;
-  margin: 0 auto;
-  padding: 50px;
-  background: #ffffff55;
-  //   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  transition: 0.2s ease;
-  min-height: 76px;
-  padding: 22px 78px;
-  max-width: 420px;
-  border: 2px solid #b0ceec;
-  border-radius: 10px;
-  &[data-active="true"] {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    background: #ffffffcc;
-  }
-}
-label {
-  font-size: 36px;
-  cursor: pointer;
-  display: block;
-  span {
-    display: block;
-  }
-  input[type="file"]:not(:focus-visible) {
-    // Visually Hidden Styles taken from Bootstrap 5
-    position: absolute !important;
-    width: 1px !important;
-    height: 1px !important;
-    padding: 0 !important;
-    margin: -1px !important;
-    overflow: hidden !important;
-    clip: rect(0, 0, 0, 0) !important;
-    white-space: nowrap !important;
-    border: 0 !important;
-  }
-  input[type="file"] {
-    &::file-selector-button,
-    &::-webkit-file-upload-button {
-      display: none;
-    }
-  }
-}
-.image-list {
-  display: flex;
-  list-style: none;
-  flex-wrap: wrap;
-  padding: 0;
-}
-.upload-button {
-  display: block;
-  appearance: none;
-  border: 0;
-  border-radius: 50px;
-  padding: 0.75rem 3rem;
-  margin: 1rem auto;
-  font-size: 1.25rem;
-  font-weight: bold;
-  background: #369;
-  color: #fff;
-  text-transform: uppercase;
 }
 button {
   cursor: pointer;

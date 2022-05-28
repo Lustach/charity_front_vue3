@@ -5,54 +5,74 @@
       description="На этой странице вы можете создать свой уникальный крипто виджет и добавить его к себе на сайт. Добавляйте описание и логотип, чтобы люди сразу понимали, кому
         пойдет пожертвование."
     ></alert>
-    <div class="widget_form" v-if="!showIframeForm">
-      <SchemaFormWithPlugins
-        style="max-width: 420px; width: 100%"
-        :schema="schema"
-        :validation-schema="validationSchema"
-        @submit="login"
-      >
-        <template #afterForm="{ validation }">
-          <div
-            class="form-group form-group_profile"
-            style="margin: 20px 0 35px 0 !important"
-          >
-            <span class="form-group_label"> Адрес вашего кошелька * </span>
-          </div>
-          <div class="form-group form-group_profile">
-            <span class="form-group_label" style="font-weight: 400">
-              Выберите валюту, в которой хотите получать средства. Затем вставьте адрес
-              вашего кошелька, соответствующего данной криптовалюте.
-            </span>
-          </div>
-          <div
-            class="form-group form-group_profile"
-            style="margin-top: 30px; margin-bottom: 26px !important"
-          >
-            <a class="form-group_label" style="font-weight: 500">
-              Посмотреть инструкцию по созданию кошелька.</a
+    <div class="container__wrapper">
+      <div class="widget_form" v-show="!showIframeForm">
+        <SchemaFormWithPlugins
+          style="max-width: 420px; width: 100%"
+          :schema="schema"
+          :validation-schema="validationSchema"
+          @submit="login"
+        >
+          <template #afterForm="{ validation }">
+            <div
+              class="form-group form-group_profile"
+              style="margin: 20px 0 35px 0 !important"
             >
-          </div>
-          <CryptoWidgetPurseAddress></CryptoWidgetPurseAddress>
-          <ChButton
-            class="btn"
-            @click="setWidgetInfo"
-            :loading="isLoadingBtn"
-            :disabled="!validation.meta.valid"
-            >Создать виджет</ChButton
-          >
-        </template>
-      </SchemaFormWithPlugins>
+              <span class="form-group_label"> Адрес вашего кошелька * </span>
+            </div>
+            <div class="form-group form-group_profile">
+              <span class="form-group_label" style="font-weight: 400">
+                Выберите валюту, в которой хотите получать средства. Затем вставьте адрес
+                вашего кошелька, соответствующего данной криптовалюте.
+              </span>
+            </div>
+            <div
+              class="form-group form-group_profile"
+              style="margin-top: 30px; margin-bottom: 26px !important"
+            >
+              <a class="form-group_label" style="font-weight: 500">
+                Посмотреть инструкцию по созданию кошелька.</a
+              >
+            </div>
+            <!-- @vnodeMounted="test1()" -->
+            <CryptoWidgetPurseAddress
+              :selectValue="selectValue"
+              :purseModel="purseModel"
+              ref="purseRef"
+              @update:purse-model="updatePurseModel"
+              @update:select-value="updateSelectValue"
+            ></CryptoWidgetPurseAddress>
+            <ChButton
+              class="btn"
+              @click="setWidgetInfo"
+              :loading="isLoadingBtn"
+              :disabled="!validation.meta.valid"
+              >Создать виджет</ChButton
+            >
+          </template>
+        </SchemaFormWithPlugins>
+      </div>
+      <CryptoWidgetIframe
+        v-if="purseModel"
+        :selectValue="selectValue"
+        :purseModel="purseModel"
+        :cryptoWidgetId="profileStore.fundIdFromStorage"
+        v-show="showIframeForm"
+        @editCryptoWidget="showIframeForm = !showIframeForm"
+      />
       <CryptoWidgetPreview></CryptoWidgetPreview>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { computed, ref, markRaw, inject, unref, watch } from "vue";
+import { computed, ref, markRaw, inject, onMounted, watch, nextTick } from "vue";
 import type { Ref } from "vue";
+//view parts
 import Alert from "@/components/app/Alert.vue";
 import CryptoWidgetPreview from "@/components/pages/CryptoWidget/CryptoWidgetPreview.vue";
 import CryptoWidgetPurseAddress from "@/components/pages/CryptoWidget/CryptoWidgetPurseAddress.vue";
+import CryptoWidgetIframe from "@/components/pages/CryptoWidget/CryptoWidgetIframe.vue";
+
 //components
 import ChTextArea from "@/components/ui/textarea/textarea.vue";
 import ChInput from "@/components/ui/input/input.vue";
@@ -63,28 +83,60 @@ import ChFileUpload from "@/components/ui/file_loader/FileUpload.vue";
 import LookupPlugin from "@formvuelate/plugin-lookup";
 import VeeValidatePlugin from "@formvuelate/plugin-vee-validate";
 import { useSchemaForm, SchemaFormFactory } from "formvuelate";
-import { object } from "yup";
 import * as yup from "yup";
-import { rules } from "@/compositions/validation_rules";
+//files
+import useFileList from "@/components/ui/file_loader/compositions/fileList";
+
+import { useProfileStore } from "@/stores/modules/profile/profile";
+const profileStore = useProfileStore();
+// const purseRef = ref<InstanceType<typeof CryptoWidgetPurseAddress> | null>(null);
 
 markRaw(ChInput);
 markRaw(ChTextArea);
 markRaw(ChFileUpload);
 const SchemaFormWithPlugins = SchemaFormFactory([LookupPlugin({}), VeeValidatePlugin()]);
-
+const { files, addFiles, setFilePreview, removeFile } = useFileList();
 type TForm = {
   shortDescriptionActivity: string;
-  isShowCodeField: boolean;
   fullNameNko: string;
-  password: string;
-  code_2fa: string;
+  logo: any;
 };
+let selectValue = ref("BTC");
+let purseModel = ref(undefined);
+function updatePurseModel(value: string) {
+  purseModel.value = value;
+}
+function updateSelectValue(value: string) {
+  selectValue.value = value;
+}
+const eventBus = inject("eventBus");
+
+onMounted(async () => {
+  const result = await getCryptoWidgetInfo();
+  form.value.fullNameNko = result.name;
+  form.value.shortDescriptionActivity = result.short_description;
+  form.value.logo = [
+    {
+      file: new File(["Billy"], "Billy.jpeg", { type: "image/jpeg" }),
+      status: null,
+      id: "1",
+      url: import.meta.env.VITE_APP_BACKEND_HOST + result.logo,
+    },
+  ];
+  files.value = form.value.logo;
+  eventBus.emit("updateFiles", files.value);
+  purseModel.value = result.address;
+  selectValue.value = result.cryptocurrency.toUpperCase() || "BTC";
+  nextTick();
+  if (result.status === "ENABLED") {
+    showIframeForm.value = true;
+  }
+});
+
 const form: Ref<TForm> = ref({
   shortDescriptionActivity: "",
-  isShowCodeField: false,
   fullNameNko: "",
-  password: "",
-  code_2fa: "",
+  logo: "",
 });
 useSchemaForm(form);
 const FILE_SIZE = 5242880;
@@ -106,7 +158,6 @@ const schema = ref({
     error: "",
     maxWidth: "420px",
     tooltip: "Наименование организации согласно Уставу",
-    condition: (model: TForm) => !model.isShowCodeField,
   },
   shortDescriptionActivity: {
     component: ChTextArea,
@@ -130,6 +181,56 @@ const schema = ref({
     uploadTextTip: "PNG, SVG, AI, PDF, JPG до 5 Мб",
   },
 });
+watch(
+  () => form.value.fullNameNko,
+  (n) => {
+    let test = document.getElementsByClassName("w_blg-fund__header");
+    if (test.length) {
+      if (test[0].children.length === 2) {
+        test[0].children[1].innerHTML = n;
+      } else {
+        test[0].children[0].innerHTML = n;
+      }
+    }
+  },
+  {
+    deep: true,
+  }
+);
+
+watch(
+  () => form.value.shortDescriptionActivity,
+  (n) => {
+    let test = document.getElementsByClassName("w_blg-step_1__fund-description");
+    if (test[0]?.childNodes[0]) test[0].childNodes[0].data = n;
+    else if (test.length) test[0].innerHTML = n;
+  },
+  {
+    deep: true,
+  }
+);
+watch(
+  () => form.value.logo[0],
+  (n) => {
+    nextTick();
+    console.log(n);
+    let test = document.getElementsByClassName("w_blg-fund__header");
+    if (n) {
+      if (test.length) {
+        if (test[0].children.length === 2) {
+          test[0].removeChild(test[0].children[0]);
+        }
+        let img = document.createElement("img");
+        img.setAttribute("src", n.url);
+        console.log(test[0], "test");
+        test[0].prepend(img);
+      }
+    }
+  },
+  {
+    deep: true,
+  }
+);
 const validationSchema = computed(() => {
   return yup.object().shape({
     shortDescriptionActivity: yup.string().max(150),
@@ -159,7 +260,7 @@ const validationSchema = computed(() => {
         "Unsupported File Format",
         (value) => {
           for (const iterator of value) {
-            if (!SUPPORTED_FORMATS.includes(iterator?.file.type)) return false;
+            if (!SUPPORTED_FORMATS.includes(iterator?.file?.type)) return false;
           }
           return true;
         }
@@ -170,29 +271,34 @@ const validationSchema = computed(() => {
 const API = inject("API");
 const isLoadingBtn = ref();
 let showIframeForm = ref(false);
+let widgetInfo = ref(undefined);
+async function getCryptoWidgetInfo() {
+  return (widgetInfo.value = await API.crypto.getInfo(profileStore.fundIdFromStorage));
+}
 async function setWidgetInfo() {
   isLoadingBtn.value = true;
   let data = {
-    address: this.purseModel,
-    cryptocurrency: this.selectValue.toLowerCase(),
-    name: this.mapForm.step1.fullNameNko.model,
-    short_description: this.mapForm.step1.shortDescriptionActivity0.model,
+    address: purseModel.value,
+    cryptocurrency: selectValue.value.toLowerCase(),
+    name: form.value.fullNameNko,
+    short_description: form.value.shortDescriptionActivity,
+    logo: form.value.logo[0].file,
   };
-  if (
-    this.mapForm.step1.logo.model.length &&
-    JSON.stringify(this.copyStep1.logo.model[0]?.name) !==
-      JSON.stringify(this.mapForm.step1.logo.model[0]?.name)
-  ) {
-    data.logo = this.mapForm.step1.logo.model[0];
-  }
+  // if (
+  //   this.mapForm.step1.logo.model.length &&
+  //   JSON.stringify(this.copyStep1.logo.model[0]?.name) !==
+  //     JSON.stringify(this.mapForm.step1.logo.model[0]?.name)
+  // ) {
+  //   data.logo = this.mapForm.step1.logo.model[0];
+  // }
   let fd = new FormData();
   for (const dataKey in data) {
     fd.set(dataKey, data[dataKey]);
   }
   try {
-    await API.crypto.updateWidgetInfo(fd, widgetInfo.id);
+    await API.crypto.updateWidgetInfo(fd, widgetInfo.value.id);
     isLoadingBtn.value = false;
-    this.showIframeForm = true;
+    showIframeForm.value = true;
   } catch (e) {
     console.log(e);
   }
@@ -202,10 +308,15 @@ async function setWidgetInfo() {
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
 
 <style lang="scss" scoped>
+.container__wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
 .form {
   &_container {
     max-width: 1000px;
-    margin: 69px auto 69px auto;
+    margin: 39px auto 39px auto;
   }
 }
 .widget_form {

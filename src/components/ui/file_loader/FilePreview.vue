@@ -55,10 +55,11 @@ defineEmits(["remove"]);
   transition: all 0.2s ease-out;
 }
 .file-preview {
-  width: 40%;
+  width: 28%;
   margin: 1rem 2.5%;
   position: relative;
   aspect-ratio: 1/1;
+  max-width: 130px;
   img {
     width: 100%;
     height: 100%;

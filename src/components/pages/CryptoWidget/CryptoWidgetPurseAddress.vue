@@ -1,18 +1,31 @@
 <script setup lang="ts">
-import { ref, inject } from "vue";
+import { ref, inject, toRefs, defineProps } from "vue";
 import Multiselect from "vue-multiselect";
 import ChButton from "@/components/ui/button/button.vue";
+const emit = defineEmits(["update:purseModel",'update:selectValue']);
+
 const API = inject("API");
-let selectValue = ref("BTC");
-let purseModel = ref(undefined);
+let props = defineProps({
+  selectValue: {
+    type: String,
+  },
+  purseModel: {
+    type: String,
+  },
+});
 let isLoadingBtn = ref(false);
 let isValidAddress = ref(undefined);
+// defineExpose({
+//   selectValue,
+//   purseModel,
+//   isValidAddress,
+// });
 async function validatePurseAddress() {
   isLoadingBtn.value = true;
   try {
     let result = await API.crypto.checkCryptoAddress({
-      currency: selectValue.value.toLowerCase(),
-      address: purseModel.value,
+      currency: props.selectValue.toLowerCase(),
+      address: props.purseModel,
     });
     isValidAddress.value = result.is_valid;
   } catch (e) {
@@ -20,6 +33,9 @@ async function validatePurseAddress() {
   } finally {
     isLoadingBtn.value = false;
   }
+}
+function update(value: string) {
+  emit("update:purseModel", value);
 }
 </script>
 
@@ -45,6 +61,7 @@ async function validatePurseAddress() {
               deselectLabel=""
               selectedLabel=""
               :hideSelected="true"
+              @select="$emit('update:selectValue',$event)"
             ></multiselect>
           </div>
           <div class="purse-address_border"></div>
@@ -61,7 +78,11 @@ async function validatePurseAddress() {
             style="width: 21px; height: 21px"
             :data-tooltip="'Убедитесь, что указанный адрес относится к выбранной валюте. Если вы укажите неверный адрес, деньги не будут поступать вам на счет.'"
           />
-          <input class="crypto_form-input" v-model="purseModel" />
+          <input
+            class="crypto_form-input"
+            :value="purseModel"
+            @input="update($event.target.value)"
+          />
         </div>
       </div>
       <div
