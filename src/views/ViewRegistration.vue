@@ -142,7 +142,7 @@ async function signUp() {
   };
   isLoadingBtn.value = true;
   try {
-    await authStore.signUp(data);
+    let result = await authStore.signUp(data);
     if (localStorage.getItem("isEmailActivation")) {
       localStorage.removeItem("isEmailActivation");
     }

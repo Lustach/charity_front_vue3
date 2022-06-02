@@ -22,6 +22,7 @@ import AppModal from "@/components/app/AppModal.vue";
 //
 markRaw(ChInput);
 markRaw(ChFormCategoryTitle);
+markRaw(ChMultiselect)
 const SchemaFormWithPlugins = SchemaFormFactory([LookupPlugin({}), VeeValidatePlugin()]);
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
@@ -67,15 +68,6 @@ const schema = ref({
     placeholder: "",
     label: "Подтвердите новый пароль",
     id: "passwordConfirm",
-    maxWidth: "420px",
-    error: "",
-  },
-  multiselect: {
-    component: ChMultiselect,
-    id: "multiselect",
-    placeholder: "",
-    label: "multiselect",
-    name: "multiselect",
     maxWidth: "420px",
     error: "",
   },

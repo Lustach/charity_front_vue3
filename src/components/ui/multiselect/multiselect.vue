@@ -1,13 +1,18 @@
 <script lang="ts" setup>
 import Multiselect from "vue-multiselect";
-import { ref } from "vue";
-const initials = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
+import { ref, inject } from "vue";
 import { useField } from "vee-validate";
-const emit = defineEmits(["update:modelValue"]);
+const initials = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
+const emit = defineEmits(["update:modelValue", "updateTest"]);
+const eventBus = inject("eventBus");
+
 const props = defineProps({
   name: {
     type: String,
     required: true,
+  },
+  id: {
+    type: String,
   },
   label: {
     type: String,
@@ -19,15 +24,15 @@ const props = defineProps({
   },
   items: {
     type: Array,
-    default: [],
   },
   value: {
     type: Array,
-    default: [],
+  },
+  modelValue: {
+    default: () => [],
   },
   options: {
     type: Array,
-    default: [],
   },
   multiselectLabel: {
     type: String,
@@ -35,9 +40,15 @@ const props = defineProps({
   trackBy: {
     type: String,
   },
-  maxWidth:{
-    type: String
-  }
+  maxWidth: {
+    type: String,
+  },
+  limit: {
+    type: Number,
+  },
+  error: {
+    type: String,
+  },
 });
 
 // const value = ref([]);
@@ -50,12 +61,15 @@ const props = defineProps({
 //   { name: "Phoenix", language: "Elixir" },
 // ];
 const { value, handleChange, errorMessage, meta } = useField(props.name, undefined, {
-  initialValue: props.value,
+  initialValue: props.modelValue,
+  validateOnValueUpdate: false,
 });
 
 const onChange = (event) => {
-  value.push(event.target.value);
-  handleChange(value);
+  console.log(event, "value");
+  // value.value.push(event);
+  // handleChange(value);
+  // eventBus.emit('updateTest',value)
   emit("update:modelValue", value);
 };
 </script>
@@ -65,26 +79,32 @@ const onChange = (event) => {
     class="vblg-select__container"
     :class="{ 'has-error': !!errorMessage || error, success: meta.valid && meta.dirty }"
     :style="{ 'max-width': maxWidth }"
+    :id="id"
   >
     <label :for="id">{{ label }}</label>
     <Multiselect
-      :searchable="true"
+      :class="{ 'is-error': errorMessage || error }"
       :multiple="true"
       class="vblg-select"
       :id="id"
       v-model="value"
-      @change="onChange"
+      :searchable="false"
+      @select="onChange"
       :options="options"
       :placeholder="placeholder"
-      searchable
-      :limit="4"
+      :limit="limit"
       :limitText="(count) => `+ ещё ${count}`"
       :label="multiselectLabel"
       :close-on-select="false"
       :clear-on-select="false"
       :preserve-search="true"
       :track-by="trackBy"
+      openDirection="bottom"
     />
+    <span class="error-message" v-if="errorMessage || error">{{
+      error || errorMessage
+    }}</span>
+    <slot name="my-error-message"></slot>
   </div>
 </template>
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
@@ -131,6 +151,8 @@ const onChange = (event) => {
 
   & .multiselect {
     &__input {
+      width: 0 !important;
+      padding: 0 !important;
       margin-bottom: 0;
       border-radius: 18px !important;
     }
@@ -250,6 +272,7 @@ const onChange = (event) => {
     &__strong {
       width: 100%;
       font-size: 14px;
+      margin: 0;
     }
     &__tag {
       padding: 7px !important;
@@ -272,6 +295,25 @@ const onChange = (event) => {
 
   input {
     border: none !important;
+  }
+}
+// error for multi
+.error-message {
+  line-height: 16px;
+  color: #f56e6e;
+}
+
+.is-error {
+  border-color: #f56c6c;
+  .multiselect__tags {
+    border-color: #f56c6c !important;
+    &:hover {
+      border-color: #f56c6c !important;
+    }
+  }
+  &:focus,
+  &:hover {
+    box-shadow: 1px 1px 10px -4px #f56c6c !important;
   }
 }
 </style>

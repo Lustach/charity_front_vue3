@@ -8,7 +8,7 @@
       <div class="app-modal__content">
         <h2>Запишите и сохраните резервный код:</h2>
         <p style="color: #0f75bd; margin: 30px auto; font-size: 17px" cy="reserve_code">
-          {{ code }}fasdfasdf
+          {{ code }}
         </p>
         <p
           style="
@@ -21,7 +21,7 @@
           Если у вас не будет доступа к телефону, вы сможете войти в свой профиль
           <span style="font-weight: 600">только по этому резервному коду.</span>
         </p>
-        <ChCheckbox id="confirm" v-model.native="isConfirm">
+        <ChCheckbox id="confirm" name="confirm" :value="checkbox" v-model.native="isConfirm">
           <template #text><p>Я сохранил резервный код</p></template>
         </ChCheckbox>
         <ChButton
@@ -50,6 +50,7 @@ markRaw(ChButton);
 // const form = ref({
 //   confirm: false,
 // });
+let checkbox = ref(false);
 let isConfirm = ref(false);
 let emit = defineEmits(["close", "showEnableStep2"]);
 const dialogVisible = ref(false);
@@ -64,6 +65,7 @@ let props = defineProps({
     type: String,
   },
 });
+
 const handleClose = (done: () => void) => {
   emit("close");
   done();

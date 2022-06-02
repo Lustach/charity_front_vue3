@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { ElButton } from "element-plus";
 interface Props {
-  isLoading: boolean;
+  loading: boolean;
   maxWidth?: string;
 }
 const props = withDefaults(defineProps<Props>(), {
-  isLoading: false,
+  loading: false,
 });
 // let {isLoading=false, maxWidth} = toRefs(defineProps<Props>());
 // const props = defineProps<{
@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
   <el-button
     type="primary"
     class="vblg-btn"
-    :loading="isLoading"
+    :loading="loading"
     :style="{ maxWidth: maxWidth }"
   >
     <slot></slot>

@@ -32,6 +32,7 @@ import AppFooter from "@/components/app/AppFooter.vue";
   flex: 1;
   width: 100%;
   margin-top: 39px;
+  margin-bottom: 39px;
   @media (max-width: 1024px) {
     padding: 0 2vw;
   }

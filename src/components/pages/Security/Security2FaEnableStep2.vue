@@ -46,7 +46,7 @@
             </a>
           </p>
         </div>
-        <ChButton> Готово</ChButton>
+        <ChButton @click="emit('showEnableStep3')"> Готово</ChButton>
         <!-- <el-button class="my-btn my-btn_modal" type="primary" @click="$emit('showStep3')"
           >Готово</el-button
         > -->
@@ -66,7 +66,7 @@ const authStore = useAuthStore();
 markRaw(ChCheckbox);
 markRaw(ChButton);
 
-let emit = defineEmits(["close"]);
+let emit = defineEmits(["close",'showEnableStep3']);
 const dialogVisible = ref(false);
 let props = defineProps({
   modelValue: {

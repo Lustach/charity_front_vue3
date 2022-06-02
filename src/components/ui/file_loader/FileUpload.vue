@@ -36,7 +36,7 @@ let { value, errorMessage, handleBlur, handleChange, meta } = useField(
   props.id,
   undefined,
   {
-    initialValue: files,
+    initialValue: undefined,
     validateOnValueUpdate: false,
   }
 );
@@ -122,7 +122,7 @@ value = files;
   font-size: 14px;
   line-height: 22px;
   color: var(--vblg-c-primary);
-  width: 50%;
+  width: 100%;
 }
 
 .drop-area {

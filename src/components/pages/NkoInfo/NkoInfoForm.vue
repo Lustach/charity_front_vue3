@@ -1,6 +1,6 @@
 <script setup lang="ts">
 //vue
-import { computed, markRaw, ref,inject } from "vue";
+import { computed, markRaw, ref, inject } from "vue";
 // schema & validation
 import * as yup from "yup";
 import { SchemaForm, useSchemaForm, SchemaFormFactory } from "formvuelate";
@@ -9,13 +9,12 @@ import VeeValidatePlugin from "@formvuelate/plugin-vee-validate";
 import ChFormCategoryTitle from "@/components/pages/NkoInfo/ChFormCategoryTitle.vue";
 // Components
 
-import DropZone from "@/components/ui/file_loader/DropZone.vue";
-import FilePreview from "@/components/ui/file_loader/FilePreview.vue";
 import ChTextArea from "@/components/ui/textarea/textarea.vue";
 import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
 import ChFileUpload from "@/components/ui/file_loader/FileUpload.vue";
 import createUploader from "@/components/ui/file_loader/compositions/fileUploader";
+import { SUPPORTED_FORMATS_DEFAULT, rules } from "@/compositions/validation_rules";
 // File Management
 import useFileList from "@/components/ui/file_loader/compositions/fileList";
 //store
@@ -27,7 +26,7 @@ markRaw(ChTextArea);
 markRaw(ChButton);
 markRaw(ChFileUpload);
 const { files, addFiles, removeFile } = useFileList();
-const API = inject("API")
+const API = inject("API");
 // Uploader
 // const { uploadFiles } = createUploader(import.meta.env.VITE_APP_BACKEND_HOST + "/health/media/"); //YOUR URL HERE
 const { uploadFiles } = createUploader(API.fill_profile.createMedia); //YOUR URL HERE
@@ -35,16 +34,6 @@ const { uploadFiles } = createUploader(API.fill_profile.createMedia); //YOUR URL
 //schema validation
 
 const SchemaFormWithPlugins = SchemaFormFactory([LookupPlugin({}), VeeValidatePlugin()]);
-const urlPattern = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w\?[a-zA-Z-_%\/@?]+)*([^\/\w\?[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/;
-const FILE_SIZE = 5242880;
-const SUPPORTED_FORMATS = [
-  "image/jpg",
-  "image/jpeg",
-  "image/gif",
-  "image/png",
-  "application/pdf",
-  "image/svg+xml",
-];
 const form = ref({
   shortDescriptionActivity: "",
   fullDescriptionActivity: "",
@@ -97,10 +86,11 @@ const schema = ref({
   phone: {
     component: ChInput,
     type: "phone",
-    label: "Телефон *",
-    placeholder: "+7",
+    placeholder: "Введите номер телефона",
+    label: "Номер телефона",
     id: "phone",
     error: "",
+    maxLength: 12,
   },
   email: {
     component: ChInput,
@@ -157,7 +147,7 @@ const schema = ref({
     placeholder: "www",
     id: "files",
     error: "",
-    accept: SUPPORTED_FORMATS.join(","),
+    accept: SUPPORTED_FORMATS_DEFAULT.join(","),
     uploadTextTip: "PNG, SVG, AI, PDF, JPG до 5 Мб",
     maxWidth: "366.11px",
     multiple: true,
@@ -168,54 +158,14 @@ const validationSchema = computed(() => {
   return yup.object().shape({
     shortDescriptionActivity: yup.string().max(150).required("Заполните поле"),
     fullDescriptionActivity: yup.string().max(2000).required("Заполните поле"),
-    site: yup.string().matches(
-      // /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-      urlPattern,
-      "Неверный формат сайта"
-    ),
-    email: yup
-      .string()
-      .matches(/\S+@\S+\.+(com|ru|org|net|info|io)$/, "Неверный формат эл. почты")
-      .required(),
-    phone: yup
-      .string()
-      .matches(/^\+7[0-9]{10}$/, "Невалидный номер телефона")
-      .required(),
-    vk: yup.string().matches(urlPattern, "Неверный формат сайта"),
-    classmates: yup.string().matches(urlPattern, "Неверный формат сайта"),
-    facebook: yup.string().matches(urlPattern, "Неверный формат сайта"),
-    insta: yup.string().matches(urlPattern, "Неверный формат сайта"),
-    files: yup
-      .mixed()
-      .test("fileNameLength", "Слишком длинное название файла", (value) => {
-        if (value.length) {
-          for (const iterator of value) {
-            if (iterator.file.name.length >= 100) {
-              return false;
-            }
-          }
-        }
-        return true;
-      })
-      .test("fileSize", "Вы превысили допустимый размер файла", (value) => {
-        if (value.length) {
-          for (const iterator of value) {
-            return iterator.file.size <= FILE_SIZE;
-          }
-        }
-        return true;
-      })
-      .test(
-        "fileType",
-        "Unsupported File Format",
-        (value) => {
-          for (const iterator of value) {
-            if (!SUPPORTED_FORMATS.includes(iterator?.file.type)) return false;
-          }
-          return true;
-        }
-        // SUPPORTED_FORMATS.includes(value[0]?.file.type)
-      ),
+    site: rules.site,
+    email: rules.email,
+    phone: rules.phone,
+    vk: rules.site,
+    classmates: rules.site,
+    facebook: rules.site,
+    insta: rules.site,
+    files: rules.files(undefined, undefined, true),
   });
 });
 
@@ -238,6 +188,7 @@ async function saveChanges() {
       <SchemaFormWithPlugins :schema="schema" :validation-schema="validationSchema">
         <template #afterForm="{ validation }">
           <ChButton
+            :maxWidth="'fit-content'"
             :loading="isLoadingBtn"
             :disabled="!validation.meta.valid"
             style="margin-right: 0"

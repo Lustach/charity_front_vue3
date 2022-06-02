@@ -1,10 +1,11 @@
-.app-modal__content{
+.app-modal__content {
   font-size: 14px;
   height: 100%;
   box-sizing: border-box;
   padding: 0 !important;
-  h2{
-    font-family: Montserrat,sans-serif;
+
+  h2 {
+    font-family: Montserrat, sans-serif;
     font-style: normal;
     font-weight: 600;
     font-size: 18px;
@@ -14,10 +15,16 @@
 
     color: var(--vblg-c-indigo);
   }
-  > div > img{
+
+  >div>img {
     width: 60px;
   }
-  .content:first-child{
+
+  .content:first-child {
     margin: 10px 0 10px 0;
   }
+}
+
+.el-dialog__headerbtn{
+  z-index: 1 !important;
 }

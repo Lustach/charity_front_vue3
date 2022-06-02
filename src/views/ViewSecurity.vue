@@ -10,11 +10,14 @@ import ChButton from "@/components/ui/button/button.vue";
 import SecurityChangePassword from "@/components/pages/Security/SecurityChangePassword.vue";
 //modals
 import Security2FaEnableStep1 from "@/components/pages/Security/Security2FaEnableStep1.vue";
-import Security2FaEnableStep2 from "../components/pages/Security/Security2FaEnableStep2.vue";
+import Security2FaEnableStep2 from "@/components/pages/Security/Security2FaEnableStep2.vue";
+import Security2FaEnableStep3 from "@/components/pages/Security/Security2FaEnableStep3.vue";
 
 // 2Fa steps
 let isEnable2FaStep1 = ref(false);
 let isEnable2FaStep2 = ref(false);
+let isEnable2FaStep3 = ref(false);
+let isEnable2FaStep4 = ref(false);
 
 let isDisable2FaStep1 = ref(false);
 
@@ -46,9 +49,8 @@ async function enable2Fa() {
     <ChButton class="my-btn" @click="enable2Fa" :loading="isBtn2FaLoading"
       >Включить защиту</ChButton
     >
-
     <Security2FaEnableStep1
-      :code="info2Fa.code"
+      :code="info2Fa.code_2fa"
       :modelValue="isEnable2FaStep1"
       @close="isEnable2FaStep1 = false"
       @showEnableStep2="(isEnable2FaStep1 = false), (isEnable2FaStep2 = true)"
@@ -57,10 +59,15 @@ async function enable2Fa() {
     <Security2FaEnableStep2
       :modelValue="isEnable2FaStep2"
       @close="isEnable2FaStep2 = false"
-      @showEnableStep3="isEnable2FaStep3 = false"
+      @showEnableStep3="(isEnable2FaStep2 = false), (isEnable2FaStep3 = true)"
       :qrCode="info2Fa.qrCode"
       :code2Fa="info2Fa.code_2fa"
     ></Security2FaEnableStep2>
+    <Security2FaEnableStep3
+      :modelValue="isEnable2FaStep3"
+      @close="isEnable2FaStep3 = false"
+      @showEnableStep3="(isEnable2FaStep3 = false), (isEnable2FaStep4 = true)"
+    ></Security2FaEnableStep3>
   </section>
 </template>
 
