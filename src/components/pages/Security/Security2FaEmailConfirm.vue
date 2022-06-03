@@ -6,30 +6,14 @@
       :before-close="handleClose"
     >
       <div class="app-modal__content">
-        <h2>Запишите и сохраните резервный код:</h2>
-        <p style="color: #0f75bd; margin: 30px auto; font-size: 17px" cy="reserve_code">
-          {{ code }}
-        </p>
-        <p
-          style="
-            max-width: 360px;
-            text-align: center;
-            word-break: break-word;
-            margin-bottom: 40px;
-          "
-        >
-          Если у вас не будет доступа к телефону, вы сможете войти в свой профиль
-          <span style="font-weight: 600">только по этому резервному коду.</span>
-        </p>
-        <ChCheckbox id="confirm" name="confirm" :value="checkbox" v-model.native="isConfirm">
-          <template #text><p>Я сохранил резервный код</p></template>
-        </ChCheckbox>
+        <h2>Подтвердите {{isEnable ?"подключение" : 'отключение'}} Google Auth по почте</h2>
+        <p style="max-width: 380px;
+    text-align: center;
+    margin-top: 10px;">Мы отправили письмо со ссылкой на подтверждение {{isEnable ?"включения" : 'отключения'}} двухфакторной аутентификации. Пожалуйста, проверьте свой почтовый ящик, чтобы завершить настройку.</p>
         <ChButton
           maxWidth="150px"
-          :loading="isLoadingBtn"
-          :disabled="!isConfirm"
-          @click="emit('showEnableStep2')"
-          >Подтвердить</ChButton
+          @click="emit('close')"
+          >Хорошо</ChButton
         >
       </div>
     </el-dialog>
@@ -45,20 +29,17 @@ import ChButton from "@/components/ui/button/button.vue";
 markRaw(ChCheckbox);
 markRaw(ChButton);
 
-let checkbox = ref(false);
-let isConfirm = ref(false);
-let emit = defineEmits(["close", "showEnableStep2"]);
-const dialogVisible = ref(false);
+let emit = defineEmits(["close", "showEnableStep"]);
 let props = defineProps({
   modelValue: {
     required: true,
     default: false,
     type: Boolean,
   },
-  code: {
+  isEnable: {
     required: true,
-    type: String,
-  },
+    type: Boolean,
+  }
 });
 
 const handleClose = (done: () => void) => {
@@ -75,6 +56,9 @@ const handleClose = (done: () => void) => {
 @import "src/assets/scss/components/_app-modal.scss";
 @import "src/assets/scss/components/_el-dialog.scss";
 
+h2{
+    max-width: 400px;
+}
 .app-modal:deep .el-dialog {
   font-size: 17px !important;
   max-width: 480px !important;

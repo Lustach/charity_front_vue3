@@ -16,19 +16,6 @@
             @update:modelValue="(e) => (code = e)"
             :error="error"
           ></ChInput>
-          <!-- <div
-            class="el-form-item__error"
-            style="
-              margin-top: 10px;
-              margin-bottom: -15px;
-              text-align: left !important;
-              font-size: 13.23px !important;
-            "
-            v-if="isErrorRequest"
-            v-timeout="{ time: 3500, varName: 'isErrorRequest' }"
-          >
-            Неверный код
-          </div> -->
         </div>
         <ChButton
           :disabled="code.length !== 6"
@@ -36,11 +23,8 @@
           maxWidth="150px"
           style="max-width: fint-content"
         >
-          Готово</ChButton
+          {{isEnable?'Готово' : 'Отключить'}}</ChButton
         >
-        <!-- <el-button class="my-btn my-btn_modal" type="primary" @click="$emit('showStep3')"
-          >Готово</el-button
-        > -->
       </div>
     </el-dialog>
   </div>
@@ -93,6 +77,10 @@ let props = defineProps({
     default: false,
     type: Boolean,
   },
+  isEnable:{
+      required: true,
+      type: Boolean,
+  }
 });
 const handleClose = (done: () => void) => {
   emit("close");
@@ -102,7 +90,7 @@ async function showStep4() {
   try {
     let fd = new FormData();
     fd.append("otp", code.value);
-    await API.user.sendEmail2Fa(fd);
+    await API.user[props.isEnable?'sendEmail2Fa' : 'deleteEmail2Fa'](fd);
     emit("showEnableStep4");
   } catch (e) {
     error.value = "Неверный код";

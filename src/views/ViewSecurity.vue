@@ -5,14 +5,15 @@ const API = inject("API");
 import { useAuthStore } from "@/stores/modules/auth/auth";
 import { useProfileStore } from "@/stores/modules/profile/profile";
 let authStore = useAuthStore();
+let profileStore = useProfileStore();
 // components
 import ChButton from "@/components/ui/button/button.vue";
 import SecurityChangePassword from "@/components/pages/Security/SecurityChangePassword.vue";
 //modals
 import Security2FaEnableStep1 from "@/components/pages/Security/Security2FaEnableStep1.vue";
 import Security2FaEnableStep2 from "@/components/pages/Security/Security2FaEnableStep2.vue";
-import Security2FaEnableStep3 from "@/components/pages/Security/Security2FaEnableStep3.vue";
-
+import Security2FaTurnState from "@/components/pages/Security/Security2FaTurnState.vue";
+import Security2FaEmailConfirm from "@/components/pages/Security/Security2FaEmailConfirm.vue";
 // 2Fa steps
 let isEnable2FaStep1 = ref(false);
 let isEnable2FaStep2 = ref(false);
@@ -20,6 +21,7 @@ let isEnable2FaStep3 = ref(false);
 let isEnable2FaStep4 = ref(false);
 
 let isDisable2FaStep1 = ref(false);
+let isDisable2FaStep2 = ref(false);
 
 //
 let isBtn2FaLoading = ref(false);
@@ -32,7 +34,7 @@ let info2Fa = ref({
 async function enable2Fa() {
   isBtn2FaLoading.value = true;
   if (authStore.is2faEnabled) {
-    // isDisable2FaStep1.value = true;
+    isDisable2FaStep1.value = true;
   } else {
     const result = await API.user.prepare2Fa();
     info2Fa.value.qrCode = result.qrcode;
@@ -47,8 +49,9 @@ async function enable2Fa() {
   <section>
     <SecurityChangePassword></SecurityChangePassword>
     <ChButton class="my-btn" @click="enable2Fa" :loading="isBtn2FaLoading"
-      >Включить защиту</ChButton
+      >{{ authStore.is2faEnabled ? "Включить" : "Отключить" }} защиту</ChButton
     >
+    <!-- enable -->
     <Security2FaEnableStep1
       :code="info2Fa.code_2fa"
       :modelValue="isEnable2FaStep1"
@@ -63,11 +66,29 @@ async function enable2Fa() {
       :qrCode="info2Fa.qrCode"
       :code2Fa="info2Fa.code_2fa"
     ></Security2FaEnableStep2>
-    <Security2FaEnableStep3
+    <Security2FaTurnState
+      :isEnable="true"
       :modelValue="isEnable2FaStep3"
       @close="isEnable2FaStep3 = false"
       @showEnableStep3="(isEnable2FaStep3 = false), (isEnable2FaStep4 = true)"
-    ></Security2FaEnableStep3>
+    ></Security2FaTurnState>
+    <Security2FaEmailConfirm
+      :isEnable="true"
+      :modelValue="isEnable2FaStep4"
+      @close="isEnable2FaStep4 = false"
+    ></Security2FaEmailConfirm>
+    <!-- disable -->
+    <Security2FaTurnState
+      :isEnable="false"
+      :modelValue="isDisable2FaStep1"
+      @close="isDisable2FaStep1 = false"
+      @showEnableStep3="(isDisable2FaStep2 = false), (isDisable2FaStep2 = true)"
+    ></Security2FaTurnState>
+    <Security2FaEmailConfirm
+      :isEnable="false"
+      :modelValue="isDisable2FaStep2"
+      @close="isDisable2FaStep2 = false"
+    ></Security2FaEmailConfirm>
   </section>
 </template>
 
