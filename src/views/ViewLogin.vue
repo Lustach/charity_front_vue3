@@ -213,7 +213,7 @@ async function login() {
   }
   &__link {
     max-width: 328px;
-    margin: 0 auto;
+    margin: 5px auto 0 auto;
     text-align: right;
     a {
       margin-top: -8px;

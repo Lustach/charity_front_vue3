@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import { computed, ref, markRaw, inject, onMounted } from "vue";
+import { computed, ref, unref, markRaw, inject, onMounted, nextTick, watch } from "vue";
 import type { Ref } from "vue";
-import { schema, form, validationSchema } from "@/components/pages/FillProfile/form";
-import { backStep, steps } from "@/components/pages/FillProfile/useStep";
+import {
+  schema,
+  form,
+  helpCategoryList,
+  validationSchema,
+} from "@/components/pages/FillProfile/form";
+import { backStep, steps, setActiveStep } from "@/components/pages/FillProfile/useStep";
 import { useRouter, useRoute } from "vue-router";
 import { useSchemaForm, SchemaFormFactory } from "formvuelate";
 import LookupPlugin from "@formvuelate/plugin-lookup";
 import VeeValidatePlugin from "@formvuelate/plugin-vee-validate";
+import useFileList from "@/components/ui/file_loader/compositions/fileList";
+import { getRequisitesInfo } from "@/components/compositions/Requisites/useRequisites";
 //components
 import ChButton from "@/components/ui/button/button.vue";
 // page parts
@@ -17,10 +24,13 @@ const authStore = useAuthStore();
 const profileStore = useProfileStore();
 const API = inject("API");
 const SchemaFormWithPlugins = SchemaFormFactory([LookupPlugin({}), VeeValidatePlugin()]);
+const { files, addFiles, setFilePreview, removeFile } = useFileList();
+const eventBus = inject("eventBus");
 useSchemaForm(form);
 markRaw(ChButton);
 // markRaw(ChMultiselect);
 const mapFormStep1ToApi = {
+  //key: form key-value: apiKey
   fullNameNko: "name",
   shortDescriptionActivity: "short_description",
   fullDescriptionActivity: "long_description",
@@ -30,9 +40,49 @@ const mapFormStep1ToApi = {
   certificateRegistration: "nko_register_certificate",
   logo: "upload_image",
 };
-onMounted(()=>{
-  getStep1()
-})
+const mapFormStep3ToApi = {
+  fullNameDirector: "nko_director_name",
+  workPost: "nko_director_position",
+  fullNameContactPerson: "nko_representative_name",
+  phoneContactPerson: "nko_representative_phone",
+  emailContactPerson: "nko_representative_email",
+  site: "nko_reference",
+  phone: "nko_phone",
+  email: "nko_email",
+  vk: "vk_ref",
+  classmates: "ok_ref",
+  facebook: "facebook_ref",
+  insta: "instagram_ref",
+};
+watch(
+  () => form.value.isShowStep1,
+  (nV) => {
+    if (nV) {
+      console.log(nV, "nV");
+      setTimeout(() => {
+        getStep1();
+      }, 1);
+    }
+  },
+  {
+    deep: true,
+  }
+);
+onMounted(() => {
+  console.log(schema, "schema");
+  setActiveStep(
+    form.value.isShowStep1
+      ? 0
+      : form.value.isShowStep2
+      ? 1
+      : form.value.isShowStep3
+      ? 2
+      : 0
+  );
+  getStep1();
+  getStep2();
+  getStep3();
+});
 async function setFundStep1(fd) {
   try {
     if (
@@ -94,7 +144,121 @@ async function setStepInfo() {
   }
 }
 function getStep1() {
-  console.log(profileStore.fund,"getSTep1");
+  console.dir("dir");
+  nextTick();
+  // if(profileStore.fund)
+  for (const iterator in mapFormStep1ToApi) {
+    if (iterator === "helpCategory") {
+      form.value.helpCategory = helpCategoryList.filter(
+        (e) => profileStore.fund.category.findIndex((e1) => e.id === e1) !== -1
+      );
+      schema.value[3].modelValue = form.value.helpCategory;
+    } else if (iterator === "charter") {
+      form.value.charter = createFile("nko_statute");
+      files.value = form.value.charter;
+      eventBus.emit("updateFiles", { fileList: files.value, componentId: "charter" });
+    } else if (iterator === "certificateRecord") {
+      form.value.certificateRecord = createFile("nko_taxes_certificate");
+      files.value = form.value.certificateRecord;
+      eventBus.emit("updateFiles", {
+        fileList: files.value,
+        componentId: "certificateRecord",
+      });
+    } else if (iterator === "certificateRegistration") {
+      form.value.certificateRegistration = createFile("nko_register_certificate");
+      files.value = form.value.certificateRegistration;
+      eventBus.emit("updateFiles", {
+        fileList: files.value,
+        componentId: "certificateRegistration",
+      });
+    } else if (iterator === "logo") {
+      let logoObject = profileStore.fund.media_files.filter((e) => e.is_logo);
+      form.value.logo = [
+        {
+          file: new File([`logo`], `logo.jpeg`, { type: "image/jpeg" }),
+          status: null,
+          id: "1",
+          url: import.meta.env.VITE_APP_BACKEND_HOST + logoObject[0].upload_image,
+        },
+      ];
+      files.value = form.value.logo;
+      eventBus.emit("updateFiles", {
+        fileList: files.value,
+        componentId: "logo",
+      });
+    } else {
+      form.value[iterator] = profileStore.fund[mapFormStep1ToApi[iterator]];
+      nextTick();
+    }
+    // console.log(iterator, profileStore.fund);
+  }
+  if (profileStore.fund?.name) {
+    form.value.fullNameNko = profileStore.fund.name;
+  }
+  nextTick();
+}
+let {
+  actualAddressIdFromStorage,
+  mailingAddressIdFromStorage,
+  legalAddressIdFromStorage,
+} = profileStore;
+async function getStep2() {
+  // try {
+  //   await profileStore.initDataFromLocalStorage();
+  // } catch (e) {
+  //   console.error(e);
+  // }
+  let gen = await getRequisitesInfo();
+  let {
+    bankDetails,
+    legalAddress,
+    actualAddress,
+    mailingAddress,
+  } = await gen.next().then((e) => e.value);
+  let myForm = unref(form);
+  console.log(bankDetails, "bankDetails");
+
+  myForm.inn = bankDetails.inn;
+  myForm.kpp = bankDetails.kpp;
+  myForm.ogrn = bankDetails.ogrn;
+  myForm.fullNameBank = bankDetails.full_name;
+  myForm.bik = bankDetails.bik;
+  myForm.countScore = bankDetails.checking_account;
+  myForm.correspondentScore = bankDetails.correspondent_account;
+  myForm.city = legalAddress.city;
+  myForm.address = legalAddress.physical_address;
+  myForm.officeOrFlat = legalAddress.office;
+  myForm.index = legalAddress.index;
+  if (actualAddressIdFromStorage) {
+    myForm.address_actual = actualAddress.physical_address;
+    myForm.officeOrFlatActual = actualAddress.office;
+    myForm.index_actual = actualAddress.index;
+    myForm.city_actual = actualAddress.city;
+    myForm.actualAddress = false;
+  }
+  if (mailingAddressIdFromStorage) {
+    myForm.address_mailing = mailingAddress.physical_address;
+    myForm.officeOrFlatMailing = mailingAddress.office;
+    myForm.index_mailing = mailingAddress.index;
+    myForm.city_mailing = mailingAddress.city;
+    myForm.mailingAddress = false;
+  }
+}
+function getStep3() {
+  for (const iterator in mapFormStep3ToApi) {
+    console.log(iterator, profileStore.fund[mapFormStep3ToApi[iterator]]);
+    form.value[iterator] = profileStore.fund[mapFormStep3ToApi[iterator]];
+  }
+}
+function createFile(name) {
+  return [
+    {
+      file: new File([`${name}`], `${name}.jpeg`, { type: "image/jpeg" }),
+      status: null,
+      id: "1",
+      url: import.meta.env.VITE_APP_BACKEND_HOST + profileStore.fund[name],
+    },
+  ];
 }
 const router = useRouter();
 const route = useRoute();
@@ -105,9 +269,6 @@ let isPasswordError = ref(false);
 let isCodeError = ref(false);
 // let isShowCodeField = ref(false);
 let isLoadingBtn = ref(false);
-function updateTest() {
-  console.log("updateTest");
-}
 </script>
 <template>
   <section>
@@ -137,7 +298,6 @@ function updateTest() {
                 Назад
               </p>
               <ChButton
-                v-show="form.isShowStep1"
                 class="btn"
                 @click="setStepInfo()"
                 :loading="isLoadingBtn"

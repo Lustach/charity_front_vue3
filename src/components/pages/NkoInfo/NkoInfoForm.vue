@@ -1,6 +1,6 @@
 <script setup lang="ts">
 //vue
-import { computed, markRaw, ref, inject } from "vue";
+import { computed, markRaw, ref, inject, onMounted } from "vue";
 // schema & validation
 import * as yup from "yup";
 import { SchemaForm, useSchemaForm, SchemaFormFactory } from "formvuelate";
@@ -34,6 +34,21 @@ const { uploadFiles } = createUploader(API.fill_profile.createMedia); //YOUR URL
 //schema validation
 
 const SchemaFormWithPlugins = SchemaFormFactory([LookupPlugin({}), VeeValidatePlugin()]);
+const formToApi = {
+  //key: form key-value: apiKey
+  site: "nko_reference",
+  phone: "nko_phone",
+  email: "nko_email",
+  vk: "vk_ref",
+  classmates: "ok_ref",
+  facebook: "facebook_ref",
+  insta: "instagram_ref",
+  fullNameNko: "name",
+  shortDescriptionActivity: "short_description",
+  fullDescriptionActivity: "long_description",
+  // logo: "upload_image",
+  // mediaFiles: 'upload_media',
+};
 const form = ref({
   shortDescriptionActivity: "",
   fullDescriptionActivity: "",
@@ -44,7 +59,8 @@ const form = ref({
   classmates: "",
   facebook: "",
   insta: "",
-  files: [],
+  logo: [],
+  mediaFiles: [],
 });
 useSchemaForm(form);
 const schema = ref({
@@ -87,7 +103,7 @@ const schema = ref({
     component: ChInput,
     type: "phone",
     placeholder: "Введите номер телефона",
-    label: "Номер телефона",
+    label: "Телефон *",
     id: "phone",
     error: "",
     maxLength: 12,
@@ -140,17 +156,29 @@ const schema = ref({
     component: ChFormCategoryTitle,
     title: "Медиа файлы",
   },
-  files: {
+  logo: {
     component: ChFileUpload,
     type: "file",
     label: "Логотип",
-    placeholder: "www",
-    id: "files",
+    id: "logo",
+    error: "",
+    accept: SUPPORTED_FORMATS_DEFAULT.join(","),
+    uploadTextTip: "PNG, SVG, AI, PDF, JPG до 5 Мб",
+    maxWidth: "366.11px",
+    multiple: false,
+  },
+  mediaFiles: {
+    component: ChFileUpload,
+    type: "file",
+    label: "Фото и видео",
+    tooltip: "Фото и видео будут отражаться на странице вашего НКО на нашем сайте.",
+    id: "mediaFiles",
     error: "",
     accept: SUPPORTED_FORMATS_DEFAULT.join(","),
     uploadTextTip: "PNG, SVG, AI, PDF, JPG до 5 Мб",
     maxWidth: "366.11px",
     multiple: true,
+    apiKey: "upload_media",
   },
 });
 
@@ -165,11 +193,12 @@ const validationSchema = computed(() => {
     classmates: rules.site,
     facebook: rules.site,
     insta: rules.site,
-    files: rules.files(undefined, undefined, true),
+    logo: rules.files(undefined, undefined, false),
+    mediaFiles: rules.files(undefined, undefined, false),
   });
 });
 
-form.value.files = files.value;
+form.value.logo = files.value;
 
 async function saveChanges() {
   let fd = new FormData();
@@ -177,6 +206,11 @@ async function saveChanges() {
     fd.append("category", key);
   }
 }
+onMounted(() => {
+  for (const iterator in formToApi) {
+    form.value[iterator] = profileStore.fund[formToApi[iterator]];
+  }
+});
 </script>
 <template>
   <div class="profile_form_container">

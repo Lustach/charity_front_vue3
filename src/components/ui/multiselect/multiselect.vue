@@ -50,16 +50,6 @@ const props = defineProps({
     type: String,
   },
 });
-
-// const value = ref([]);
-// let options = [
-//   { name: "Vue.js", language: "JavaScript" },
-//   { name: "Adonis", language: "JavaScript" },
-//   { name: "Rails", language: "Ruby" },
-//   { name: "Sinatra", language: "Ruby" },
-//   { name: "Laravel", language: "PHP" },
-//   { name: "Phoenix", language: "Elixir" },
-// ];
 const { value, handleChange, errorMessage, meta } = useField(props.name, undefined, {
   initialValue: props.modelValue,
   validateOnValueUpdate: false,
@@ -81,6 +71,7 @@ const onChange = (event) => {
     :style="{ 'max-width': maxWidth }"
     :id="id"
   >
+    {{ value }} {{modelValue}}
     <label :for="id">{{ label }}</label>
     <Multiselect
       :class="{ 'is-error': errorMessage || error }"

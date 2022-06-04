@@ -12,9 +12,12 @@ const eventBus = inject("eventBus");
 
 // const eventBus = inject("eventBus");
 let { files, addFiles, removeFile } = useFileList();
-eventBus.on("updateFiles", (fileList) => {
-  files.value = fileList;
-  emit("update:modelValue", files);
+eventBus.on("updateFiles", ({fileList, componentId}) => {
+  console.log(fileList,componentId,"updateFiles");
+  if (componentId === props.id) {
+    files.value = fileList;
+    emit("update:modelValue", files);
+  }
 });
 function onInputChange(e) {
   addFiles(e.target.files);
@@ -41,16 +44,17 @@ let { value, errorMessage, handleBlur, handleChange, meta } = useField(
   }
 );
 value = files;
+// const fileTemplate = ref(null);
 </script>
 <template>
-  <div class="file__container">
+  <div class="file__container" :ref="id">
     <label for="drop-area-id" id="drop-area_label">{{ label }}</label>
     <div :style="{ 'max-width': maxWidth }" style="min-height: 76px; width: 100%">
       <DropZone
         tabindex="0"
         :style="{ 'max-width': maxWidth }"
         class="drop-area"
-        id="drop-area-id"
+        :id="'drop-area-id ' + id"
         @files-dropped="addFiles"
         #default="{ dropZoneActive }"
         :class="{ 'is-error': errorMessage }"
@@ -115,6 +119,7 @@ value = files;
   display: flex;
   width: 100%;
   flex-direction: column;
+  margin-bottom: 6px;
 }
 
 #drop-area_label {

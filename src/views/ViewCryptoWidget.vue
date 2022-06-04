@@ -124,7 +124,7 @@ onMounted(async () => {
     },
   ];
   files.value = form.value.logo;
-  eventBus.emit("updateFiles", files.value);
+  eventBus.emit("updateFiles", { fileList: files.value, componentId: "logo" });
   purseModel.value = result.address;
   selectValue.value = result.cryptocurrency.toUpperCase() || "BTC";
   nextTick();

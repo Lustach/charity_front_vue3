@@ -2,6 +2,7 @@
   <div class="checkbox coloured">
     <label>
       <input
+        :id="id"
         class="vblg-checkbox"
         type="checkbox"
         :name="name"
@@ -26,10 +27,11 @@ import type { Props } from "@/components/ui/checkbox/interface";
 const emit = defineEmits(["update:modelValue"]);
 
 // eslint-disable-next-line vue/no-setup-props-destructure
-let { name, value, modelValue } = defineProps<Props>();
+let { name, value, id, modelValue } = defineProps<Props>();
 let { meta, checked, handleChange, errorMessage } = useField(name, undefined, {
   type: "checkbox",
   checkedValue: false,
+  initialValue: false,
   valueProp: modelValue,
   validateOnValueUpdate: false,
 });

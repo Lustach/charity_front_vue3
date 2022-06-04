@@ -41,7 +41,9 @@ const form = ref({
   privacyRules: false,
 });
 useSchemaForm(form);
-
+let validServiceRules = ref(false);
+let touchServiceRules = ref(false);
+let isLoadingBtn = ref(false);
 const schema = ref({
   email: {
     component: ChInput,
@@ -80,30 +82,26 @@ const schema = ref({
     maxWidth: "328px",
     error: "",
   },
-  offerRules: {
-    component: ChCheckbox,
-    type: "checkbox",
-    label: "Соглашаюсь с офертой",
-    id: "offerRules",
-    error: "",
-    name: "offerRules",
-    slot: `<p>Соглашаюсь с <a style="text-decoration: underline; color: initial" href="http://localhost:8000/static/documents/Оферта_для_публичного_сбора_пожертвований.pdf" target="_blank">офертой</a></p>`,
-  },
-  privacyRules: {
-    component: ChCheckbox,
-    type: "checkbox",
-    label: "Соглашаюсь на обработку",
-    id: "privacyRules",
-    error: "",
-    name: "privacyRules",
-    slot: `<p>Соглашаюсь на обработку <a style="text-decoration: underline; color: initial" href="http://localhost:8000/static/documents/Политика_в_отношении_обработки_ПД.pdf" target="_blank">персональных данных</a></p>`,
-  },
+  // offerRules: {
+  //   component: ChCheckbox,
+  //   type: "checkbox",
+  //   label: "Соглашаюсь с офертой",
+  //   id: "offerRules",
+  //   error: "",
+  //   name: "offerRules",
+  //   slot: `<p>Соглашаюсь с <a style="text-decoration: underline; color: initial" href="http://localhost:8000/static/documents/Оферта_для_публичного_сбора_пожертвований.pdf" target="_blank">офертой</a></p>`,
+  // },
+  // privacyRules: {
+  //   component: ChCheckbox,
+  //   type: "checkbox",
+  //   label: "Соглашаюсь на обработку",
+  //   id: "privacyRules",
+  //   error: "",
+  //   name: "privacyRules",
+  //   slot: `<p>Соглашаюсь на обработку <a style="text-decoration: underline; color: initial" href="http://localhost:8000/static/documents/Политика_в_отношении_обработки_ПД.pdf" target="_blank">персональных данных</a></p>`,
+  // },
 });
 const router = useRouter();
-
-let validServiceRules = ref(false);
-let touchServiceRules = ref(false);
-let isLoadingBtn = ref(false);
 
 watch(
   () => form.value.email,
@@ -150,10 +148,10 @@ async function signUp() {
   } catch (e) {
     if (e.response.status === 400) {
       if (e.response.data.email) {
-        schema.value.email.error = 'Данный e-mail уже зарегистрирован'
+        schema.value.email.error = "Данный e-mail уже зарегистрирован";
       }
       if (e.response.data.phone_number) {
-        schema.value.phone.error = 'Данный телефон уже зарегистрирован'
+        schema.value.phone.error = "Данный телефон уже зарегистрирован";
       }
       console.error(e.response);
     }
@@ -189,6 +187,42 @@ async function signUp() {
               :disabled="!validation.meta.valid"
               >Продолжить</ChButton
             >
+            <ChCheckbox
+              :id="'offerRules'"
+              :name="'offerRules'"
+              :value="null"
+              :modelValue="form.offerRules"
+            >
+              <template #text>
+                <p>
+                  Соглашаюсь с
+                  <a
+                    style="text-decoration: underline; color: initial"
+                    href="http://localhost:8000/static/documents/Оферта_для_публичного_сбора_пожертвований.pdf"
+                    target="_blank"
+                    >офертой</a
+                  >
+                </p>
+              </template>
+            </ChCheckbox>
+            <ChCheckbox
+              id="privacyRules"
+              name="privacyRules"
+              :value="null"
+              :modelValue="form.privacyRules"
+            >
+              <template #text>
+                <p>
+                  Соглашаюсь на обработку
+                  <a
+                    style="text-decoration: underline; color: initial"
+                    href="http://localhost:8000/static/documents/Политика_в_отношении_обработки_ПД.pdf"
+                    target="_blank"
+                    >персональных данных</a
+                  >
+                </p>
+              </template>
+            </ChCheckbox>
           </template>
         </SchemaFormWithPlugins>
         <div

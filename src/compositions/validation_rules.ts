@@ -78,6 +78,8 @@ export const rules = {
     files: (FILE_SIZE?: number = FILE_SIZE_DEFAULT, SUPPORTED_FORMATS?: Array<string> = SUPPORTED_FORMATS_DEFAULT, isRequired: boolean) => yup
         .mixed()
         .test("fileNameLength", "Слишком длинное название файла", (value) => {
+            console.log(value,'value file');
+            
             if (value?.length) {
                 for (const iterator of value) {
                     if (iterator.file.name.length >= 100) {

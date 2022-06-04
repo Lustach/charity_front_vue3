@@ -1,10 +1,11 @@
 // import type TForm from '@/'
+import { nextTick, reactive } from 'vue'
 import { form } from '@/components/pages/FillProfile/form'
-export const steps = [
+export const steps = reactive([
     { value: true, description: 'Общая информация', },
     { value: false, description: 'Реквизиты', },
     { value: false, description: 'Контакты', },
-]
+])
 // async nextStep() {
 //     this.isBtnLoading = true;
 //     if (this.step === 'step1') {
@@ -20,7 +21,7 @@ export const steps = [
 //     }
 //     this.isBtnLoading = false;
 // },
-export function setActiveStep(i:number) {
+export function setActiveStep(i: number) {
     steps.forEach(e => e.value = false);
     steps[i].value = true;
     window.scrollTo(0, 0);
@@ -30,14 +31,13 @@ export function backStep() {
         form.value.isShowStep1 = true
         form.value.isShowStep2 = false
         form.value.isShowStep3 = false
-        setActiveStep(1);
+        setActiveStep(0);
     } else if (form.value.isShowStep3) {
         form.value.isShowStep2 = true
         form.value.isShowStep3 = false
         form.value.isShowStep1 = false
         setActiveStep(1);
     }
-
     // if (this.step === 'step2') {
     //     this.step = 'step1';
     //     this.setActiveStep(0);

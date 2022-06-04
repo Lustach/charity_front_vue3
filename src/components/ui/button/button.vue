@@ -3,6 +3,7 @@ import { ElButton } from "element-plus";
 interface Props {
   loading: boolean;
   maxWidth?: string;
+  text?: string;
 }
 const props = withDefaults(defineProps<Props>(), {
   loading: false,
@@ -20,7 +21,7 @@ const props = withDefaults(defineProps<Props>(), {
     :loading="loading"
     :style="{ maxWidth: maxWidth }"
   >
-    <slot></slot>
+    <slot>{{ text }}</slot>
   </el-button>
 </template>
 <style lang="scss" scoped>

@@ -15,12 +15,20 @@ markRaw(ChInput);
 markRaw(ChTextArea);
 markRaw(ChFileUpload);
 markRaw(ChCheckbox);
+export const helpCategoryList = [
+    { id: 2, title: "Взрослым" },
+    { id: 1, title: "Детям" },
+    { id: 4, title: "Животным" },
+    { id: 6, title: "Обществу" },
+    { id: 3, title: "Пожилым" },
+    { id: 5, title: "Природе" },
+]
 export type TForm = {
     //step1
     fullNameNko: string;
     shortDescriptionActivity: string;
     fullDescriptionActivity: string;
-    helpCategory: string;
+    helpCategory: string | Array<{ id: number, title: string }>;
     charter: string;
     certificateRecord: string;
     certificateRegistration: string;
@@ -66,14 +74,14 @@ export type TForm = {
 
 };
 export const form: Ref<TForm> = ref({
-    isShowStep1: true,
+    isShowStep1: false,
     isShowStep2: false,
-    isShowStep3: false,
+    isShowStep3: true,
     //step1
     fullNameNko: "",
     shortDescriptionActivity: "",
     fullDescriptionActivity: "",
-    helpCategory: "",
+    helpCategory: '',
     charter: "",
     certificateRecord: "",
     certificateRegistration: "",
@@ -168,9 +176,10 @@ export const schema = computed(() => [
             { id: 3, title: "Пожилым" },
             { id: 5, title: "Природе" },
         ],
+        modelValue: [],
         multiselectLabel: "title",
         trackBy: "id",
-        model: "",
+        model: "helpCategory",
         error: "",
         label: "Кому вы помогаете *",
         tooltip: "Выберите одну или несколько целевых групп согласно Уставу НКО",
@@ -596,6 +605,7 @@ export const schema = computed(() => [
         error: "",
         model: "phone",
         condition: (model) => model.isShowStep3,
+        maxLength: 12,
     },
     {
         component: ChInput,
@@ -665,7 +675,7 @@ export const validationSchema = computed(() => {
             charter: rules.files(10485760, undefined, true),
             certificateRecord: rules.files(10485760, undefined, true),
             certificateRegistration: rules.files(10485760, undefined, true),
-            logo: rules.files(undefined, undefined, true),
+            logo: rules.files(undefined, undefined, false),
         });
     } else if (form.value.isShowStep2) {
         return object().shape({
