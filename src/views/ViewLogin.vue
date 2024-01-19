@@ -1,16 +1,20 @@
 <script setup lang="ts">
-import axios from "axios";
-import { computed, ref, markRaw, inject, unref, watch } from "vue";
+import { computed, ref, markRaw, unref, watch } from "vue";
 import type { Ref } from "vue";
 
+import axios from "axios";
+
 import { useRouter, useRoute } from "vue-router";
+
 import { useSchemaForm, SchemaFormFactory } from "formvuelate";
 import LookupPlugin from "@formvuelate/plugin-lookup";
 import VeeValidatePlugin from "@formvuelate/plugin-vee-validate";
 import { object } from "yup";
 import { rules } from "@/compositions/validation_rules";
+
 import ChInput from "@/components/ui/input/input.vue";
 import ChButton from "@/components/ui/button/button.vue";
+
 import { useAuthStore } from "@/stores/modules/auth/auth";
 import { useProfileStore } from "@/stores/modules/profile/profile";
 import useTimeOut from "@/components/compositions/utils/watchers";
@@ -21,6 +25,10 @@ const SchemaFormWithPlugins = SchemaFormFactory([LookupPlugin({}), VeeValidatePl
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
 const { timeOut } = useTimeOut;
+interface ResponseData {
+  otp: [string];
+  detail?: string;
+}
 
 type TForm = {
   isShowCodeField: boolean;
@@ -135,12 +143,12 @@ async function login() {
   isLoadingBtn.value = true;
   let values = unref(form);
   try {
-    const result = await authStore.loginUser({
+    await authStore.loginUser({
       password: values.password,
       [values.emailOrPhone.includes("@") ? "email" : "phone_number"]: values.emailOrPhone,
     });
     if (profileStore.fillAllStepsFromStorage) {
-      if (profileStore.fund.status !== "APPROVED") {
+      if (profileStore?.fund?.status !== "APPROVED") {
         router.push("/review_profile");
       } else {
         router.push("/lk/nko_info");
@@ -149,19 +157,24 @@ async function login() {
       router.push("/fill_profile");
     }
   } catch (e) {
-    if (axios.isAxiosError(e))
-      if (e.response.status === 401) {
-        if (e.response.data.detail === "Неверный пароль") {
+    if (axios.isAxiosError(e)) {
+      const responseData = e.response?.data as ResponseData;
+      if (e.response?.status === 401) {
+        if (responseData.detail === "Неверный пароль") {
           schema.value.password.error = "Неверный пароль";
-        } else if (e.response.data.detail === "Неверный e-mail или телефон") {
+        } else if (
+          responseData.detail === "Неверный e-mail или телефон" ||
+          responseData.detail === "Не найдено активных записей по этим данным"
+        ) {
           schema.value.emailOrPhone.error = values.emailOrPhone.includes("@")
             ? "Данный e-mail не зарегистрирован"
             : "Данный телефон не зарегистрирован";
         }
       }
-    if (e.response.status === 400) {
-      if (e.response.data.otp[0] === "Invalid otp") {
-        schema.value.code_2fa.error = "Неверный код";
+      if (e.response?.status === 400) {
+        if (responseData?.otp[0] === "Invalid otp") {
+          schema.value.code_2fa.error = "Неверный код";
+        }
       }
     }
     console.error(e);
@@ -187,10 +200,7 @@ async function login() {
         @submit="login"
       >
         <template #afterForm="{ validation }">
-          <ChButton
-            @click="login"
-            :loading="isLoadingBtn"
-            :disabled="!validation.meta.valid"
+          <ChButton :loading="isLoadingBtn" :disabled="!validation.meta.valid"
             >Продолжить</ChButton
           >
           <div class="form__link">

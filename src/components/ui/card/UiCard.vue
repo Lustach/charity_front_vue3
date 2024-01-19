@@ -14,15 +14,18 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "card",
-  props: {
-    title: {},
-    data: {},
-    text: {},
-  },
+<script lang="ts" setup>
+import type { PropType } from 'vue';
+type KeyValue = {
+  key: string;
+  value: string;
 };
+
+defineProps({
+  title: { type: String },
+  data: { type: Array as PropType<KeyValue[]> },
+  text: { type: String }
+})
 </script>
 
 <style scoped lang="scss">
@@ -39,9 +42,11 @@ export default {
   margin-bottom: 6px;
   position: relative;
   min-height: 53px;
+
   &:last-child {
     margin-bottom: 0 !important;
   }
+
   p {
     margin: 0;
     font-size: 13.94px;
@@ -79,6 +84,7 @@ export default {
     padding: 8px 12px;
     height: 113px;
     width: 156px;
+
     &:first-child {
       background: #27ae60;
       margin-right: 10px;
@@ -112,5 +118,4 @@ h5 {
   color: #18191c;
   text-align: left;
   padding-bottom: 4px;
-}
-</style>
+}</style>

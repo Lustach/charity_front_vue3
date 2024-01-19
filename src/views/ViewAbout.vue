@@ -96,7 +96,9 @@
               >
             </li>
           </ul>
-          <ChButton style="margin: 20px 0 20px 0;width: fit-content;padding: 0 40px;">Скачать архивом</ChButton>
+          <ChButton style="margin: 20px 0 20px 0; width: fit-content; padding: 0 40px"
+            >Скачать архивом</ChButton
+          >
         </div>
       </div>
     </div>
@@ -106,20 +108,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
+import { onMounted } from "vue";
 import ChButton from "@/components/ui/button/button.vue";
-export default {
-  name: "home",
-  components: {
-    ChButton,
-    // DialogDocumentPreview:()=>import('@/components/modals/DialogDocumentPreview')
-  },
-  created() {
-    window.scrollTo(0, 0);
-  },
-};
+onMounted(() => {
+  window.scrollTo(0, 0);
+});
 </script>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

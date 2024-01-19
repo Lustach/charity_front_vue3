@@ -1,6 +1,11 @@
 <template>
   <div class="app-modal">
-    <el-dialog class="app-modal" :model-value="modelValue" :before-close="handleClose">
+    <el-dialog
+      class="app-modal"
+      :model-value="modelValue"
+      :before-close="handleClose"
+      :close-on-click-modal="closeOnClickMask"
+    >
       <div class="app-modal__content">
         <img :src="image" alt="" :style="{ width: imgSize + 'px' }" />
         <div class="app-modal__content--message">
@@ -23,11 +28,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref} from "vue";
-import { ElMessageBox } from "element-plus";
 let emit = defineEmits(["close"]);
-const dialogVisible = ref(false);
-let props = defineProps({
+defineProps({
+  closeOnClickMask: {
+    default: true,
+    type: Boolean,
+  },
   modelValue: {
     required: true,
     default: false,
@@ -50,12 +56,6 @@ let props = defineProps({
 const handleClose = (done: () => void) => {
   emit("close");
   done();
-  // ElMessageBox.confirm("Are you sure to close this dialog?")
-  //   .then(() => {
-  //     done();
-  //   })
-  //   .catch(() => {
-  //   });
 };
 </script>
 <style scoped>

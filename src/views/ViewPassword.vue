@@ -55,7 +55,7 @@ const schema = ref({
   password: {
     component: ChInput,
     type: "password",
-    placeholder: "Введите пароль",
+    placeholder: "",
     label: "Пароль",
     id: "password",
     maxWidth: "328px",
@@ -65,8 +65,8 @@ const schema = ref({
   passwordConfirm: {
     component: ChInput,
     type: "password",
-    placeholder: "Введите пароль",
-    label: "Пароль",
+    placeholder: "",
+    label: "Повторите пароль",
     id: "passwordConfirm",
     maxWidth: "328px",
     error: "",
@@ -125,6 +125,9 @@ async function createNewPassword() {
       localStorage.removeItem("ResU");
       localStorage.removeItem("ResT");
     } catch (e) {
+      // if (e.response.data.detail === 'Authentication credentials were not provided.') {
+      // useNotification('Авторизуйтесь');
+      // }
       console.error(e);
       useNotification();
     } finally {
@@ -179,11 +182,7 @@ watch(
       Пожалуйста, укажите email или телефон, который вы использовали для входа на сайт.
     </p>
     <p class="form_subtitle" v-else>Введите новый надежный пароль.</p>
-    <SchemaFormWithPlugins
-      :schema="schema"
-      :validation-schema="validationSchema"
-      @submit="createNewPassword"
-    >
+    <SchemaFormWithPlugins :schema="schema" :validation-schema="validationSchema">
       <template #afterForm="{ validation }">
         <ChButton
           @click="createNewPassword"

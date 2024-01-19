@@ -1,7 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { useNotification } from "@/components/compositions/ui/elNotification.ts";
-import * as validationMessages from '@/compositions/validation_messages';
+import { useNotification } from "@/components/compositions/ui/elNotification";
 import eventBus from '@/plugins/eventBus'
 import "@/compositions/tooltip"
 import Api from '@/plugins/axios';
@@ -34,7 +33,7 @@ app.provide('eventBus', eventBus)
 
 app.directive('click-outside', {
     mounted(el, binding) {
-        el.addEventListener('click', e => e.stopPropagation());
+        el.addEventListener('click', (e: MouseEvent) => e.stopPropagation());
         document.body.addEventListener('click', binding.value);
     },
     unmounted(el, binding) {
@@ -47,4 +46,4 @@ app.use(ElementPlus)
 
 app.mount('#app')
 
-
+export const bus = eventBus

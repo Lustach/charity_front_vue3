@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { ElButton } from "element-plus";
-interface Props {
+interface ButtonProps {
   loading: boolean;
   maxWidth?: string;
   text?: string;
 }
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<ButtonProps>(), {
   loading: false,
 });
 // let {isLoading=false, maxWidth} = toRefs(defineProps<Props>());
@@ -15,14 +14,13 @@ const props = withDefaults(defineProps<Props>(), {
 // }>();
 </script>
 <template>
-  <el-button
-    type="primary"
+  <button
     class="vblg-btn"
     :loading="loading"
     :style="{ maxWidth: maxWidth }"
   >
     <slot>{{ text }}</slot>
-  </el-button>
+  </button>
 </template>
 <style lang="scss" scoped>
 @import "@/assets/scss/ui/button/button.scss";

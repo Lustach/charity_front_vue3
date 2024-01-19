@@ -4,9 +4,25 @@
   "compilerOptions": {
     "composite": true,
     "lib": [],
-    "types": ["node", "jsdom", "element-plus/global","jest","vite/client", "@types/jest"],
-    "plugins": [{ "name": "typescript-plugin-css-modules" }],
+    "types": [
+      "node",
+      "jsdom",
+      "element-plus/global",
+      "jest",
+      "vite/client",
+      "@types/jest"
+    ],
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules"
+      }
+    ],
   },
-  "include": ["declarations.d.ts","tests/**/*.ts",
-"tests/**/*.tsx","src/**/.ts","src/**/*.js"],
+  "include": [
+    "declarations.d.ts",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "src/**/.ts",
+    "src/**/*.js"
+  ],
 }

@@ -15,8 +15,10 @@ const route = useRoute();
 
 onMounted(async () => {
   let fd = new FormData();
-  fd.append("uid", JSON.stringify(route.query.u));
-  fd.append("token", JSON.stringify(route.query.tk));
+  const u: string = (route.query.u ?? '') as string;
+  const tk: string = (route.query.tk ?? '') as string;
+  fd.append("uid", u);
+  fd.append("token", tk);
   try {
     await API.user.enable2Fa(fd);
     authStore.is2faEnabled = true;

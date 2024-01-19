@@ -1,11 +1,17 @@
 <script setup lang="ts">
+import axios from "axios";
 //types
 import type { TSignUp } from "@/types/auth";
+interface ResponseData {
+  email?: string;
+  phone_number: string;
+  detail?: string;
+}
 //vue
-import { computed, ref, unref, watch, markRaw } from "vue";
+import { ref, unref, watch, markRaw } from "vue";
 import LookupPlugin from "@formvuelate/plugin-lookup";
 import VeeValidatePlugin from "@formvuelate/plugin-vee-validate";
-import { useRouter, useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 
 import { useSchemaForm, SchemaFormFactory } from "formvuelate";
 import { object, bool } from "yup";
@@ -133,27 +139,28 @@ async function signUp() {
   profileStore.$reset();
   const data: TSignUp = {
     password: values.password,
-    username: values.email,
-    re_password: values.passwordConfirm,
     email: values.email,
     phone_number: values.phone,
   };
   isLoadingBtn.value = true;
   try {
-    let result = await authStore.signUp(data);
+    await authStore.signUp(data);
     if (localStorage.getItem("isEmailActivation")) {
       localStorage.removeItem("isEmailActivation");
     }
     await router.push("/fill_profile");
   } catch (e) {
-    if (e.response.status === 400) {
-      if (e.response.data.email) {
-        schema.value.email.error = "Данный e-mail уже зарегистрирован";
+    if (axios.isAxiosError(e)) {
+      const responseData = e.response?.data as ResponseData;
+      console.error(e);
+      if (e?.response?.status === 400) {
+        if (responseData.email) {
+          schema.value.email.error = "Данный e-mail уже зарегистрирован";
+        }
+        if (responseData.phone_number) {
+          schema.value.phone.error = "Данный телефон уже зарегистрирован";
+        }
       }
-      if (e.response.data.phone_number) {
-        schema.value.phone.error = "Данный телефон уже зарегистрирован";
-      }
-      console.error(e.response);
     }
   } finally {
     isLoadingBtn.value = false;
@@ -175,11 +182,7 @@ async function signUp() {
       </p>
       <form class="form__container">
         <!-- <template v-if="!showCodeField"> -->
-        <SchemaFormWithPlugins
-          :schema="schema"
-          :validation-schema="validationSchema"
-          @submit="signUp"
-        >
+        <SchemaFormWithPlugins :schema="schema" :validation-schema="validationSchema">
           <template #afterForm="{ validation }">
             <ChButton
               @click="signUp"

@@ -13,6 +13,12 @@
     font-weight: 600;
     font-size: 14px;
     text-align: center;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    line-height: 1;
+    white-space: nowrap;
+    color: white;
     // padding: 0;
     padding: 0px 20px !important;
 
@@ -52,4 +58,8 @@
         color: var(--vblg-c-primary);
         border: 2px solid #b0ceec;
     }
+    &:disabled{
+        cursor: not-allowed;
+    }
+
 }

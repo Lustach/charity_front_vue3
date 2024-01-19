@@ -1,11 +1,11 @@
 import { setActivePinia, createPinia } from 'pinia'
-import { describe, it, beforeEach, expect } from 'vitest'
+import { describe, it, beforeAll, expect } from 'vitest'
 import { useCounterStore } from '@/stores/counter'
-
+beforeAll(() => {
+    setActivePinia(createPinia())
+})
 describe('Counter Store', () => {
-    beforeEach(() => {
-        setActivePinia(createPinia())
-    })
+    
 
     it('increments', () => {
         const counterStore = useCounterStore()

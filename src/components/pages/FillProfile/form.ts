@@ -74,9 +74,9 @@ export type TForm = {
 
 };
 export const form: Ref<TForm> = ref({
-    isShowStep1: false,
+    isShowStep1: true,
     isShowStep2: false,
-    isShowStep3: true,
+    isShowStep3: false,
     //step1
     fullNameNko: "",
     shortDescriptionActivity: "",
@@ -400,7 +400,7 @@ export const schema = computed(() => [
         title: "Фактический адрес",
         model: "",
         line: true,
-        condition: (model) => !model.mailingAddress && model.isShowStep2,
+        condition: (model: TForm) => !model.mailingAddress && model.isShowStep2,
     },
     {
         component: ChInput,
@@ -411,7 +411,7 @@ export const schema = computed(() => [
         apiKey: "city",
         model: "city_actual",
         error: "",
-        condition: (model) => !model.mailingAddress && model.isShowStep2,
+        condition: (model: TForm) => !model.mailingAddress && model.isShowStep2,
     },
     {
         component: ChInput,
@@ -422,7 +422,7 @@ export const schema = computed(() => [
         apiKey: "address",
         model: "address_actual",
         error: "",
-        condition: (model) => !model.mailingAddress && model.isShowStep2,
+        condition: (model: TForm) => !model.mailingAddress && model.isShowStep2,
     },
     [
         {
@@ -435,7 +435,7 @@ export const schema = computed(() => [
             model: "officeOrFlatActual",
             error: "",
             style: "margin-right: 8px;",
-            condition: (model) => !model.mailingAddress && model.isShowStep2,
+            condition: (model: TForm) => !model.mailingAddress && model.isShowStep2,
         },
         {
             component: ChInput,
@@ -447,7 +447,7 @@ export const schema = computed(() => [
             apiKey: "index",
             model: "index_actual",
             error: "",
-            condition: (model) => !model.mailingAddress && model.isShowStep2,
+            condition: (model: TForm) => !model.mailingAddress && model.isShowStep2,
         },
     ],
 
@@ -457,7 +457,7 @@ export const schema = computed(() => [
         title: "Почтовый адрес",
         model: "",
         line: true,
-        condition: (model) => !model.actualAddress && model.isShowStep2,
+        condition: (model: TForm) => !model.actualAddress && model.isShowStep2,
     },
     {
         component: ChInput,
@@ -468,7 +468,7 @@ export const schema = computed(() => [
         apiKey: "city",
         model: "city_mailing",
         error: "",
-        condition: (model) => !model.actualAddress && model.isShowStep2,
+        condition: (model: TForm) => !model.actualAddress && model.isShowStep2,
     },
     {
         component: ChInput,
@@ -479,7 +479,7 @@ export const schema = computed(() => [
         apiKey: "address",
         model: "address_mailing",
         error: "",
-        condition: (model) => !model.actualAddress && model.isShowStep2,
+        condition: (model: TForm) => !model.actualAddress && model.isShowStep2,
     },
     [
         {
@@ -492,7 +492,7 @@ export const schema = computed(() => [
             model: "officeOrFlatMailing",
             error: "",
             style: "margin-right: 8px;",
-            condition: (model) => !model.actualAddress && model.isShowStep2,
+            condition: (model: TForm) => !model.actualAddress && model.isShowStep2,
         },
         {
             component: ChInput,
@@ -504,7 +504,7 @@ export const schema = computed(() => [
             apiKey: "index",
             model: "index_mailing",
             error: "",
-            condition: (model) => !model.actualAddress && model.isShowStep2,
+            condition: (model: TForm) => !model.actualAddress && model.isShowStep2,
         },
     ],
     {
@@ -516,7 +516,7 @@ export const schema = computed(() => [
         error: "",
         name: "actualAddress",
         slot: `<p>Фактический адрес совпадает с юридическим</p>`,
-        condition: (model) => model.isShowStep2,
+        condition: (model: TForm) => model.isShowStep2,
     },
     {
         component: ChCheckbox,
@@ -527,7 +527,7 @@ export const schema = computed(() => [
         error: "",
         name: "mailingAddress",
         slot: `<p>Почтовый адрес совпадает с юридическим</p>`,
-        condition: (model) => model.isShowStep2,
+        condition: (model: TForm) => model.isShowStep2,
     },
     //step3
     {
@@ -538,7 +538,7 @@ export const schema = computed(() => [
         placeholder: "",
         model: "fullNameDirector",
         error: "",
-        condition: (model) => model.isShowStep3,
+        condition: (model: TForm) => model.isShowStep3,
     },
     {
         component: ChInput,
@@ -548,7 +548,7 @@ export const schema = computed(() => [
         placeholder: "",
         apiKey: "nko_director_position",
         error: "",
-        condition: (model) => model.isShowStep3,
+        condition: (model: TForm) => model.isShowStep3,
     },
     {
         component: ChInput,
@@ -559,7 +559,7 @@ export const schema = computed(() => [
         id: "fullNameContactPerson",
         placeholder: "",
         error: "",
-        condition: (model) => model.isShowStep3,
+        condition: (model: TForm) => model.isShowStep3,
     },
     {
         component: ChInput,
@@ -572,7 +572,7 @@ export const schema = computed(() => [
         maxLength: 12,
         id: "phoneContactPerson",
         error: "",
-        condition: (model) => model.isShowStep3,
+        condition: (model: TForm) => model.isShowStep3,
     },
     {
         component: ChInput,
@@ -584,7 +584,7 @@ export const schema = computed(() => [
         apiKey: "nko_representative_email",
         id: "emailContactPerson",
         error: "",
-        condition: (model) => model.isShowStep3,
+        condition: (model: TForm) => model.isShowStep3,
     },
     {
         component: ChInput,
@@ -594,7 +594,7 @@ export const schema = computed(() => [
         id: "site",
         model: "site",
         error: "",
-        condition: (model) => model.isShowStep3,
+        condition: (model: TForm) => model.isShowStep3,
     },
     {
         component: ChInput,
@@ -604,7 +604,7 @@ export const schema = computed(() => [
         id: "phone",
         error: "",
         model: "phone",
-        condition: (model) => model.isShowStep3,
+        condition: (model: TForm) => model.isShowStep3,
         maxLength: 12,
     },
     {
@@ -615,7 +615,7 @@ export const schema = computed(() => [
         id: "email",
         model: "email",
         error: "",
-        condition: (model) => model.isShowStep3,
+        condition: (model: TForm) => model.isShowStep3,
     },
     {
         component: ChInput,
@@ -625,7 +625,7 @@ export const schema = computed(() => [
         id: "vk",
         error: "",
         model: "vk",
-        condition: (model) => model.isShowStep3,
+        condition: (model: TForm) => model.isShowStep3,
     },
     {
         component: ChInput,
@@ -635,7 +635,7 @@ export const schema = computed(() => [
         id: "classmates",
         error: "",
         model: "classmates",
-        condition: (model) => model.isShowStep3,
+        condition: (model: TForm) => model.isShowStep3,
     },
     {
         component: ChInput,
@@ -645,7 +645,7 @@ export const schema = computed(() => [
         id: "facebook",
         error: "",
         model: "facebook",
-        condition: (model) => model.isShowStep3,
+        condition: (model: TForm) => model.isShowStep3,
     },
     {
         component: ChInput,
@@ -655,7 +655,7 @@ export const schema = computed(() => [
         id: "insta",
         error: "",
         model: "insta",
-        condition: (model) => model.isShowStep3,
+        condition: (model: TForm) => model.isShowStep3,
     },
 ]);
 export const validationSchema = computed(() => {

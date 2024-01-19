@@ -6,20 +6,20 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   // routes,
   routes: [
-    // {
-    //   path: '/activate/*',
-    //   component: () => import('@/views/Email/ActivationSpace.vue'),
-    // },
-    // {
-    //   path: '/reset_password/*',
-    //   component: () => import('@/views/Email/ResetPasswordSpacer.vue'),
-    // },
-    // {
-    //   path: '/confirmation_enable_2fa/*',
-    //   component: () => import('@/views/Email/2FaEnableActivationSpacer.vue'),
-    // },
     {
-      path: '/confirmation_delete_2fa/*',
+      path: '/activate',
+      component: () => import('@/views/Email/ActivationSpacer.vue'),
+    },
+    {
+      path: '/reset_password/',
+      component: () => import('@/views/Email/ResetPasswordSpacer.vue'),
+    },
+    {
+      path: '/confirmation_enable_2fa/',
+      component: () => import('@/views/Email/2FaEnableActivationSpacer.vue'),
+    },
+    {
+      path: '/confirmation_delete_2fa/',
       name: 'test',
       component: () => import('@/views/Email/2FaDisableActivationSpacer.vue'),
     },
@@ -51,11 +51,6 @@ const router = createRouter({
       path: '/registration',
       name: 'registration',
       component: () => import('@/views/ViewRegistration.vue')
-    },
-    {
-      path: '/multi_step-form',
-      name: 'multi_step-form',
-      component: () => import('@/views/MultiStepForm.vue')
     },
     {
       path: '/fill_profile',
@@ -105,10 +100,6 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)*',
       component: () => import('@/views/ViewNotFound.vue'),
-    },
-    {
-      path: '/test',
-      component: () => import('@/views/ViewTest.vue')
     }
   ],
   scrollBehavior(to, from, savedPosition) {

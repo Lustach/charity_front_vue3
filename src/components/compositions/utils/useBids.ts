@@ -14,7 +14,7 @@ enum BidsName {
 type TBidsDetails = {
     id: number,
     bid_status: TBidsStatus
-    bid_date: String
+    bid_date: string
 }
 type TBidsStatus = BidsStatus[0] | BidsStatus[1] | BidsStatus[2]
 type TBids = {

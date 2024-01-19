@@ -1,11 +1,11 @@
-let tooltipElem;
+let tooltipElem: HTMLElement;
 //todo data-side (сделать поддержку сторон для тултипа)
 document.onmouseover = function (event) {
-    
-    let target = event.target;
+
+    const target = event.target as HTMLElement;
 
     // если у нас есть подсказка...
-    let tooltipHtml = target.dataset.tooltip;
+    const tooltipHtml = target.dataset.tooltip;
     if (!tooltipHtml) return;
 
     // ...создадим элемент для подсказки
@@ -16,7 +16,7 @@ document.onmouseover = function (event) {
     document.body.append(tooltipElem);
 
     // спозиционируем его сверху от аннотируемого элемента (top-center)
-    let coords = target.getBoundingClientRect();
+    const coords = target.getBoundingClientRect();
 
     let left = coords.left - 110 + (target.offsetWidth - tooltipElem.offsetWidth) / 2;
     if (left < 0) left = 0; // не заезжать за левый край окна
@@ -34,7 +34,7 @@ document.onmouseout = function () {
 
     if (tooltipElem) {
         tooltipElem.remove();
-        tooltipElem = null;
+        // tooltipElem = null;
     }
 
 };
@@ -43,7 +43,7 @@ document.onscroll = function () {
 
     if (tooltipElem) {
         tooltipElem.remove();
-        tooltipElem = null;
+        // tooltipElem = null;
     }
 
 };

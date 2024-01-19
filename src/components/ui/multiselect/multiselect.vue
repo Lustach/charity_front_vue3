@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 import Multiselect from "vue-multiselect";
-import { ref, inject } from "vue";
 import { useField } from "vee-validate";
-const initials = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
 const emit = defineEmits(["update:modelValue", "updateTest"]);
-const eventBus = inject("eventBus");
 
 const props = defineProps({
   name: {
@@ -55,7 +52,7 @@ const { value, handleChange, errorMessage, meta } = useField(props.name, undefin
   validateOnValueUpdate: false,
 });
 
-const onChange = (event) => {
+const onChange = (event: Event) => {
   console.log(event, "value");
   // value.value.push(event);
   // handleChange(value);
@@ -65,33 +62,13 @@ const onChange = (event) => {
 </script>
 <template>
   <!-- <div style="display: inline-block; margin-left: 20px"> -->
-  <div
-    class="vblg-select__container"
-    :class="{ 'has-error': !!errorMessage || error, success: meta.valid && meta.dirty }"
-    :style="{ 'max-width': maxWidth }"
-    :id="id"
-  >
-    {{ value }} {{modelValue}}
+  <div class="vblg-select__container" :class="{ 'has-error': !!errorMessage || error, success: meta.valid && meta.dirty }"
+    :style="{ 'max-width': maxWidth }" :id="id">
     <label :for="id">{{ label }}</label>
-    <Multiselect
-      :class="{ 'is-error': errorMessage || error }"
-      :multiple="true"
-      class="vblg-select"
-      :id="id"
-      v-model="value"
-      :searchable="false"
-      @select="onChange"
-      :options="options"
-      :placeholder="placeholder"
-      :limit="limit"
-      :limitText="(count) => `+ ещё ${count}`"
-      :label="multiselectLabel"
-      :close-on-select="false"
-      :clear-on-select="false"
-      :preserve-search="true"
-      :track-by="trackBy"
-      openDirection="bottom"
-    />
+    <Multiselect :class="{ 'is-error': errorMessage || error }" :multiple="true" class="vblg-select" :id="id"
+      v-model="value" :searchable="false" @select="onChange" :options="options" :placeholder="placeholder" :limit="limit"
+      :limitText="(count: number | string) => `+ ещё ${count}`" :label="multiselectLabel" :close-on-select="false" :clear-on-select="false"
+      :preserve-search="true" :track-by="trackBy" openDirection="bottom" />
     <span class="error-message" v-if="errorMessage || error">{{
       error || errorMessage
     }}</span>
@@ -101,6 +78,7 @@ const onChange = (event) => {
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
 <style lang="scss">
 @import "@/assets/scss/ui/text-field";
+
 .vblg-select {
   &__container {
     label {
@@ -110,9 +88,11 @@ const onChange = (event) => {
       color: var(--vblg-c-primary);
       width: 100%;
     }
+
     // @extend .text-field;
   }
 }
+
 .vblg-select {
   border-radius: 25px !important;
   min-height: 38px !important;
@@ -147,6 +127,7 @@ const onChange = (event) => {
       margin-bottom: 0;
       border-radius: 18px !important;
     }
+
     &__option {
       background-color: white;
       color: inherit;
@@ -165,6 +146,7 @@ const onChange = (event) => {
           background-color: #cae2ff !important;
         }
       }
+
       &:after {
         display: none !important;
       }
@@ -176,6 +158,7 @@ const onChange = (event) => {
 
     &__select {
       display: none !important;
+
       &::before {
         border-width: 5px 7px 0 !important;
         top: 24% !important;
@@ -191,6 +174,7 @@ const onChange = (event) => {
       display: flex;
       align-items: center;
       padding: 0 3px;
+
       &:focus:not(.is-error) {
         border-color: #409eff;
         box-shadow: 1px 1px 10px -4px rgba(64, 158, 255, 0.5);
@@ -231,6 +215,7 @@ const onChange = (event) => {
           cursor: pointer;
           border-top: 2px solid var(--vblg-c-primary);
         }
+
         &::-webkit-scrollbar {
           width: 5px;
         }
@@ -247,6 +232,7 @@ const onChange = (event) => {
           border-radius: 5px;
           background-color: #0f75bd;
         }
+
         //overflow-y: auto !important;
       }
 
@@ -260,11 +246,13 @@ const onChange = (event) => {
     &__tags-wrap {
       display: flex;
     }
+
     &__strong {
       width: 100%;
       font-size: 14px;
       margin: 0;
     }
+
     &__tag {
       padding: 7px !important;
       //min-width: 121px !important;
@@ -278,6 +266,7 @@ const onChange = (event) => {
       justify-content: center;
       width: fit-content;
       margin: 3px 3px 3px 0 !important;
+
       &-icon {
         display: none !important;
       }
@@ -288,6 +277,7 @@ const onChange = (event) => {
     border: none !important;
   }
 }
+
 // error for multi
 .error-message {
   line-height: 16px;
@@ -296,12 +286,15 @@ const onChange = (event) => {
 
 .is-error {
   border-color: #f56c6c;
+
   .multiselect__tags {
     border-color: #f56c6c !important;
+
     &:hover {
       border-color: #f56c6c !important;
     }
   }
+
   &:focus,
   &:hover {
     box-shadow: 1px 1px 10px -4px #f56c6c !important;

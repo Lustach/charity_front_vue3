@@ -14,11 +14,17 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+
+interface Step {
+  value: boolean;
+  description: string;
+}
+
 export default {
   name: "ProfileStepsContainer",
   props: {
-    steps: {},
+    steps: {type: Array as ()=> Step[]},
   },
 };
 </script>

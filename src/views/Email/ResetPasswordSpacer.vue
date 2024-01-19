@@ -8,8 +8,10 @@ import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
 const route = useRoute();
 onMounted(async () => {
-  localStorage.setItem("ResU", JSON.stringify(route.query.u));
-  localStorage.setItem("ResT", JSON.stringify(route.query.tk));
+  const u: string = (route.query.u ?? '') as string;
+  const tk: string = (route.query.tk ?? '') as string;
+  localStorage.setItem("ResU", u);
+  localStorage.setItem("ResT", tk);
   router.push("/password?action=create");
 });
 </script>

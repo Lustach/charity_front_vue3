@@ -4,6 +4,8 @@ import { useField } from "vee-validate";
 import type { Props } from "@/components/ui/input/interface";
 import { fieldHandlerMaxLength } from "@/components/compositions/useInputHandlers";
 import { handleInputChange } from "@/components/compositions/useInputHandlers";
+//sceleton
+import inputSceleton from "@/components/ui/input/inputSceleton.vue";
 
 const emit = defineEmits(["update:modelValue"]);
 
@@ -48,6 +50,8 @@ function showInfoByKey() {
     :class="{ 'has-error': !!errorMessage || error, success: meta.valid && meta.dirty }"
     :style="{ 'max-width': maxWidth }"
   >
+    <!-- <inputSceleton v-if="true" :props="props"></inputSceleton> -->
+    <!-- <template v-else> -->
     <label :for="id">{{ label }}</label>
     <img
       v-if="tooltip"
@@ -83,6 +87,7 @@ function showInfoByKey() {
       }}</span>
       <slot name="my-error-message"></slot>
     </div>
+    <!-- </template> -->
   </div>
 </template>
 

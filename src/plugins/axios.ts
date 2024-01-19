@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { useAuthStore } from "@/stores/modules/auth/auth";
-import router from '@/router/router.js'
+import router from '@/router/router'
 
-import type {TBids} from "@/stores/modules/profile/profile_types"
+import type { TBids } from "@/stores/modules/profile/profile_types"
+import type { TSignUp } from "@/types/auth"
+
 // const authStore = useAuthStore();
 // import router from '@/router/router';
 // import store from '@/store/store';
@@ -15,7 +17,7 @@ import type {TBids} from "@/stores/modules/profile/profile_types"
 const API = {
     fill_profile: {
         getHelpCategory: () => axios.get('/health/category/'),
-        createFund: (data) => axios({
+        createFund: (data: FormData) => axios({
             data: data,
             method: 'post',
             url: '/health/funds/',
@@ -23,7 +25,7 @@ const API = {
                 'Content-Type': 'Content-Type',
             },
         }),
-        updateFund: (id, data) => axios({
+        updateFund: (id: number, data: FormData) => axios({
             data: data,
             method: 'patch',
             url: '/health/funds/' + id + '/',
@@ -31,8 +33,8 @@ const API = {
                 'Content-Type': 'multipart/form-data',
             },
         }),
-        getFund: (id) => axios.get(`/health/funds/${id}`),
-        createMedia: (data) => axios({
+        getFund: (id: number) => axios.get(`/health/funds/${id}`),
+        createMedia: (data: any) => axios({
             data: data,
             method: 'post',
             url: '/health/media/',
@@ -41,7 +43,7 @@ const API = {
             //     'enctype': 'multipart/form-data'
             // },
         }),
-        updateMedia: (id, data) => axios({
+        updateMedia: (id: number, data: any) => axios({
             data: data,
             method: 'put',
             url: '/health/media/' + id + '/',
@@ -49,29 +51,29 @@ const API = {
                 'Content-Type': 'multipart/form-data',
             },
         }),
-        deleteMedia: (id) => axios({
+        deleteMedia: (id: number) => axios({
             method: 'delete',
             url: '/health/media/' + id,
         }),
-        getLogo: (id) => axios.get('/health/media/' + id),
-        createBankDetails: (data) => axios.post('/health/bank_details/', { ...data, }),
-        updateBankDetails: (fundId, data) => axios.patch(`/health/bank_details/${fundId}/`, { ...data, }),
-        getBankDetails: (id) => axios.get('/health/bank_details/' + id),
-        createLegalAddress: (data) => axios.post('/health/legal_address/', { ...data, }),
-        updateLegalAddress: (id, data) => axios.put('/health/legal_address/' + id + '/', { ...data, }),
-        getLegalAddress: (id) => axios.get('/health/legal_address/' + id),
-        createActualAddress: (data) => axios.post('/health/actual_address/', { ...data, }),
-        updateActualAddress: (id, data) => axios.put('/health/actual_address/' + id + '/', { ...data, }),
-        getActualAddress: (id) => axios.get('/health/actual_address/' + id),
-        createMailingAddress: (data) => axios.post('/health/mailing_address/', { ...data, }),
-        updateMailingAddress: (id, data) => axios.put('/health/mailing_address/' + id + '/', { ...data, }),
-        getMailingAddress: (id) => axios.get('/health/mailing_address/' + id),
+        getLogo: (id: number) => axios.get('/health/media/' + id),
+        createBankDetails: (data: any) => axios.post('/health/bank_details/', { ...data, }),
+        updateBankDetails: (fundId: number, data: any) => axios.patch(`/health/bank_details/${fundId}/`, { ...data, }),
+        getBankDetails: (id: number) => axios.get('/health/bank_details/' + id),
+        createLegalAddress: (data: any) => axios.post('/health/legal_address/', { ...data, }),
+        updateLegalAddress: (id: number, data: any) => axios.put('/health/legal_address/' + id + '/', { ...data, }),
+        getLegalAddress: (id: number) => axios.get('/health/legal_address/' + id),
+        createActualAddress: (data: any) => axios.post('/health/actual_address/', { ...data, }),
+        updateActualAddress: (id: number, data: any) => axios.put('/health/actual_address/' + id + '/', { ...data, }),
+        getActualAddress: (id: number) => axios.get('/health/actual_address/' + id),
+        createMailingAddress: (data: any) => axios.post('/health/mailing_address/', { ...data, }),
+        updateMailingAddress: (id: number, data: any) => axios.put('/health/mailing_address/' + id + '/', { ...data, }),
+        getMailingAddress: (id: number) => axios.get('/health/mailing_address/' + id),
     },
     user: {
-        obtainJWT: (data) => axios.post('/jwt/create/', { ...data, }),
-        refreshJWT: (refreshToken) => axios.post('/jwt/refresh/', { ...refreshToken }),
-        signUp: (data) => axios.post('/auth/users/', { ...data, }),
-        activateUser: (data) => axios({
+        obtainJWT: (data: any) => axios.post('/jwt/create/', { ...data, }),
+        refreshJWT: (refreshToken: { refresh: string }) => axios.post('/jwt/refresh/', { ...refreshToken }),
+        signUp: (data: TSignUp) => axios.post('/auth/users/', { ...data, }),
+        activateUser: (data: any) => axios({
             data: data,
             method: 'post',
             url: '/auth/users/activation/',
@@ -79,11 +81,11 @@ const API = {
                 'Content-Type': 'multipart/form-data',
             },
         }),
-        setPassword: (data) => axios.post('/auth/users/set_password/', { ...data, }),
-        resetPasswordEmail: (data) => axios.post('/auth/users/reset_password/', { ...data, }),
-        resetPasswordConfirmSpacer: (data) => axios.post('/auth/users/reset_passwordConfirm/', { ...data, }),
+        setPassword: (data: any) => axios.post('/auth/users/set_password/', { ...data, }),
+        resetPasswordEmail: (data: any) => axios.post('/auth/users/reset_password/', { ...data, }),
+        resetPasswordConfirmSpacer: (data: any) => axios.post('/auth/users/reset_password_confirm/', { ...data, }),
         prepare2Fa: () => axios.post('/prepare_2fa/'),
-        sendEmail2Fa: (data) => axios({
+        sendEmail2Fa: (data: any) => axios({
             data: data,
             method: 'post',
             url: '/send_email_2fa/',
@@ -91,7 +93,7 @@ const API = {
                 'Content-Type': 'multipart/form-data',
             },
         }),
-        deleteEmail2Fa: (data) => axios({
+        deleteEmail2Fa: (data: any) => axios({
             data: data,
             method: 'delete',
             url: '/send_email_2fa/',
@@ -99,7 +101,7 @@ const API = {
                 'Content-Type': 'multipart/form-data',
             },
         }),
-        enable2Fa: (data) => axios({
+        enable2Fa: (data: any) => axios({
             data: data,
             method: 'post',
             url: '/confirm_2fa/',
@@ -107,7 +109,7 @@ const API = {
                 'Content-Type': 'multipart/form-data',
             },
         }),
-        disable2Fa: (data) => axios({
+        disable2Fa: (data: any) => axios({
             data: data,
             method: 'delete',
             url: '/confirm_2fa/',
@@ -116,14 +118,14 @@ const API = {
             },
         }),
         getGeneratedQrList: () => axios.get('/health/fund_resource_by_user/'),
-        generateQr: (data) => axios.post('/health/fund_resource/', { ...data, }),
-        createProfileModel: (data) => axios.post('/health/profiles/', { ...data, }),
+        generateQr: (data: any) => axios.post('/health/fund_resource/', { ...data, }),
+        createProfileModel: (data: any) => axios.post('/health/profiles/', { ...data, }),
         meUser: () => axios.get('/auth/users/me/'),
         getUserProfileById: (id: number): Promise<{ bids: TBids }> => axios.get(`/health/profiles/${id}/`),
-        getGeneratedQr: (id) => axios.get(`/health/fund_resource/${id}/`),
+        getGeneratedQr: (id: number) => axios.get(`/health/fund_resource/${id}/`),
     },
     bid: {
-        updateFund: (id, data) => axios({
+        updateFund: (id: number, data: any) => axios({
             data: data,
             method: 'patch',
             url: '/bid/funds/' + id + '/',
@@ -131,10 +133,10 @@ const API = {
                 'Content-Type': 'multipart/form-data',
             },
         }),
-        updateMailingAddress: (id, data) => axios.put('/bid/mailing_address/' + id + '/', { ...data, }),
-        updateActualAddress: (id, data) => axios.put('/bid/actual_address/' + id + '/', { ...data, }),
-        updateLegalAddress: (id, data) => axios.put('/bid/legal_address/' + id + '/', { ...data, }),
-        updateBankDetails: (fundId, data) => axios({
+        updateMailingAddress: (id: number, data: any) => axios.put('/bid/mailing_address/' + id + '/', { ...data, }),
+        updateActualAddress: (id: number, data: any) => axios.put('/bid/actual_address/' + id + '/', { ...data, }),
+        updateLegalAddress: (id: number, data: any) => axios.put('/bid/legal_address/' + id + '/', { ...data, }),
+        updateBankDetails: (fundId: number, data: any) => axios({
             data: data,
             method: 'patch',
             url: `/bid/bank_details/${fundId}/`,
@@ -142,17 +144,17 @@ const API = {
                 'Content-Type': 'multipart/form-data',
             },
         }),
-        deleteFund: (bidId) => axios.delete(`/bid/funds_detail/${bidId}`),
-        deleteBidByName: (bidId, bidName) => axios.delete(`/bid/${bidName}/${bidId}`),
-        archiveBidByName: (bidId, bidName) => axios.patch(`bid/${bidName}/${bidId}/`),
+        deleteFund: (bidId: number) => axios.delete(`/bid/funds_detail/${bidId}`),
+        deleteBidByName: (bidId: number, bidName: any) => axios.delete(`/bid/${bidName}/${bidId}`),
+        archiveBidByName: (bidId: number, bidName: any) => axios.patch(`bid/${bidName}/${bidId}/`),
         archive: {
-            fund: (bidId) => axios.patch(`bid/funds_to_archive/${bidId}/`),
+            fund: (bidId: number) => axios.patch(`bid/funds_to_archive/${bidId}/`),
         },
     },
     crypto: {
-        getInfo: (fundId) => axios.post('/donation/crypto_widgets/', { fund: fundId, }),
-        checkCryptoAddress: (data) => axios.post('/donation/check_crypto_address/', { ...data, }),
-        updateWidgetInfo: (data, widgetId) => axios({
+        getInfo: (fundId: number) => axios.post('/donation/crypto_widgets/', { fund: fundId, }),
+        checkCryptoAddress: (data: any) => axios.post('/donation/check_crypto_address/', { ...data, }),
+        updateWidgetInfo: (data: any, widgetId: number) => axios({
             data: data,
             method: 'patch',
             url: `/donation/crypto_widgets/${widgetId}/`,
@@ -162,13 +164,13 @@ const API = {
         }),
     },
     analytics: {
-        getReceiptsList: (query) => axios.get('/donation/receipts/' + query),
-        getTransactionsList: (query) => axios.get('/donation/transactions/' + query),
+        getReceiptsList: (query: string) => axios.get('/donation/receipts/' + query),
+        getTransactionsList: (query: string) => axios.get('/donation/transactions/' + query),
         getDonationList: () => axios.get('/donation/donation_tools/'),
-        getCsv: (data) => axios.get(`/donation/${data.category}/?to_csv&date_min=${data.date}&donation_tool=` + (data.selectedTool || '')),
+        getCsv: (data: { category: any; date: any; selectedTool: any; }) => axios.get(`/donation/${data.category}/?to_csv&date_min=${data.date}&donation_tool=` + (data.selectedTool || '')),
     },
     terminals: {
-        getDonationTerminals: (query) => axios.get('donation/terminals/' + query),
+        getDonationTerminals: (query: string) => axios.get('donation/terminals/' + query),
     },
 };
 
@@ -201,7 +203,7 @@ axios.interceptors.response.use(function (response) {
     if (error.response?.status === 401) {
         localStorage.removeItem('access_token');
         axios.defaults.headers.common.Authorization = '';
-        if (router.currentRoute.name !== 'login')
+        if (router.currentRoute.value.name !== 'login')
             router.push({ name: 'login', });
     }
     return Promise.reject(error);

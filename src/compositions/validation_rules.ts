@@ -8,7 +8,7 @@ export const SUPPORTED_FORMATS_DEFAULT = [
     "application/pdf",
     "image/svg+xml",
 ];
-const urlPattern = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w\?[a-zA-Z-_%\/@?]+)*([^\/\w\?[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/;
+const urlPattern = /^((http|https):\/\/)?(www\.)?(?!.*(http|https|www\.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?([\w?&=a-zA-Z-_%@]+)*([^w?&=a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/
 export const rules = {
     email: yup
         .string()
@@ -21,23 +21,29 @@ export const rules = {
     emailOrPhone: yup
         .string()
         .test("emailOrPhone", "Неверный e-mail или телефон", function (value) {
-            if (value === "") {
-                return false;
-            } else {
-                if (
-                    value &&
-                    (new RegExp(/\S+@\S+\.+(com|ru|org|net|info|io)$/).test(value) ||
-                        new RegExp(/^\+7[0-9]{10}$/).test(value))
-                ) {
+            const emailReg = new RegExp(/\S+@\S+\.+(com|ru|org|net|info|io)$/)
+            const phoneReg = new RegExp(/^\+7[0-9]{10}$/)
+            if (value) {
+                if (value && (emailReg.test(value) || phoneReg.test(value))) {
                     return true;
-                } else {
-                    return false;
                 }
+                return false;
             }
-        })
-        .required(),
+            return false
+        }),
     code_2fa: yup.string().min(6).max(6).required(),
-    password: yup.string().min(8).required(),
+    // .min(8).required(),
+    password: yup.string().test("password", "Минимум 8 символов", function (value) {
+        if (value) {
+            if (value.length <= 8) {
+                return false;
+            }
+            return true
+        }
+        if (!value?.length) return false
+
+        return false
+    }),
     passwordConfirm: yup
         .string()
         .required()
@@ -75,11 +81,11 @@ export const rules = {
     // insta: yup.string().matches(urlPattern, "Неверный формат сайта"),
 
 
-    files: (FILE_SIZE?: number = FILE_SIZE_DEFAULT, SUPPORTED_FORMATS?: Array<string> = SUPPORTED_FORMATS_DEFAULT, isRequired: boolean) => yup
+    files: (FILE_SIZE: number = FILE_SIZE_DEFAULT, SUPPORTED_FORMATS: Array<string> = SUPPORTED_FORMATS_DEFAULT, isRequired: boolean) => yup
         .mixed()
         .test("fileNameLength", "Слишком длинное название файла", (value) => {
-            console.log(value,'value file');
-            
+            console.log(value, 'fileNameLength Слишком длинное название файла');
+
             if (value?.length) {
                 for (const iterator of value) {
                     if (iterator.file.name.length >= 100) {
@@ -98,7 +104,7 @@ export const rules = {
             return true;
         })
         .test('requiredFiles', "Обязательное поле", (value, e) => {
-            console.log(e, 'e');
+            console.log(e, 'requiredFiles Обязательное поле');
             if (isRequired) {
                 if (value?.length) return true
                 return false
@@ -106,7 +112,7 @@ export const rules = {
         })
         .test(
             "fileType",
-            "Unsupported File Format",
+            "Неподдерживаемый формат",
             (value) => {
                 if (value) {
                     for (const iterator of value) {
